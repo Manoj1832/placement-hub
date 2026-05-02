@@ -5,7 +5,7 @@ import { api } from "@/convex/_generated/api";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { UserButton, SignInButton, SignUpButton, useAuth } from "@clerk/nextjs";
+import { UserButton, SignInButton, useAuth } from "@clerk/nextjs";
 import { ArrowRight, Code2, BookOpen, Target } from "lucide-react";
 import ExperienceCard from "@/components/experience-card";
 import { useState } from "react";
@@ -56,14 +56,14 @@ export default function HomePage() {
                   Sign In
                 </button>
               </SignInButton>
-              <SignUpButton mode="modal">
+              <Link href="/sign-up">
                 <button className="text-sm font-semibold bg-[#00FF7F] text-black px-6 py-2.5 rounded-xl hover:bg-[#00e673] transition shadow-[0_0_20px_rgba(0,255,127,0.3)]">
                   Registration
                 </button>
-              </SignUpButton>
+              </Link>
             </>
           ) : (
-            <UserButton afterSignOutUrl="/" />
+            <UserButton />
           )}
         </div>
       </header>

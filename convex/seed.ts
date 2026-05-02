@@ -2,8 +2,10 @@ import { internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
 export const seedExperiences = internalMutation({
-  args: {},
-  handler: async (ctx) => {
+  args: {
+    experiences: v.any()
+  },
+  handler: async (ctx, args) => {
     const allExperiences = args.experiences;
 
     console.log(`Processing ${allExperiences.length} experiences`);

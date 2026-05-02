@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Lock } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@clerk/nextjs";
 
 interface PremiumGateProps {
   children: React.ReactNode;
@@ -13,9 +14,15 @@ interface PremiumGateProps {
 
 export default function PremiumGate({ children }: PremiumGateProps) {
   const isPremium = useQuery(api.users.isPremium);
+  const { userId } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const handleUpgrade = async () => {
+    if (!userId) {
+      alert("Please sign in first to upgrade to Premium!");
+      return;
+    }
+    
     try {
       setLoading(true);
       const res = await fetch("/api/payment/create-order", {

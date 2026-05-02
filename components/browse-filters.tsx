@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Input } from "./ui/input";
+import { Search, X } from "lucide-react";
 
 interface BrowseFiltersProps {
   onChange: (filters: {
@@ -16,33 +17,30 @@ interface BrowseFiltersProps {
 export default function BrowseFilters({ onChange }: BrowseFiltersProps) {
   const [company, setCompany] = useState<string>("");
   const [type, setType] = useState<string>("");
-  const [branch, setBranch] = useState<string>("");
   const [difficulty, setDifficulty] = useState<string>("");
 
   const handleChange = () => {
     onChange({
       company: company || undefined,
-      type: type || undefined,
-      branch: branch || undefined,
-      difficulty: difficulty || undefined,
+      type: type === "all" ? undefined : type || undefined,
+      difficulty: difficulty === "all" ? undefined : difficulty || undefined,
     });
   };
 
   const clearFilters = () => {
     setCompany("");
     setType("");
-    setBranch("");
     setDifficulty("");
     onChange({});
   };
 
-  const hasFilters = company || type || branch || difficulty;
+  const hasFilters = company || (type && type !== "all") || (difficulty && difficulty !== "all");
 
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm border">
+    <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
       <div className="flex flex-wrap gap-3 items-end">
-        <div className="flex-1 min-w-[150px]">
-          <label className="text-xs font-medium text-muted-foreground mb-1 block">Company</label>
+        <div className="flex-1 min-w-[200px]">
+          <label className="text-xs font-medium text-zinc-500 mb-1 block">Company</label>
           <Input
             placeholder="Search company..."
             value={company}
@@ -50,38 +48,35 @@ export default function BrowseFilters({ onChange }: BrowseFiltersProps) {
               setCompany(e.target.value);
               handleChange();
             }}
-            className="h-9"
+            className="h-10 bg-black border-zinc-800 text-white placeholder:text-zinc-500"
           />
         </div>
 
-        <div className="min-w-[120px]">
-          <label className="text-xs font-medium text-muted-foreground mb-1 block">Type</label>
-          <Select value={type} onValueChange={(v) => { setType(v); handleChange(); }}>
-            <SelectTrigger className="h-9">
-              <SelectValue placeholder="All" />
+        <div className="min-w-[140px]">
+          <label className="text-xs font-medium text-zinc-500 mb-1 block">Job Type</label>
+          <Select value={type || "all"} onValueChange={(v) => { setType(v); handleChange(); }}>
+            <SelectTrigger className="h-10 bg-black border-zinc-800 text-white">
+              <SelectValue placeholder="All Types" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="internship">Internship</SelectItem>
-              <SelectItem value="fulltime">Full-time</SelectItem>
-              <SelectItem value="PPO">PPO</SelectItem>
-              <SelectItem value="Summer">Summer</SelectItem>
-              <SelectItem value="Winter">Winter</SelectItem>
+            <SelectContent className="bg-zinc-900 border-zinc-800">
+              <SelectItem value="all" className="text-white">All Types</SelectItem>
+              <SelectItem value="internship" className="text-white">Internship</SelectItem>
+              <SelectItem value="fulltime" className="text-white">Full-time</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <div className="min-w-[120px]">
-          <label className="text-xs font-medium text-muted-foreground mb-1 block">Difficulty</label>
-          <Select value={difficulty} onValueChange={(v) => { setDifficulty(v); handleChange(); }}>
-            <SelectTrigger className="h-9">
-              <SelectValue placeholder="All" />
+        <div className="min-w-[140px]">
+          <label className="text-xs font-medium text-zinc-500 mb-1 block">Difficulty</label>
+          <Select value={difficulty || "all"} onValueChange={(v) => { setDifficulty(v); handleChange(); }}>
+            <SelectTrigger className="h-10 bg-black border-zinc-800 text-white">
+              <SelectValue placeholder="All Levels" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="Easy">Easy</SelectItem>
-              <SelectItem value="Medium">Medium</SelectItem>
-              <SelectItem value="Hard">Hard</SelectItem>
+            <SelectContent className="bg-zinc-900 border-zinc-800">
+              <SelectItem value="all" className="text-white">All Levels</SelectItem>
+              <SelectItem value="easy" className="text-white">Easy</SelectItem>
+              <SelectItem value="medium" className="text-white">Medium</SelectItem>
+              <SelectItem value="hard" className="text-white">Hard</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -89,8 +84,9 @@ export default function BrowseFilters({ onChange }: BrowseFiltersProps) {
         {hasFilters && (
           <button
             onClick={clearFilters}
-            className="h-9 px-3 text-sm text-muted-foreground hover:text-foreground underline"
+            className="h-10 px-4 text-sm text-red-400 hover:text-red-300 flex items-center gap-1 bg-red-900/20 rounded-lg"
           >
+            <X className="w-4 h-4" />
             Clear
           </button>
         )}

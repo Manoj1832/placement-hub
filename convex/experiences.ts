@@ -23,7 +23,7 @@ async function getOptionalUser(ctx: any) {
 
 /**
  * List all approved experiences.
- * All cards are visible in browse view — premium gating happens on the detail page.
+ * Only first 5 experiences are free - rest require premium.
  */
 export const list = query({
   args: {
@@ -32,22 +32,96 @@ export const list = query({
     branch: v.optional(v.string()),
     difficulty: v.optional(v.string()),
     isPremium: v.optional(v.boolean()),
+    search: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const results = await ctx.db
+    let results = await ctx.db
       .query("experiences")
       .withIndex("by_status", (q: any) => q.eq("status", "approved"))
       .collect();
 
-    return results.filter((e) => {
-      if (args.company && e.companyName !== args.company) return false;
+    // Sort by upvotes to show most popular first
+    results = results.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
+
+    // Filter based on args
+    const filtered = results.filter((e) => {
+      if (args.company && !e.companyName?.toLowerCase().includes(args.company.toLowerCase())) return false;
       if (args.type && e.opportunityType !== args.type) return false;
       if (args.branch && e.branch !== args.branch) return false;
       if (args.difficulty && e.difficulty !== args.difficulty) return false;
       if (args.isPremium !== undefined && e.isPremium !== args.isPremium)
         return false;
+      
+      if (args.search) {
+        const searchLower = args.search.toLowerCase();
+        const searchFields = [
+          e.companyName?.toLowerCase() || "",
+          e.roleTitle?.toLowerCase() || "",
+          e.tags?.join(" ").toLowerCase() || "",
+          e.tips?.toLowerCase() || "",
+        ].join(" ");
+        if (!searchFields.includes(searchLower)) return false;
+      }
+      
       return true;
     });
+
+    // Return the results as filtered (trusting DB flags for freemium gating)
+    return filtered;
+  },
+});
+
+/**
+ * Search experiences by company, role, or topic (alias for list with search)
+ */
+export const search = query({
+  args: {
+    q: v.optional(v.string()),
+    type: v.optional(v.string()),
+    difficulty: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    // Reuse the list function logic with search parameter
+    const results = await ctx.db
+      .query("experiences")
+      .withIndex("by_status", (q: any) => q.eq("status", "approved"))
+      .collect();
+
+    const searchLower = args.q?.toLowerCase() || "";
+
+    return results.filter((e) => {
+      if (args.type && e.opportunityType !== args.type) return false;
+      if (args.difficulty && e.difficulty !== args.difficulty) return false;
+      
+      if (searchLower) {
+        const searchFields = [
+          e.companyName?.toLowerCase() || "",
+          e.roleTitle?.toLowerCase() || "",
+          e.tags?.join(" ").toLowerCase() || "",
+          e.tips?.toLowerCase() || "",
+          e.questionsAsked?.join(" ").toLowerCase() || "",
+        ].join(" ");
+        
+        if (!searchFields.includes(searchLower)) return false;
+      }
+      
+      return true;
+    }).sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
+  },
+});
+
+/**
+ * Get distinct companies list for autocomplete
+ */
+export const getCompanies = query({
+  handler: async (ctx) => {
+    const results = await ctx.db
+      .query("experiences")
+      .withIndex("by_status", (q: any) => q.eq("status", "approved"))
+      .collect();
+    
+    const companies = [...new Set(results.map(e => e.companyName).filter(Boolean))];
+    return companies.sort();
   },
 });
 
@@ -321,4 +395,21 @@ export const report = mutation({
       createdAt: Date.now(),
     });
   },
+});
+
+export const fixFreemium = mutation({
+  args: {},
+  handler: async (ctx) => {
+    let results = await ctx.db.query("experiences").collect();
+    results = results.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
+    for (let i = 0; i < results.length; i++) {
+      const exp = results[i];
+      const isFree = i < 5;
+      await ctx.db.patch(exp._id, {
+        isFreePreview: isFree,
+        isPremium: !isFree,
+      });
+    }
+    return `Fixed ${results.length} experiences. Top 5 are now free.`;
+  }
 });

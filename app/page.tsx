@@ -10,6 +10,7 @@ import { ArrowRight, Code2, BookOpen, Target } from "lucide-react";
 import ExperienceCard from "@/components/experience-card";
 import FloatingCards from "@/components/floating-cards";
 import SplitText from "@/components/SplitText";
+import LogoLoop from "@/components/LogoLoop";
 import { useState } from "react";
 
 export default function HomePage() {
@@ -105,12 +106,29 @@ export default function HomePage() {
 
         {/* Company Logos Bar */}
         <div className="container mx-auto px-6 -mt-16 mb-20 relative z-20">
-          <div className="bg-white rounded-[2rem] p-8 md:p-10 shadow-2xl flex flex-wrap items-center justify-between gap-8">
-            <div className="text-xl md:text-2xl font-bold text-black/80 tracking-tighter">Google</div>
-            <div className="text-xl md:text-2xl font-bold text-black/80 tracking-tighter">Amazon</div>
-            <div className="text-xl md:text-2xl font-bold text-black/80 tracking-tighter">Microsoft</div>
-            <div className="text-xl md:text-2xl font-bold text-black/80 tracking-tighter">Meta</div>
-            <div className="text-xl md:text-2xl font-bold text-black/80 tracking-tighter">Goldman Sachs</div>
+          <div className="bg-white rounded-[2rem] p-8 md:p-10 shadow-2xl relative overflow-hidden">
+            <div style={{ height: '50px', position: 'relative' }}>
+              <LogoLoop
+                logos={[
+                  { src: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", alt: "Google" },
+                  { src: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", alt: "Amazon" },
+                  { src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg", alt: "Microsoft" },
+                  { src: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg", alt: "Meta" },
+                  { src: "https://upload.wikimedia.org/wikipedia/commons/6/61/Goldman_Sachs.svg", alt: "Goldman Sachs" },
+                  { src: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg", alt: "IBM" },
+                  { src: "https://upload.wikimedia.org/wikipedia/commons/0/08/Cisco_logo_blue_2016.svg", alt: "Cisco" },
+                  { src: "https://upload.wikimedia.org/wikipedia/commons/b/b1/Tata_Consultancy_Services_Logo.svg", alt: "TCS" }
+                ]}
+                speed={40}
+                direction="left"
+                logoHeight={40}
+                gap={80}
+                hoverSpeed={0}
+                scaleOnHover
+                fadeOut
+                fadeOutColor="#ffffff"
+              />
+            </div>
           </div>
         </div>
 

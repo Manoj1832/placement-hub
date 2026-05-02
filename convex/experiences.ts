@@ -49,8 +49,7 @@ export const list = query({
       if (args.type && e.opportunityType !== args.type) return false;
       if (args.branch && e.branch !== args.branch) return false;
       if (args.difficulty && e.difficulty !== args.difficulty) return false;
-      if (args.isPremium !== undefined && e.isPremium !== args.isPremium)
-        return false;
+      if (args.isPremium !== undefined && e.isPremium !== args.isPremium) return false;
       
       if (args.search) {
         const searchLower = args.search.toLowerCase();
@@ -62,12 +61,30 @@ export const list = query({
         ].join(" ");
         if (!searchFields.includes(searchLower)) return false;
       }
-      
       return true;
     });
 
-    // Return the results as filtered (trusting DB flags for freemium gating)
-    return filtered;
+    // ARCHITECTURE OPTIMIZATION:
+    // Strip out heavy fields that are not needed for the UI cards.
+    // roundsJson, questionsAsked, and experienceNarrative can be huge!
+    return filtered.map((e) => ({
+      _id: e._id,
+      _creationTime: e._creationTime,
+      companyName: e.companyName,
+      roleTitle: e.roleTitle,
+      opportunityType: e.opportunityType,
+      difficulty: e.difficulty,
+      isPremium: e.isPremium,
+      isFreePreview: e.isFreePreview,
+      location: e.location,
+      compensation: e.compensation,
+      year: e.year,
+      month: e.month,
+      totalRounds: e.totalRounds,
+      isVerified: e.isVerified,
+      upvotes: e.upvotes,
+      tags: e.tags, // needed for client-side search
+    }));
   },
 });
 

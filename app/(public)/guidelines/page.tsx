@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useAuth, SignInButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, BookOpen, Shield, Users, Lock, Eye, HandHeart, Spam } from "lucide-react";
+import { ArrowLeft, BookOpen, Shield, Users, Lock, Eye, HandHeart, Ban } from "lucide-react";
 
 export default function GuidelinesPage() {
   const { userId } = useAuth();
@@ -33,7 +33,7 @@ export default function GuidelinesPage() {
       description: "You can submit anonymously. Your identity is never shared without consent. Do not mention names of interviewers."
     },
     {
-      icon: Spam,
+      icon: Ban,
       title: "5. No Spam",
       description: "Do not use this platform for promotional purposes. Reserved for genuine placement experiences only."
     }

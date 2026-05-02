@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useAuth, SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { Github, ArrowLeft } from "lucide-react";
+import { GitBranch as Github, ArrowLeft } from "lucide-react";
 
 export default function GitHubAuditPage() {
   const [githubUrl, setGithubUrl] = useState("");

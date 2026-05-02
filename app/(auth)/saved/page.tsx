@@ -29,7 +29,7 @@ export default function SavedPage() {
       <div className="bg-zinc-950 border-b border-zinc-800">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-xl font-bold text-white">PSG Placement Hub</Link>
-          <UserButton afterSignOutUrl="/" />
+          <UserButton />
         </div>
       </div>
 

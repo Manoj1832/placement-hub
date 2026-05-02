@@ -8,21 +8,20 @@ export const seedExperiences = internalMutation({
   handler: async (ctx, args) => {
     const allExperiences = args.experiences;
 
-    // Track which companies already have a free preview
+    console.log(`Loaded ${allExperiences.length} experiences from JSON files`);
+
     const freePreviewCompanies = new Set<string>();
+    let count = 0;
 
     for (const raw of allExperiences) {
-      // Determine opportunity type
       const typeMap: Record<string, "internship" | "fulltime"> = {
         Summer: "internship",
         Winter: "internship",
         "Full-time": "fulltime",
         PPO: "fulltime",
       };
-      const opportunityType: "internship" | "fulltime" =
-        typeMap[raw.type] || "internship";
+      const opportunityType = typeMap[raw.type] || "internship";
 
-      // Parse application date for year/month
       let year = 2025;
       let month = 1;
       if (raw.application_date) {
@@ -33,19 +32,15 @@ export const seedExperiences = internalMutation({
         }
       }
 
-      // Infer difficulty from round difficulties
       let difficulty: "easy" | "medium" | "hard" = "medium";
       if (raw.rounds) {
         const difficulties = raw.rounds.flatMap(
-          (r: any) =>
-            r.questions?.map((q: any) => q.difficulty?.toLowerCase()) || []
+          (r: any) => r.questions?.map((q: any) => q.difficulty?.toLowerCase()) || []
         );
         if (difficulties.includes("hard")) difficulty = "hard";
-        else if (difficulties.includes("easy") && !difficulties.includes("medium"))
-          difficulty = "easy";
+        else if (difficulties.includes("easy") && !difficulties.includes("medium")) difficulty = "easy";
       }
 
-      // Infer branch from tags or default to CSE
       let branch = "CSE";
       if (raw.tags) {
         const tagStr = raw.tags.join(" ").toLowerCase();
@@ -55,7 +50,6 @@ export const seedExperiences = internalMutation({
         else if (tagStr.includes("it ") || tagStr.includes("#it")) branch = "IT";
       }
 
-      // Build flat round descriptions from structured rounds
       let oaDetails: string | undefined;
       let round1: string | undefined;
       let round2: string | undefined;
@@ -67,33 +61,21 @@ export const seedExperiences = internalMutation({
       if (raw.rounds) {
         let techRoundIdx = 0;
         for (const round of raw.rounds) {
-          // Collect questions
           if (round.questions) {
             for (const q of round.questions) {
-              if (q.question) {
-                allQuestions.push(q.question);
-              }
+              if (q.question) allQuestions.push(q.question);
             }
           }
+          if (round.tips) allTips.push(round.tips);
 
-          // Collect tips
-          if (round.tips) {
-            allTips.push(round.tips);
-          }
-
-          // Build round description
           const roundDesc = buildRoundDescription(round);
-
           const roundType = (round.type || "").toLowerCase();
-          if (
-            roundType.includes("online assessment") ||
-            roundType.includes("coding round")
-          ) {
+
+          if (roundType.includes("online assessment") || roundType.includes("coding round")) {
             oaDetails = roundDesc;
           } else if (roundType === "hr") {
             hrRound = roundDesc;
           } else {
-            // Technical, System Design, Group Discussion, Presentation
             techRoundIdx++;
             if (techRoundIdx === 1) round1 = roundDesc;
             else if (techRoundIdx === 2) round2 = roundDesc;
@@ -102,17 +84,10 @@ export const seedExperiences = internalMutation({
         }
       }
 
-      // Aggregate tips
-      const tipsStr = [
-        ...(raw.key_tips || []),
-        ...allTips,
-      ].join(" | ");
+      const tipsStr = [...(raw.key_tips || []), ...allTips].join(" | ");
 
-      // Determine if this is the free preview for this company
       const isFreePreview = !freePreviewCompanies.has(raw.company);
-      if (isFreePreview) {
-        freePreviewCompanies.add(raw.company);
-      }
+      if (isFreePreview) freePreviewCompanies.add(raw.company);
 
       const now = Date.now();
 
@@ -128,7 +103,7 @@ export const seedExperiences = internalMutation({
         round2,
         round3,
         hrRound,
-        questionsAsked: allQuestions.slice(0, 20), // Cap at 20
+        questionsAsked: allQuestions.slice(0, 20),
         tips: tipsStr || "No specific tips provided.",
         difficulty,
         isAnonymous: true,
@@ -137,8 +112,6 @@ export const seedExperiences = internalMutation({
         isFreePreview,
         status: "approved",
         upvotes: Math.floor(Math.random() * 50) + 5,
-
-        // Rich fields
         compensation: raw.compensation_inr || undefined,
         location: raw.location || undefined,
         workMode: raw.work_mode || undefined,
@@ -148,26 +121,23 @@ export const seedExperiences = internalMutation({
         keyTips: raw.key_tips || undefined,
         mistakesToAvoid: raw.mistakes_to_avoid || undefined,
         tags: raw.tags || undefined,
-        preparationResources: raw.resources_used?.length
-          ? raw.resources_used
-          : undefined,
+        preparationResources: raw.resources_used?.length ? raw.resources_used : undefined,
         preparationTimeWeeks: raw.preparation_time_weeks || undefined,
         overallRating: raw.overall_rating || undefined,
         finalResult: raw.final_result || undefined,
         experienceNarrative: raw.experience_narrative || undefined,
-
         createdAt: now,
         updatedAt: now,
       });
+      count++;
     }
 
-    return { inserted: allExperiences.length };
+    return { inserted: count };
   },
 });
 
 function buildRoundDescription(round: any): string {
   const parts: string[] = [];
-
   parts.push(`**${round.type}** (${round.duration_minutes} mins)`);
   if (round.platform) parts.push(`Platform: ${round.platform}`);
   if (round.result) parts.push(`Result: ${round.result}`);
@@ -185,8 +155,7 @@ function buildRoundDescription(round: any): string {
   }
 
   if (round.tips) parts.push(`\nTips: ${round.tips}`);
-  if (round.round_feedback)
-    parts.push(`Feedback: ${round.round_feedback}`);
+  if (round.round_feedback) parts.push(`Feedback: ${round.round_feedback}`);
 
   return parts.join("\n");
 }

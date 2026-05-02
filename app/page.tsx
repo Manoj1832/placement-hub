@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { UserButton, SignInButton, useAuth } from "@clerk/nextjs";
 import { ArrowRight, Code2, BookOpen, Target } from "lucide-react";
 import ExperienceCard from "@/components/experience-card";
+import FloatingCards from "@/components/floating-cards";
 import { useState } from "react";
 
 export default function HomePage() {
@@ -87,18 +88,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="relative h-[400px] md:h-[500px] flex items-center justify-center animate-in fade-in zoom-in duration-1000">
-              {/* Using standard image or generated 3D illustration */}
-              <div className="relative w-full h-full max-w-lg">
-                 <Image 
-                   src="/hero-3d.png" 
-                   alt="3D Floating Tech Character" 
-                   fill 
-                   className="object-contain drop-shadow-2xl animate-[wiggle_4s_ease-in-out_infinite]"
-                   style={{
-                     animation: 'float 6s ease-in-out infinite'
-                   }}
-                 />
-              </div>
+              <FloatingCards />
             </div>
           </div>
         </section>

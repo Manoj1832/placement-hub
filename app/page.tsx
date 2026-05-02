@@ -9,6 +9,7 @@ import { UserButton, SignInButton, useAuth } from "@clerk/nextjs";
 import { ArrowRight, Code2, BookOpen, Target } from "lucide-react";
 import ExperienceCard from "@/components/experience-card";
 import FloatingCards from "@/components/floating-cards";
+import SplitText from "@/components/SplitText";
 import { useState } from "react";
 
 export default function HomePage() {
@@ -74,9 +75,18 @@ export default function HomePage() {
         <section className="container mx-auto px-6 pt-20 pb-32">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="max-w-xl">
-              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-[1.1]">
-                Really Good Interview and Technical Insights
-              </h1>
+              <SplitText 
+                text="Really Good Interview and Technical Insights"
+                className="text-5xl md:text-6xl font-bold text-white mb-6 leading-[1.1]"
+                delay={30}
+                duration={1.25}
+                ease="power3.out"
+                splitType="words"
+                from={{ opacity: 0, y: 40 }}
+                to={{ opacity: 1, y: 0 }}
+                threshold={0.1}
+                textAlign="left"
+              />
               <p className="text-lg text-white/70 mb-10 leading-relaxed font-light">
                 Finding the right company and role is not always easy, but with this platform you will see that finding the right insights can be easy and fast!
               </p>

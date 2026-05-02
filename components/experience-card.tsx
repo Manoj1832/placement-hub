@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { ThumbsUp, Bookmark, CheckCircle, MapPin, Briefcase, Clock, Users, Lock, Crown } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 
 interface ExperienceCardProps {
   experience: {
@@ -36,15 +37,25 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
   const upvote = useMutation(api.experiences.upvote);
   const toggleSave = useMutation(api.experiences.save);
 
+  const { userId } = useAuth();
+
   const handleUpvote = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!userId) {
+      alert("Please sign in to upvote experiences!");
+      return;
+    }
     upvote({ experienceId: experience._id });
   };
 
   const handleSave = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!userId) {
+      alert("Please sign in to save experiences!");
+      return;
+    }
     toggleSave({ experienceId: experience._id });
   };
 

@@ -3,12 +3,12 @@ import { v } from "convex/values";
 
 async function requireAdmin(ctx: any) {
   const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Unauthorized");
+  if (!identity) return null;
   const user = await ctx.db
     .query("users")
     .withIndex("by_clerk_id", (q: any) => q.eq("clerkId", identity.subject))
     .first();
-  if (!user || user.role !== "admin") throw new Error("Not an admin");
+  if (!user || user.role !== "admin") return null;
   return { identity, user };
 }
 
@@ -25,7 +25,8 @@ async function requireAuth(ctx: any) {
 
 export const getPending = query({
   handler: async (ctx) => {
-    const { user } = await requireAdmin(ctx);
+    const admin = await requireAdmin(ctx);
+    if (!admin) return [];
     return ctx.db
       .query("experiences")
       .withIndex("by_status", (q: any) => q.eq("status", "pending"))
@@ -35,7 +36,8 @@ export const getPending = query({
 
 export const getAll = query({
   handler: async (ctx) => {
-    const { user } = await requireAdmin(ctx);
+    const admin = await requireAdmin(ctx);
+    if (!admin) return [];
     return ctx.db.query("experiences").collect();
   },
 });
@@ -68,7 +70,8 @@ export const reject = mutation({
 
 export const getReports = query({
   handler: async (ctx) => {
-    await requireAdmin(ctx);
+    const admin = await requireAdmin(ctx);
+    if (!admin) return [];
     return ctx.db
       .query("reports")
       .withIndex("by_status", (q: any) => q.eq("status", "open"))
@@ -88,7 +91,8 @@ export const resolveReport = mutation({
 
 export const getBookings = query({
   handler: async (ctx) => {
-    await requireAdmin(ctx);
+    const admin = await requireAdmin(ctx);
+    if (!admin) return [];
     return ctx.db.query("serviceBookings").collect();
   },
 });

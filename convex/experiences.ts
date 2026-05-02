@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { paginationOptsValidator } from "convex/server";
 
 async function requireAuth(ctx: any) {
   const identity = await ctx.auth.getUserIdentity();
@@ -85,6 +86,80 @@ export const list = query({
       upvotes: e.upvotes,
       tags: e.tags, // needed for client-side search
     }));
+  },
+});
+
+/**
+ * Paginated list of approved experiences.
+ * Returns experiences in chunks for faster initial load and infinite scroll.
+ */
+export const paginatedList = query({
+  args: {
+    paginationOpts: paginationOptsValidator,
+    company: v.optional(v.string()),
+    type: v.optional(v.string()),
+    branch: v.optional(v.string()),
+    difficulty: v.optional(v.string()),
+    search: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    // Get all approved experiences
+    let results = await ctx.db
+      .query("experiences")
+      .withIndex("by_status", (q: any) => q.eq("status", "approved"))
+      .collect();
+
+    // Sort by upvotes
+    results = results.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
+
+    // Apply filters
+    const filtered = results.filter((e) => {
+      if (args.company && !e.companyName?.toLowerCase().includes(args.company.toLowerCase())) return false;
+      if (args.type && e.opportunityType !== args.type) return false;
+      if (args.branch && e.branch !== args.branch) return false;
+      if (args.difficulty && e.difficulty !== args.difficulty) return false;
+
+      if (args.search) {
+        const searchLower = args.search.toLowerCase();
+        const searchFields = [
+          e.companyName?.toLowerCase() || "",
+          e.roleTitle?.toLowerCase() || "",
+          e.tags?.join(" ").toLowerCase() || "",
+        ].join(" ");
+        if (!searchFields.includes(searchLower)) return false;
+      }
+      return true;
+    });
+
+    // Manual pagination: slice the results based on cursor
+    const cursor = Number(args.paginationOpts.cursor ?? "0");
+    const numItems = args.paginationOpts.numItems;
+    const page = filtered.slice(cursor, cursor + numItems);
+    const nextCursor = cursor + numItems;
+    const isDone = nextCursor >= filtered.length;
+
+    return {
+      page: page.map((e) => ({
+        _id: e._id,
+        _creationTime: e._creationTime,
+        companyName: e.companyName,
+        roleTitle: e.roleTitle,
+        opportunityType: e.opportunityType,
+        difficulty: e.difficulty,
+        isPremium: e.isPremium,
+        isFreePreview: e.isFreePreview,
+        location: e.location,
+        compensation: e.compensation,
+        year: e.year,
+        month: e.month,
+        totalRounds: e.totalRounds,
+        isVerified: e.isVerified,
+        upvotes: e.upvotes,
+        tags: e.tags,
+      })),
+      isDone,
+      continueCursor: isDone ? null : String(nextCursor),
+    };
   },
 });
 

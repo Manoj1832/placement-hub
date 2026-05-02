@@ -2,13 +2,15 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useCallback, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth, SignInButton } from "@clerk/nextjs";
 import ExperienceCard from "@/components/experience-card";
 import BrowseFilters from "@/components/browse-filters";
-import { Search, Users, Building2, Award, Crown, LogIn, UserPlus } from "lucide-react";
+import { Search, Users, Building2, Award, Crown, LogIn, UserPlus, Loader2 } from "lucide-react";
+
+const PAGE_SIZE = 8;
 
 function BrowseContent() {
   const searchParams = useSearchParams();
@@ -19,16 +21,66 @@ function BrowseContent() {
   
   const [filters, setFilters] = useState<any>({});
   const [localSearch, setLocalSearch] = useState(urlSearch || "");
+  const [cursor, setCursor] = useState<string | null>(null);
+  const [allExperiences, setAllExperiences] = useState<any[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const initialLoadDone = useRef(false);
   
   useEffect(() => {
     if (urlCompany) setFilters({ company: urlCompany });
     if (urlType) setFilters((prev: any) => ({ ...prev, type: urlType }));
   }, [urlCompany, urlType]);
 
-  const experiences = useQuery(api.experiences.list, filters);
+  // Reset when filters change
+  useEffect(() => {
+    setCursor(null);
+    setAllExperiences([]);
+    setHasMore(true);
+    initialLoadDone.current = false;
+  }, [filters]);
+
+  // Paginated query - fetch chunk by chunk
+  const paginationArgs = {
+    paginationOpts: {
+      numItems: PAGE_SIZE,
+      cursor: cursor ?? undefined,
+    },
+    ...filters,
+  };
+
+  const pageResult = useQuery(api.experiences.paginatedList, paginationArgs);
   const stats = useQuery(api.experiences.getStats);
 
-  const filteredExp = experiences?.filter((exp: any) => {
+  // When new page data arrives, append it
+  useEffect(() => {
+    if (pageResult && pageResult.page) {
+      if (!initialLoadDone.current && cursor === null) {
+        // First load
+        setAllExperiences(pageResult.page);
+        initialLoadDone.current = true;
+      } else if (cursor !== null) {
+        // Subsequent loads
+        setAllExperiences(prev => {
+          const existingIds = new Set(prev.map((e: any) => e._id));
+          const newItems = pageResult.page.filter((e: any) => !existingIds.has(e._id));
+          return [...prev, ...newItems];
+        });
+      }
+      setHasMore(!pageResult.isDone);
+      setIsLoadingMore(false);
+    }
+  }, [pageResult, cursor]);
+
+  const loadMore = useCallback(() => {
+    if (pageResult?.continueCursor && !isLoadingMore) {
+      setIsLoadingMore(true);
+      setCursor(pageResult.continueCursor);
+    }
+  }, [pageResult, isLoadingMore]);
+
+  // Client-side search filter on already-loaded data
+  const filteredExp = allExperiences?.filter((exp: any) => {
     if (!localSearch) return true;
     const s = localSearch.toLowerCase();
     return (
@@ -37,6 +89,8 @@ function BrowseContent() {
       exp.tags?.some((t: string) => t.toLowerCase().includes(s))
     );
   });
+
+  const isInitialLoading = !pageResult && allExperiences.length === 0;
 
   return (
     <div className="min-h-screen bg-[#2D1A5C]">
@@ -107,7 +161,12 @@ function BrowseContent() {
           <BrowseFilters onChange={setFilters} />
         </div>
         
-        {filteredExp?.length === 0 ? (
+        {isInitialLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 text-[#00FF7F] animate-spin" />
+            <span className="text-white/70 ml-3">Loading experiences...</span>
+          </div>
+        ) : filteredExp?.length === 0 ? (
           <div className="text-center py-16 bg-[#392070] rounded-xl border border-white/10">
             <Search className="w-12 h-12 text-white/40 mx-auto mb-4" />
             <p className="text-white/80 text-lg">No experiences found</p>
@@ -126,6 +185,32 @@ function BrowseContent() {
                 <ExperienceCard key={exp._id} experience={exp} />
               ))}
             </div>
+            
+            {/* Load More Button */}
+            {hasMore && (
+              <div className="flex justify-center mt-8">
+                <button
+                  onClick={loadMore}
+                  disabled={isLoadingMore}
+                  className="flex items-center gap-2 px-8 py-3 bg-[#392070] hover:bg-[#462888] text-white rounded-xl font-medium border border-white/10 transition disabled:opacity-50 shadow-lg"
+                >
+                  {isLoadingMore ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Loading more...
+                    </>
+                  ) : (
+                    "Load More Experiences"
+                  )}
+                </button>
+              </div>
+            )}
+            
+            {!hasMore && allExperiences.length > PAGE_SIZE && (
+              <p className="text-center text-white/40 text-sm mt-8">
+                You&apos;ve reached the end — {allExperiences.length} experiences loaded
+              </p>
+            )}
           </>
         )}
       </div>
@@ -135,7 +220,7 @@ function BrowseContent() {
 
 export default function BrowsePage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#2D1A5C] flex items-center justify-center"><div className="text-white">Loading...</div></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#2D1A5C] flex items-center justify-center"><Loader2 className="w-8 h-8 text-[#00FF7F] animate-spin" /></div>}>
       <BrowseContent />
     </Suspense>
   );

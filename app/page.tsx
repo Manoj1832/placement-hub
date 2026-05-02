@@ -3,85 +3,127 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserButton, SignInButton, useAuth } from "@clerk/nextjs";
-import { Briefcase, Star, ArrowRight } from "lucide-react";
+import { UserButton, SignInButton, SignUpButton, useAuth } from "@clerk/nextjs";
+import { ArrowRight, Code2, BookOpen, Target } from "lucide-react";
 import ExperienceCard from "@/components/experience-card";
+import { useState } from "react";
 
 export default function HomePage() {
-  const recentExperiences = useQuery(api.experiences.getRecent, { limit: 3 });
+  const recentExperiences = useQuery(api.experiences.getRecent, { limit: 4 });
   const { userId } = useAuth();
-  const stats = useQuery(api.experiences.getStats);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      window.location.href = `/browse?search=${encodeURIComponent(searchQuery)}`;
+    }
+  };
 
   return (
-    <div className="min-h-screen">
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold">PSG Placement Hub</h1>
-          <nav className="flex items-center gap-4">
-            <Link href="/browse" className="text-sm">Browse</Link>
-            <Link href="/guidelines" className="text-sm">Guidelines</Link>
-            {!userId ? (
+    <div className="min-h-screen bg-[#2D1A5C] text-white overflow-hidden selection:bg-[#00FF7F] selection:text-black">
+      {/* Background blobs for wavy effect */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#462888] opacity-50 blur-[100px]" />
+        <div className="absolute top-[20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#392070] opacity-50 blur-[120px]" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-[#241350] opacity-80 blur-[80px]" />
+      </div>
+
+      <header className="container mx-auto px-6 py-6 flex items-center justify-between relative z-10">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 bg-white rounded-sm relative flex items-center justify-center">
+            <div className="w-3 h-3 bg-[#00FF7F] absolute -right-1 -top-1 rounded-sm" />
+          </div>
+          <Link href="/" className="text-xl font-bold tracking-tight text-white ml-2">
+            psg.hub
+          </Link>
+        </div>
+        
+        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white/80">
+          <Link href="/" className="text-white hover:text-[#00FF7F] transition">Home</Link>
+          <Link href="/browse" className="hover:text-[#00FF7F] transition">Browse</Link>
+          <Link href="/guidelines" className="hover:text-[#00FF7F] transition">Guidelines</Link>
+          <Link href="#" className="hover:text-[#00FF7F] transition">Help</Link>
+        </nav>
+
+        <div className="flex items-center gap-6">
+          {!userId ? (
+            <>
               <SignInButton mode="modal">
-                <Button variant="ghost">Sign In</Button>
+                <button className="text-sm font-medium text-white hover:text-white/80 transition hidden md:block">
+                  Sign In
+                </button>
               </SignInButton>
-            ) : (
-              <UserButton />
-            )}
-          </nav>
+              <SignUpButton mode="modal">
+                <button className="text-sm font-semibold bg-[#00FF7F] text-black px-6 py-2.5 rounded-xl hover:bg-[#00e673] transition shadow-[0_0_20px_rgba(0,255,127,0.3)]">
+                  Registration
+                </button>
+              </SignUpButton>
+            </>
+          ) : (
+            <UserButton afterSignOutUrl="/" />
+          )}
         </div>
       </header>
 
-      <main>
-        <section className="py-20 bg-gradient-to-b from-primary/5 to-transparent">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-4xl font-bold mb-4">
-              Your Placement Journey Starts Here
-            </h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Real interview experiences from PSG College students. Get insights into company-specific rounds,
-              questions asked, and tips to crack your dream job.
-            </p>
-            <div className="flex justify-center gap-4">
+      <main className="relative z-10">
+        {/* Hero Section */}
+        <section className="container mx-auto px-6 pt-20 pb-32">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="max-w-xl">
+              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-[1.1]">
+                Really Good Interview and Technical Insights
+              </h1>
+              <p className="text-lg text-white/70 mb-10 leading-relaxed font-light">
+                Finding the right company and role is not always easy, but with this platform you will see that finding the right insights can be easy and fast!
+              </p>
               <Link href="/browse">
-                <Button size="lg">
-                  <Briefcase className="w-5 h-5 mr-2" />
+                <button className="text-base font-semibold bg-[#00FF7F] text-black px-8 py-3.5 rounded-xl hover:bg-[#00e673] transition shadow-[0_0_20px_rgba(0,255,127,0.3)] inline-flex items-center gap-2">
                   Browse Experiences
-                </Button>
-              </Link>
-              <Link href="/submit">
-                <Button variant="outline" size="lg">
-                  <Star className="w-5 h-5 mr-2" />
-                  Share Experience
-                </Button>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </Link>
             </div>
-            
-            {stats && (
-              <div className="flex justify-center gap-8 mt-12 text-sm text-muted-foreground">
-                <div>
-                  <span className="font-bold text-foreground text-xl block">{stats.totalExperiences}</span>
-                  Experiences
-                </div>
-                <div>
-                  <span className="font-bold text-foreground text-xl block">{stats.totalCompanies}</span>
-                  Companies
-                </div>
+            <div className="relative h-[400px] md:h-[500px] flex items-center justify-center animate-in fade-in zoom-in duration-1000">
+              {/* Using standard image or generated 3D illustration */}
+              <div className="relative w-full h-full max-w-lg">
+                 <Image 
+                   src="/hero-3d.png" 
+                   alt="3D Floating Tech Character" 
+                   fill 
+                   className="object-contain drop-shadow-2xl animate-[wiggle_4s_ease-in-out_infinite]"
+                   style={{
+                     animation: 'float 6s ease-in-out infinite'
+                   }}
+                 />
               </div>
-            )}
+            </div>
           </div>
         </section>
 
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-2xl font-bold">Recent Experiences</h3>
-              <Link href="/browse" className="text-sm flex items-center gap-1">
+        {/* Company Logos Bar */}
+        <div className="container mx-auto px-6 -mt-16 mb-20 relative z-20">
+          <div className="bg-white rounded-[2rem] p-8 md:p-10 shadow-2xl flex flex-wrap items-center justify-between gap-8">
+            <div className="text-xl md:text-2xl font-bold text-black/80 tracking-tighter">Google</div>
+            <div className="text-xl md:text-2xl font-bold text-black/80 tracking-tighter">Amazon</div>
+            <div className="text-xl md:text-2xl font-bold text-black/80 tracking-tighter">Microsoft</div>
+            <div className="text-xl md:text-2xl font-bold text-black/80 tracking-tighter">Meta</div>
+            <div className="text-xl md:text-2xl font-bold text-black/80 tracking-tighter">Goldman Sachs</div>
+          </div>
+        </div>
+
+        {/* Recent Experiences */}
+        <section className="py-20 bg-black/20">
+          <div className="container mx-auto px-6">
+            <div className="flex items-center justify-between mb-12">
+              <h3 className="text-3xl font-bold text-white">Recent Experiences</h3>
+              <Link href="/browse" className="text-sm font-medium text-[#00FF7F] flex items-center gap-1 hover:underline">
                 View all <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               {recentExperiences?.map((exp: any) => (
                 <ExperienceCard key={exp._id} experience={exp} />
               ))}
@@ -89,61 +131,15 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="py-16 bg-muted/20">
-          <div className="container mx-auto px-4">
-            <h3 className="text-2xl font-bold text-center mb-12">
-              Why PSG Placement Hub?
-            </h3>
-            <div className="grid gap-8 md:grid-cols-3">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Briefcase className="w-5 h-5" />
-                    Real Experiences
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Learn from actual interview experiences shared by PSG students who cracked top companies.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Star className="w-5 h-5" />
-                    Verified Content
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    All experiences are verified by admins to ensure authenticity and quality.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <ArrowRight className="w-5 h-5" />
-                    Premium Resources
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Access resume templates, GitHub checklists, and company-specific guides.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
       </main>
 
-      <footer className="border-t py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>PSG Placement Hub - Helping PSG students succeed</p>
-        </div>
-      </footer>
+      <style jsx global>{`
+        @keyframes float {
+          0% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(2deg); }
+          100% { transform: translateY(0px) rotate(0deg); }
+        }
+      `}</style>
     </div>
   );
 }

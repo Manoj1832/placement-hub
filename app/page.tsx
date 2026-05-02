@@ -81,7 +81,7 @@ export default function HomePage() {
                 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-[1.1]"
                 delay={30}
                 duration={1.25}
-                ease="power3.out"
+                ease={[0.215, 0.61, 0.355, 1]}
                 splitType="words"
                 from={{ opacity: 0, y: 40 }}
                 to={{ opacity: 1, y: 0 }}

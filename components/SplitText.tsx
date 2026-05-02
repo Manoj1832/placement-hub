@@ -23,7 +23,7 @@ export default function SplitText({
   className = '',
   delay = 50,
   duration = 1.25,
-  ease = [0.215, 0.61, 0.355, 1], // similar to power3.out
+  ease = [0.215, 0.61, 0.355, 1],
   splitType = 'chars',
   from = { opacity: 0, y: 40 },
   to = { opacity: 1, y: 0 },
@@ -56,7 +56,10 @@ export default function SplitText({
     hidden: from,
     visible: {
       ...to,
-      transition: { duration, ease },
+      transition: {
+        duration,
+        ease: Array.isArray(ease) ? ease : [0.215, 0.61, 0.355, 1],
+      },
     },
   };
 

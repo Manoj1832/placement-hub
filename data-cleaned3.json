@@ -1,0 +1,807 @@
+[
+  {
+    "company": "Amazon",
+    "role": "SDE Intern",
+    "type": "Summer",
+    "duration": "2 Months",
+    "work_mode": "On-site",
+    "location": "Bangalore",
+    "compensation_inr": 110000,
+    "application_date": "10/17/2024",
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 0,
+    "total_rounds": 2,
+    "key_tips": [
+      "Know every detail of the projects mentioned in the resume."
+    ],
+    "mistakes_to_avoid": [
+      "Don't hesitate to ask doubts that are valid."
+    ],
+    "tags": ["#amazon", "#sde intern", "#summer"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 60,
+        "platform": "HackerRank",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": null,
+        "technical_questions": [],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": "Chime",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Discussing about the project works for most of the time and the technical questions were asked at the last 15 minutes. Prepare accordingly.",
+        "technical_questions": [
+          {
+            "question": "Given an expression string s, write a program to examine whether the pairs and the orders of '{', '}', '(', ')', '[', ']' are correct in the given expression.",
+            "difficulty": "Easy",
+            "topics": ["Stack", "String"],
+            "solution": "Using stack to ensure that every opening has a matching closing."
+          },
+          {
+            "question": "Given an array of intervals, merge all overlapping intervals, and return the array having only non-overlapping intervals.",
+            "difficulty": "Easy",
+            "topics": ["Arrays", "Sorting"],
+            "solution": "Merge overlapping intervals after sorting and comparing."
+          }
+        ],
+        "behavioral_questions": []
+      }
+    ]
+  },
+  {
+    "company": "KPMG",
+    "role": "Analyst",
+    "department": "Digital Platforms - KPMG India",
+    "type": "Full-time",
+    "duration": "6 Month Internship to FTE (performance basis)",
+    "work_mode": "Hybrid",
+    "compensation_inr": 20000,
+    "application_date": "08/23/2025",
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 4,
+    "resources_used": ["GFG", "Indiabix", "LeetCode"],
+    "total_rounds": 5,
+    "key_tips": [
+      "Speak confidently with clarity, ask sensible questions to the interviewers, establish your fitment for the company at all opportunities."
+    ],
+    "mistakes_to_avoid": [
+      "Do not try to explain something you aren't confident about; instead acknowledge the gap and let the interviewer know that you'll look into the specific topic/question.",
+      "Do not interrupt, understand the question clearly and then answer, try to come across as prepared and confident."
+    ],
+    "tags": ["#kpmg", "#analyst", "#digital platforms - kpmg india", "#full-time"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 60,
+        "platform": null,
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Initial resume-based shortlist from pool of opted-in students. OA was 60 minutes. Sections included English proficiency and general aptitude (quantitative + logical reasoning). Around 99 students shortlisted out of ~200.",
+        "technical_questions": [],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 2,
+        "type": "Group Discussion",
+        "duration_minutes": 15,
+        "platform": "Teams",
+        "result": "Selected",
+        "experience_rating": "4/5",
+        "tips": "Topic: 'Electric Cars in India'. Try to speak early or as the last person summarizing all points. Offer your own unique perspective with clear examples. Do not interrupt others. Specify the name of other participants and add to their points. Keep the point concise and deliver it clearly with confidence. How many times you speak doesn't matter much but making a valuable point and delivering it well does.",
+        "technical_questions": [],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 3,
+        "type": "Technical",
+        "duration_minutes": 15,
+        "platform": "Teams",
+        "result": "Selected",
+        "experience_rating": "4/5",
+        "tips": "Mostly behavioral + resume-based questions. Questions around previous internship role and projects were asked. Communication and clarity was evaluated. Prepare on all projects thoroughly using STAR format. Case study based questions to find a tech solution for a business problem might be asked.",
+        "technical_questions": [],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 4,
+        "type": "Technical",
+        "duration_minutes": 15,
+        "platform": "Teams",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Make your interests and strengths clear during the introduction to steer the interview in a comfortable direction. Always address why something was done while explaining. Try to break down explanations into parts and be clear.",
+        "technical_questions": [
+          {
+            "question": "Deep Learning + GenAI concepts: DNN, backpropagation, gradients, GANs, VAEs. Also discussed AI trends (AGI vs EGI).",
+            "difficulty": null,
+            "topics": ["Deep Learning", "GenAI", "DNN", "Backpropagation", "GANs", "VAEs", "AGI", "EGI"],
+            "solution": null
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 5,
+        "type": "HR",
+        "duration_minutes": 10,
+        "platform": "Teams",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Speak confidently and use terms from the job description/company description/pre-placement talk that fit you. Students were eliminated even in the final HR round.",
+        "technical_questions": [],
+        "behavioral_questions": [
+          "Why KPMG?",
+          "What are your strengths?",
+          "How do you approach learning?",
+          "Are you flexible with hybrid or fully on-site work?",
+          "Are you open to relocate?",
+          "What are your long-term goals?",
+          "Are you willing to join full-time if a PPO is extended?"
+        ]
+      }
+    ]
+  },
+  {
+    "company": "Mindsprint",
+    "role": "Data Engineer",
+    "type": "Full-time",
+    "duration": "6 months + FTE",
+    "work_mode": "On-site",
+    "application_date": "08/26/2025",
+    "result_date": "08/29/2025",
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 1,
+    "total_rounds": 3,
+    "key_tips": [
+      "Be strong in basics.",
+      "Have regular coding practice."
+    ],
+    "mistakes_to_avoid": [
+      "When attending online assessment, try to concentrate on coding part first and then go for MCQs."
+    ],
+    "tags": ["#mindsprint", "#data engineer", "#cse", "#full-time"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 110,
+        "platform": null,
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "For first round, concentrate on SQL and be able to solve the programming question which is quite easy.",
+        "technical_questions": [
+          {
+            "question": "Given size of square matrix N, elements of square matrix and the X value to find, note the index (i and j), add i+j to get sum, circularly rotate the row index downward (column unchanged), return sum of digits of element at new index.",
+            "difficulty": "Easy",
+            "topics": ["2D Array", "Modular Arithmetic"],
+            "solution": "Find X in matrix, note index i=1,j=2. sum=i+j=3. new_i=(i+sum)%n=(1+3)%3=1. A[new_i][j]=66. Digit sum=6+6=12."
+          },
+          {
+            "question": "Given a 1D array of N elements, create a new array by concatenating consecutive 2 elements to form a single element. Return the smallest element from the new array.",
+            "difficulty": "Easy",
+            "topics": ["Array", "String"],
+            "solution": "Given [37,11,34,91,87], new_array=[3711,3491,87]. Smallest=87."
+          },
+          {
+            "question": "Given products table (productId, productName, cost, stockLeft), return the sum of cost of all products where stock >= 0.",
+            "difficulty": "Easy",
+            "topics": ["SQL"],
+            "solution": "SELECT SUM(cost) FROM products WHERE stockLeft >= 0;"
+          },
+          {
+            "question": "Given Customer table (Cid, FName, LName, Email, PhoneNo), return FName, LName, PhoneNo where 2 or more customers share the same PhoneNo.",
+            "difficulty": "Medium",
+            "topics": ["SQL"],
+            "solution": "SELECT FName, LName, PhoneNo FROM Customer WHERE PhoneNo IN (SELECT PhoneNo FROM Customer GROUP BY PhoneNo HAVING COUNT(*) >= 2);"
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 39,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Don't mention things which you have no or little knowledge about in the resume; questions in this round are purely based on things mentioned in the resume.",
+        "technical_questions": [
+          {
+            "question": "Self-introduction, then write a program to reverse a string. Then questions around projects and tech stacks used, contributions, and why certain tech stacks were chosen.",
+            "difficulty": "Medium",
+            "topics": ["Projects", "Tech Stack", "DSA", "String"],
+            "solution": "Reverse string using a loop; project questions require thorough preparation on resume projects."
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 3,
+        "type": "HR",
+        "duration_minutes": 25,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Try to answer situational questions in a clear manner. Always do research about the company before the HR interview.",
+        "technical_questions": [],
+        "behavioral_questions": [
+          "Tell me about yourself.",
+          "Tell me about your family.",
+          "Are you flexible with any location?",
+          "Have you done any research about the company? Explain about the company.",
+          "Managerial Q1: Create a scenario and explain how you handle Time Management.",
+          "Managerial Q2: How do you make decisions in critical times?"
+        ]
+      }
+    ]
+  },
+  {
+    "company": "Mindsprint",
+    "role": "Junior Data Engineer",
+    "type": "Full-time",
+    "duration": "6 months",
+    "work_mode": "On-site",
+    "location": "Chennai, India",
+    "compensation_inr": 35000,
+    "application_date": "08/22/2025",
+    "result_date": "08/29/2025",
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 1,
+    "resources_used": ["LeetCode", "Neetcode", "W3 Schools"],
+    "total_rounds": 3,
+    "key_tips": [
+      "Know Your Resume: Be ready to explain projects, skills, and contributions in detail.",
+      "Revise Core Concepts: Focus on coding, data structures, algorithms, databases, and relevant tech stacks.",
+      "Practice Coding: Solve problems on arrays, strings, loops, recursion, and SQL queries.",
+      "Communicate Clearly: Explain your thought process while coding or answering questions.",
+      "Behavioral Preparation: Use the STAR method for teamwork, conflict, and challenge-related questions.",
+      "Time Management: During assessments or coding rounds, allocate time wisely.",
+      "Justify Your Choices: Be ready to explain why you chose specific technologies or approaches.",
+      "Stay Calm and Confident: Maintain a positive attitude and professional demeanor throughout."
+    ],
+    "mistakes_to_avoid": [
+      "Not Knowing Your Resume: Failing to explain projects, roles, or technologies listed.",
+      "Overconfidence or Dishonesty: Exaggerating skills or experience can backfire.",
+      "Poor Communication: Speaking unclearly, mumbling, or not explaining thought processes.",
+      "Ignoring Time Management: Spending too long on one question during coding or assessments.",
+      "Lack of Preparation: Not revising core concepts, coding problems, or project details.",
+      "Negative Attitude: Complaining about past experiences or showing frustration.",
+      "Not Asking Questions: Missing the chance to show interest by asking insightful questions.",
+      "Skipping Testing or Debugging: Submitting code without checking for errors or edge cases."
+    ],
+    "tags": ["#mindsprint", "#junior data engineer", "#computer science and engineering", "#full-time", "#python", "#c", "#java", "#react", "#full stack web development"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 110,
+        "platform": "Hirepro",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Understand the format (coding, aptitude, logical reasoning, technical MCQs). Manage time wisely. Revise DSA and programming fundamentals. Practice previous questions. Read carefully and review before submission.",
+        "technical_questions": [
+          {
+            "question": "Given N×N matrix and value X, locate X, note index i,j. Circularly rotate row index downward within same column. Return sum of digits of element at new index.",
+            "difficulty": "Easy",
+            "topics": ["Arrays", "2D Arrays", "Indexing", "Modular Arithmetic", "Mathematics"],
+            "solution": "Find X row by row, record i,j. new_i=(i+1)%N. Return digit sum of element at (new_i,j)."
+          },
+          {
+            "question": "Given 1D array of N elements, create new array by concatenating consecutive pairs. Return the smallest element from the new array.",
+            "difficulty": "Medium",
+            "topics": ["Arrays", "String Manipulation", "Minimum Element Search"],
+            "solution": "Concatenate A[i] and A[i+1] as strings or mathematically. Find minimum in resulting array."
+          },
+          {
+            "question": "Given Customer table (Cid, FName, LName, Email, PhoneNo), return FName, LName, PhoneNo where 2 or more customers share the same PhoneNo.",
+            "difficulty": "Medium",
+            "topics": ["SQL"],
+            "solution": "SELECT FName, LName, PhoneNo FROM Customer WHERE PhoneNo IN (SELECT PhoneNo FROM Customer GROUP BY PhoneNo HAVING COUNT(*) >= 2);"
+          },
+          {
+            "question": "Given products table (productId, productName, cost, stockLeft), return sum of cost where stockLeft >= 0.",
+            "difficulty": "Medium",
+            "topics": ["SQL"],
+            "solution": "SELECT SUM(cost) AS total_cost FROM products WHERE stockLeft >= 0;"
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 50,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "4/5",
+        "round_feedback": "Demonstrated good problem-solving skills and clear understanding of core concepts, with well-structured explanations for project contributions.",
+        "tips": "Focus on clearly explaining your projects, contributions, and technologies used. Revise core concepts: DSA, databases, frameworks. Think aloud while solving problems. Be prepared to debug, optimize, and justify tech stack choices.",
+        "technical_questions": [
+          {
+            "question": "Self-introduction, then reverse a string without using built-in functions or string slicing. Then project-based questions on tech stack choices, contributions, and decision-making.",
+            "difficulty": "Medium",
+            "topics": ["Projects", "Tech Stack", "DSA", "String"],
+            "solution": "Iterate through string, prepend each character to result string to reverse it."
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 3,
+        "type": "HR",
+        "duration_minutes": 20,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "round_feedback": "Demonstrated strong understanding of projects, and clearly explained project contributions with confidence.",
+        "tips": "Know yourself and your resume thoroughly. Use STAR method for behavioral questions. Show positive attitude and willingness to learn.",
+        "technical_questions": [],
+        "behavioral_questions": [
+          "Tell me about yourself.",
+          "How do you handle stress or tight deadlines?",
+          "What are your strengths and weaknesses?",
+          "What role do you prefer in a team — leader or contributor — and why?"
+        ]
+      }
+    ]
+  },
+  {
+    "company": "SAP",
+    "role": "iXp Intern",
+    "type": "Summer",
+    "duration": "2 months",
+    "work_mode": "On-site",
+    "location": "Bangalore",
+    "compensation_inr": 35000,
+    "application_date": "08/19/2024",
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 8,
+    "total_rounds": 3,
+    "key_tips": [
+      "Be confident on yourself."
+    ],
+    "mistakes_to_avoid": [
+      "Don't hesitate to ask clarifying questions to the interviewer."
+    ],
+    "tags": ["#sap", "#ixp intern", "#summer"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": null,
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Be confident on what is there in your resume.",
+        "technical_questions": [
+          {
+            "question": "Questions related to projects in resume. DSA: Edit Distance, Kadane's Algorithm. Basics of Machine Learning (since ML project was included). Puzzles from GeeksForGeeks. Questions on CS fundamentals.",
+            "difficulty": "Medium",
+            "topics": ["Projects", "DSA", "Edit Distance", "Kadane's Algorithm", "Machine Learning", "CS Fundamentals", "Puzzles"],
+            "solution": null
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 58,
+        "platform": null,
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Ask clarifying questions. Be confident on your resume.",
+        "technical_questions": [
+          {
+            "question": "Questions related to Semaphores and Mutex. Given a database table, normalize it (DBMS). Puzzles from GFG. Questions related to projects in the resume.",
+            "difficulty": "Medium",
+            "topics": ["OS", "Semaphores", "Mutex", "DBMS", "Normalization", "Puzzles", "Projects"],
+            "solution": null
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 3,
+        "type": "HR",
+        "duration_minutes": 45,
+        "platform": null,
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Be confident on your resume. Try to have a positive attitude.",
+        "technical_questions": [],
+        "behavioral_questions": [
+          "Tell me about yourself.",
+          "Behavioral questions (general)."
+        ]
+      }
+    ]
+  },
+  {
+    "company": "Societe Generale",
+    "role": "Software Engineer",
+    "type": "Full-time",
+    "duration": "6 months + FTE",
+    "work_mode": "On-site",
+    "application_date": "07/19/2025",
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 16,
+    "total_rounds": 4,
+    "key_tips": [
+      "Round 1: Practice aptitude daily on IndiaBix, revise core subjects (OS, DBMS, OOPs, Networks), regular LeetCode + Striver's DSA Sheet. Time management was key.",
+      "Round 2: Explain projects clearly, revise OS scheduling, OOPs pillars, DBMS, cloud basics. Coding questions from Trees, DP, Arrays — explain brute-to-optimal with dry runs.",
+      "Round 3: Communicate confidently about background and projects, explain one project deeply, tackle puzzles by focusing on approach, ask smart questions.",
+      "Round 4: Answer positively and genuinely about salary, shifts, location, family, and future goals."
+    ],
+    "mistakes_to_avoid": [
+      "Spent too much time on one question.",
+      "Didn't practice under timed conditions.",
+      "Ignored basic aptitude and theory MCQs.",
+      "Skipped explaining brute force before optimal."
+    ],
+    "tags": ["#societe generale", "#software engineer", "#full-time"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 60,
+        "platform": "Unstop",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Mix of aptitude MCQs, technical MCQs (OS, DBMS, OOPs), and 2 coding problems (easy to medium). Time management is crucial. Practice on LeetCode, Striver's Sheet, and IndiaBix.",
+        "technical_questions": [],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 80,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Present projects in chronological order to highlight growth. Revise OS, OOPs, DBMS, cloud basics. For coding: explain brute force and optimal approaches with dry runs. Be honest if you don't know something.",
+        "technical_questions": [
+          {
+            "question": "Check if a binary tree is symmetric.",
+            "difficulty": "Medium",
+            "topics": ["Trees", "Recursion"],
+            "solution": "Recursive approach checking mirror symmetry."
+          },
+          {
+            "question": "Dice Throw — Dynamic Programming problem.",
+            "difficulty": "Medium",
+            "topics": ["Dynamic Programming"],
+            "solution": "DP approach counting number of ways to get a target sum with given dice and faces."
+          },
+          {
+            "question": "Maximum Subarray problem (Kadane's Algorithm).",
+            "difficulty": "Easy",
+            "topics": ["Arrays", "Dynamic Programming", "Kadane's Algorithm"],
+            "solution": "Track current and global max subarray sum using Kadane's Algorithm."
+          },
+          {
+            "question": "OS: Page scheduling algorithms. OOPs: abstraction, encapsulation, inheritance, polymorphism. DBMS & Cloud Computing: basic conceptual questions.",
+            "difficulty": "Medium",
+            "topics": ["OS", "OOPs", "DBMS", "Cloud Computing"],
+            "solution": null
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 3,
+        "type": "Technical (Managerial)",
+        "duration_minutes": 60,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Focuses on communication, observation, and problem-solving. Speak confidently about background and projects. Explain one project deeply. Tackle puzzles by explaining the approach even if unable to fully solve. Ask prepared questions about the company.",
+        "technical_questions": [
+          {
+            "question": "Two puzzles to test problem-solving skills.",
+            "difficulty": "Medium",
+            "topics": ["Puzzles"],
+            "solution": "Explain approach clearly even if unable to fully solve."
+          }
+        ],
+        "behavioral_questions": [
+          "Tell me about yourself, family background, areas of interest.",
+          "Behavioral questions on handling different situations."
+        ]
+      },
+      {
+        "round_number": 4,
+        "type": "HR",
+        "duration_minutes": 20,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Focused on preferences, career goals, salary breakup, shift willingness, location preference. Keep answers positive and genuine.",
+        "technical_questions": [],
+        "behavioral_questions": [
+          "Why SocGen?",
+          "Where do you see yourself in five years?",
+          "Are you willing to work in shifts?",
+          "What is your preferred location?",
+          "Questions about family background and areas of interest."
+        ]
+      }
+    ]
+  },
+  {
+    "company": "Verizon",
+    "role": "Software Developer",
+    "type": "Full-time",
+    "duration": "6 months internship + FTE",
+    "work_mode": "On-site",
+    "location": "Chennai, India",
+    "compensation_inr": 900000,
+    "application_date": "08/18/2025",
+    "result_date": "08/19/2025",
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 9,
+    "resources_used": ["LeetCode", "GeeksforGeeks", "Striver's SDE Sheet"],
+    "total_rounds": 5,
+    "key_tips": [
+      "Make sure you are able to explain everything you mentioned in your resume.",
+      "Be honest and confident.",
+      "Take time to prepare and do not stress yourself.",
+      "Refer to previous interview experiences posted on various social media platforms."
+    ],
+    "mistakes_to_avoid": [
+      "Do not go into an interview without researching about the company as most interview rounds end with questions about the company.",
+      "Do not mention anything in your resume that you are not confident about."
+    ],
+    "tags": ["#verizon", "#software developer", "#cse", "#full-time", "#python", "#c", "#c++", "#java", "#dbms", "#sql", "#html", "#css"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 90,
+        "platform": null,
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Prepare with a good mix of aptitude, reasoning, AI/ML concepts, and simple to moderate coding problems on strings and arrays.",
+        "technical_questions": [
+          {
+            "question": "Section 1: 30 questions on Generative AI and Large Language Models in 30 minutes.",
+            "difficulty": "Medium",
+            "topics": ["Generative AI", "Large Language Models"],
+            "solution": null
+          },
+          {
+            "question": "Section 2: Language skills — correct spelling, fill in the blanks, appropriate word for a given definition.",
+            "difficulty": "Medium",
+            "topics": ["Vocabulary", "Grammar", "Spelling"],
+            "solution": "Focus on grammar and context for fill-in-the-blanks; use elimination for tricky options."
+          },
+          {
+            "question": "Section 3 - Program 1: Given a sentence, reverse each word while keeping word order the same.",
+            "difficulty": "Easy",
+            "topics": ["Strings"],
+            "solution": "Split sentence into words, reverse each word individually, then join with spaces."
+          },
+          {
+            "question": "Section 3 - Program 2: Given an array of integers, find the sum of all prime numbers in the array.",
+            "difficulty": "Easy",
+            "topics": ["Arrays", "Mathematics"],
+            "solution": "Iterate through array, check if each element is prime using a helper function, add to running sum."
+          },
+          {
+            "question": "Section 4 - Gamified Round: Pattern-based questions testing logical reasoning and problem-solving. Unlock and solve as many levels as possible within the given time.",
+            "difficulty": "Medium",
+            "topics": ["Pattern Recognition", "Logical Reasoning", "Inductive Reasoning"],
+            "solution": null
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 2,
+        "type": "Group Discussion",
+        "duration_minutes": 30,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Structure your points logically: start with a brief definition, then pros, cons, and examples. Listen carefully to others and contribute by adding your own perspective.",
+        "technical_questions": [
+          {
+            "question": "GD Topic: Hybrid vs Online Mode — in Schools or Offices.",
+            "difficulty": "Medium",
+            "topics": ["Group Discussion"],
+            "solution": "Prepare key points, pros, cons; present clearly and respond to others' viewpoints."
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 3,
+        "type": "Case Study",
+        "duration_minutes": 30,
+        "platform": null,
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Learn about different AI tools and different types of prompt engineering.",
+        "technical_questions": [
+          {
+            "question": "AI Prompt Evaluation Round: Five problem statements provided; choose one and write an effective prompt for it.",
+            "difficulty": "Medium",
+            "topics": ["AI", "Prompt Engineering"],
+            "solution": "Choose the problem statement you are most confident about and draft a clear, specific prompt."
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 4,
+        "type": "Technical",
+        "duration_minutes": 30,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Be confident when answering questions about your projects. Clearly explain your approach, decisions, and results.",
+        "technical_questions": [
+          {
+            "question": "Questions based only on projects mentioned in the resume (Python, AI, ML projects).",
+            "difficulty": "Medium",
+            "topics": ["Python", "AI", "ML", "Projects"],
+            "solution": "Explain methodology, technologies used, challenges faced, how they were solved, and specific results."
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 5,
+        "type": "HR",
+        "duration_minutes": 10,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Be honest and confident when answering these questions.",
+        "technical_questions": [],
+        "behavioral_questions": [
+          "Self Introduction.",
+          "Family background.",
+          "What do you know about the company?",
+          "Why did you choose this company?"
+        ]
+      }
+    ]
+  },
+  {
+    "company": "Workday",
+    "role": "SDE",
+    "type": "Full-time",
+    "duration": "6 months internship + FTE",
+    "work_mode": "On-site",
+    "location": "Chennai, India",
+    "compensation_inr": 2300000,
+    "application_date": "08/01/2025",
+    "result_date": "08/06/2025",
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 4,
+    "total_rounds": 4,
+    "key_tips": [
+      "Be thorough with your projects and tech stack.",
+      "Start with brute force, then move toward the optimal solution.",
+      "Revise DSA topics and solve LeetCode daily."
+    ],
+    "mistakes_to_avoid": [
+      "Freezing if only brute force comes to mind — it's a valid start.",
+      "Underestimating HR rounds."
+    ],
+    "tags": ["#workday", "#sde", "#computer science and engineering", "#full-time"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 120,
+        "platform": "HackerRank",
+        "result": "Selected",
+        "experience_rating": "4/5",
+        "tips": "Do LeetCode problems daily and revise DSA topics.",
+        "technical_questions": [
+          {
+            "question": "Print even length words in a string.",
+            "difficulty": "Easy",
+            "topics": ["Strings"],
+            "solution": null
+          },
+          {
+            "question": "Minimum Degree of a Connected Trio in a Graph.",
+            "difficulty": "Hard",
+            "topics": ["Graph"],
+            "solution": null
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 40,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Start with a brute-force solution, then work toward optimizing it. Think about which data structure could make the solution more efficient.",
+        "technical_questions": [
+          {
+            "question": "Given a target string t and an array of strings arr, determine which strings in arr are exactly one edit distance apart from t.",
+            "difficulty": "Medium",
+            "topics": ["Strings", "Edit Distance", "DSA"],
+            "solution": null
+          },
+          {
+            "question": "React-based and Python-based conceptual questions.",
+            "difficulty": "Medium",
+            "topics": ["React", "Python"],
+            "solution": null
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 3,
+        "type": "HR",
+        "duration_minutes": 30,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "The questions you ask the interviewer should be unique and thoughtful, highlighting your interests and showing what makes you stand out.",
+        "technical_questions": [
+          {
+            "question": "Questions about projects worked on and the tech stack used.",
+            "difficulty": "Easy",
+            "topics": ["Projects", "Tech Stack"],
+            "solution": null
+          }
+        ],
+        "behavioral_questions": [
+          "Which project did you like the most?",
+          "Which project did you dislike?",
+          "Tell me a bit about yourself.",
+          "Do you have any questions for us?"
+        ]
+      },
+      {
+        "round_number": 4,
+        "type": "HR",
+        "duration_minutes": 20,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Each interview round carries weight. Sometimes even a single question — whether asked by the interviewer or by you — can influence the final decision.",
+        "technical_questions": [],
+        "behavioral_questions": [
+          "Questions about Chennai (company location) and comfort with working there.",
+          "Do you have any questions for us?"
+        ]
+      }
+    ]
+  }
+]

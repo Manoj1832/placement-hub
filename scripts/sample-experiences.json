@@ -1,0 +1,360 @@
+[
+  {
+    "company": "Amazon",
+    "role": "SDE Intern",
+    "type": "Summer",
+    "duration": "2 Months",
+    "work_mode": "On-site",
+    "location": "Bangalore",
+    "compensation_inr": 110000,
+    "application_date": "10/17/2024",
+    "result_date": null,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 0,
+    "resources_used": [],
+    "total_rounds": 2,
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 60,
+        "platform": "Hackerrank",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Discussing about the project works for most of the time and the technical questions were asked at the last 15 minutes. Prepare accordingly.",
+        "technical_questions": [
+          {
+            "question": "Given an expression string s, examine whether the pairs and orders of {, }, (, ), [, ] are correct.",
+            "difficulty": "Easy",
+            "topics": [
+              "Stack",
+              "Strings"
+            ],
+            "solution": "Using stack to ensure every opening has a matching closing.",
+            "leetcode_url": null
+          },
+          {
+            "question": "Given an array of intervals, merge all overlapping intervals and return the array having only non-overlapping intervals.",
+            "difficulty": "Easy",
+            "topics": [
+              "Arrays",
+              "Sorting"
+            ],
+            "solution": "Merge overlapping intervals after sorting and comparing.",
+            "leetcode_url": "https://leetcode.com/problems/merge-intervals/"
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": "Chime",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Discussing about the project works for most of the time and the technical questions were asked at the last 15 minutes. Prepare accordingly.",
+        "technical_questions": [],
+        "behavioral_questions": []
+      }
+    ],
+    "key_tips": [
+      "Know every detail of the projects mentioned in the resume."
+    ],
+    "mistakes_to_avoid": [
+      "Don't hesitate to ask doubts that are valid."
+    ],
+    "tags": [
+      "#amazon",
+      "#sde intern",
+      "#summer"
+    ]
+  },
+  {
+    "company": "Amazon",
+    "role": "Software Development Engineer Intern",
+    "type": "Summer",
+    "duration": "2 months",
+    "work_mode": "On-site",
+    "location": "Chennai, India",
+    "compensation_inr": 110000,
+    "application_date": "11/10/2024",
+    "result_date": "11/22/2024",
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 16,
+    "resources_used": [
+      "Leetcode",
+      "Codechef",
+      "Striver SDE Sheet"
+    ],
+    "total_rounds": 2,
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": "Hackerrank",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "No behavioral questions.",
+        "technical_questions": [
+          {
+            "question": "Given an array, output the cumulative sum (indirectly specified in the problem).",
+            "difficulty": "Easy",
+            "topics": [
+              "Arrays",
+              "Math"
+            ],
+            "solution": "Input: [1,2,5,6] → Output: 26 (sum of all prefix sums)",
+            "leetcode_url": null
+          },
+          {
+            "question": "Based on the Prefix and Suffix Max Array.",
+            "difficulty": "Medium",
+            "topics": [
+              "Arrays",
+              "Prefix Sum"
+            ],
+            "solution": "Build prefix and suffix arrays and simultaneously traverse both.",
+            "leetcode_url": null
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": "Amazon Chime",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "No behavioral questions. Only self-intro is asked.",
+        "technical_questions": [
+          {
+            "question": "Given energy levels, decay rates, and a minimum threshold for magical stones, return the maximum time the shield will survive.",
+            "difficulty": "Medium",
+            "topics": [
+              "Arrays"
+            ],
+            "solution": "Logical-based approach.",
+            "leetcode_url": null
+          },
+          {
+            "question": "Given a grid with unblocked paths, blocked paths, and traps, return the shortest path to the destination.",
+            "difficulty": "Medium",
+            "topics": [
+              "BFS",
+              "Graph"
+            ],
+            "solution": "Slight variation of Dijkstra's algorithm to accommodate traps.",
+            "leetcode_url": null
+          }
+        ],
+        "behavioral_questions": []
+      }
+    ],
+    "key_tips": [
+      "Focus on explaining the solution instead of directly coding. Make sure the interviewer understands your approach before you start coding."
+    ],
+    "mistakes_to_avoid": [
+      "Try to be open-minded with the interviewer and explain all the approaches you thought for the particular problem."
+    ],
+    "tags": [
+      "#amazon",
+      "#software development engineer intern",
+      "#computer science and engineering",
+      "#summer"
+    ]
+  },
+  {
+    "company": "AMD",
+    "role": "Software Engineer",
+    "type": "PPO",
+    "duration": "6 months",
+    "work_mode": "On-site",
+    "location": "Bangalore",
+    "compensation_inr": 40000,
+    "application_date": "8/21/2025",
+    "result_date": null,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 24,
+    "resources_used": [
+      "Leetcode",
+      "GeeksForGeeks",
+      "StriverSheet",
+      "MediumBlogs",
+      "CloudFlare for CN"
+    ],
+    "total_rounds": 4,
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 90,
+        "platform": "Geekd",
+        "result": "Selected",
+        "experience_rating": "3/5",
+        "tips": "Strong understanding of Computer fundamentals.",
+        "technical_questions": [
+          {
+            "question": "MCQ",
+            "difficulty": "Medium",
+            "topics": [
+              "Aptitude",
+              "OS",
+              "COA",
+              "Microprocessor"
+            ],
+            "leetcode_url": null
+          },
+          {
+            "question": "String manipulation",
+            "difficulty": "Medium",
+            "topics": [
+              "Strings"
+            ],
+            "leetcode_url": null
+          },
+          {
+            "question": "Find triplets satisfying a custom condition",
+            "difficulty": "Medium",
+            "topics": [
+              "Arrays"
+            ],
+            "leetcode_url": null
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Explain approach on whiteboard; think aloud; write code on paper without IDE; consider edge cases; be strong in one language and know its internals.",
+        "technical_questions": [
+          {
+            "question": "Delete a node with given value in a singly linked list; follow-up on memory management and memory leaks.",
+            "difficulty": "Easy",
+            "topics": [
+              "Linked List"
+            ],
+            "leetcode_url": null
+          },
+          {
+            "question": "Given a circular linked list, delete every kth node until a single node remains.",
+            "difficulty": "Medium",
+            "topics": [
+              "Linked List"
+            ],
+            "leetcode_url": null
+          },
+          {
+            "question": "Lifecycle of objects in heap.",
+            "difficulty": "Medium",
+            "topics": [
+              "Java Internals",
+              "Memory Management"
+            ],
+            "solution": "Discussed young generation (eden, survivor spaces) and old generation, and types of GC.",
+            "leetcode_url": null
+          },
+          {
+            "question": "Multithreading in Java.",
+            "difficulty": "Medium",
+            "topics": [
+              "Advanced Java"
+            ],
+            "solution": "Threads via Runnable/Thread class, race condition, synchronized, notify/wait, Semaphore, ExecutorService, CompletableFuture.",
+            "leetcode_url": null
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 3,
+        "type": "Technical",
+        "duration_minutes": 75,
+        "platform": "Microsoft Teams",
+        "result": "Selected",
+        "experience_rating": "4/5",
+        "tips": "Be ready for everything; stay calm; do real-world projects; give possible related answers.",
+        "technical_questions": [
+          {
+            "question": "Group Anagrams - standard DSA question; focus on edge cases.",
+            "difficulty": "Easy",
+            "topics": [
+              "HashMap"
+            ],
+            "leetcode_url": "https://leetcode.com/problems/group-anagrams/"
+          },
+          {
+            "question": "System Design: Design a video streaming platform for students and professors (professors upload, students stream in parallel) in a cost-effective way.",
+            "difficulty": "Medium",
+            "topics": [
+              "System Design"
+            ],
+            "solution": "Client, API gateway with rate limiting, microservice architecture, block storage, caching, CDN, metadata storage, Docker, Kubernetes, Prometheus, Grafana.",
+            "leetcode_url": null
+          },
+          {
+            "question": "Open a project repo from GitHub (Real-Time Monitoring System) and explain every feature and discuss extensibility for new features.",
+            "difficulty": "Medium",
+            "topics": [
+              "Prometheus",
+              "Grafana",
+              "Kafka"
+            ],
+            "leetcode_url": null
+          },
+          {
+            "question": "Computer Networks: TCP, UDP, Routing, DNS, what happens when you type google.com.",
+            "difficulty": "Medium",
+            "topics": [
+              "Computer Networks"
+            ],
+            "solution": "Relate everything with practical application and real-time usage of different protocols.",
+            "leetcode_url": null
+          }
+        ],
+        "behavioral_questions": []
+      },
+      {
+        "round_number": 4,
+        "type": "HR",
+        "duration_minutes": 15,
+        "platform": "In-Person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Don't tell them your higher studies plan. Give polished answers.",
+        "technical_questions": [
+          {
+            "question": "Brief introduction, relocation, experience, higher studies plan.",
+            "leetcode_url": null
+          }
+        ],
+        "behavioral_questions": []
+      }
+    ],
+    "key_tips": [
+      "Prepare for the worst.",
+      "Trust the Process."
+    ],
+    "mistakes_to_avoid": [
+      "Having superficial understanding of something and having that on the resume."
+    ],
+    "tags": [
+      "#amd",
+      "#software engineer",
+      "#ppo"
+    ]
+  }
+]

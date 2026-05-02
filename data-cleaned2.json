@@ -1,0 +1,1759 @@
+[
+  {
+    "company": "Amazon",
+    "role": "SDE Intern",
+    "type": "Summer",
+    "duration": "2 Months",
+    "work_mode": "On-site",
+    "location": "Bangalore",
+    "compensation_inr": 110000,
+    "application_date": "2024-10-17",
+    "total_rounds": 2,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 0,
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 60,
+        "platform": "HackerRank",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Given an expression string s, check whether pairs and orders of '{', '}', '(', ')', '[', ']' are correct.",
+            "example_input": "[()]{}{[()()]()}",
+            "example_output": "true",
+            "difficulty": "Easy",
+            "topics": ["Stacks"],
+            "solution": "Using stack to ensure every opening has a matching closing."
+          },
+          {
+            "question": "Given an array of intervals, merge all overlapping intervals and return only non-overlapping intervals.",
+            "example_input": "[[1,3],[2,4],[3,8],[9,10]]",
+            "example_output": "[[1,8],[9,10]]",
+            "difficulty": "Easy",
+            "topics": ["Arrays", "Sorting"],
+            "solution": "Merge overlapping intervals after sorting and comparing."
+          }
+        ],
+        "tips": "Discussing about the project works for most of the time and technical questions were asked in the last 15 minutes. Prepare accordingly."
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": "Chime",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": "Know every detail of the projects mentioned in the resume."
+      }
+    ],
+    "key_tips": [
+      "Know every detail of the projects mentioned in the resume."
+    ],
+    "mistakes_to_avoid": [
+      "Don't hesitate to ask valid doubts."
+    ],
+    "tags": ["amazon", "sde intern", "summer"]
+  },
+  {
+    "company": "Deloitte",
+    "role": "Analyst",
+    "type": "Full-time",
+    "work_mode": "On-site",
+    "application_date": "2025-08-23",
+    "result_date": "2025-09-02",
+    "total_rounds": 2,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 1,
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 60,
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Age Problem – Find the year in which the mother's age is twice the daughter's age, considering both past and future years.",
+            "difficulty": "Easy",
+            "topics": ["Aptitude", "Math"],
+            "solution": "Form a basic math equation and solve for x."
+          },
+          {
+            "question": "Array Sorting Problem – Sort an array of numbers based on the tenth digit of each number. If two numbers have the same tenth digit, sort by original value.",
+            "difficulty": "Medium",
+            "topics": ["Arrays", "Sorting"],
+            "solution": "Use normal bubble sort on the tenth digit of each number, found by dividing once and finding modulo."
+          }
+        ],
+        "tips": "Refer IndiaBix for aptitude and TakeUForward for CS core."
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 20,
+        "platform": "Teams",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Explain the four pillars of OOPs with examples.",
+            "difficulty": "Medium"
+          },
+          {
+            "question": "Share your intern experience.",
+            "difficulty": "Medium"
+          },
+          {
+            "question": "Count the number of vowels in a sentence.",
+            "difficulty": "Medium"
+          }
+        ],
+        "behavioral_questions": [
+          "Introduce yourself."
+        ],
+        "tips": "Know your resume inside out."
+      }
+    ],
+    "key_tips": [
+      "Be sure with what you have in your resume.",
+      "Know about the company very well.",
+      "Stay calm and positive."
+    ],
+    "mistakes_to_avoid": [
+      "Do not overcomplicate simple problems."
+    ],
+    "tags": ["deloitte", "analyst", "cse", "full-time"]
+  },
+  {
+    "company": "Deloitte",
+    "role": "Analyst",
+    "department": "Consultative Offering",
+    "type": "Full-time",
+    "work_mode": "On-site",
+    "location": "Hyderabad, India",
+    "application_date": "2025-08-22",
+    "result_date": "2025-09-03",
+    "total_rounds": 2,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": false,
+    "preparation_time_weeks": 0,
+    "resources_used": ["LeetCode", "HackerRank", "GeeksForGeeks", "CodeChef"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 100,
+        "platform": "HirePro",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "section": "MCQs",
+            "details": {
+              "verbal_ability": 15,
+              "aptitude": 10,
+              "technical": 19
+            },
+            "technical_topics": ["SQL Queries", "OOPs", "DSA", "Problem Solving", "OS"],
+            "difficulty": "Medium"
+          },
+          {
+            "section": "Coding",
+            "questions": [
+              "Math-based problem-solving using logical/mathematical concepts.",
+              "Array/String-based implementation — string manipulation or array handling."
+            ],
+            "difficulty": "Medium"
+          }
+        ],
+        "tips": "Practice SQL queries, basic to medium DSA problems (arrays, strings), and aptitude along with verbal reasoning."
+      },
+      {
+        "round_number": 2,
+        "type": "Technical + HR",
+        "duration_minutes": 35,
+        "platform": "HirePro",
+        "result": "Selected",
+        "experience_rating": "4/5",
+        "technical_questions": [
+          {
+            "question": "Explain the architecture of one of your projects.",
+            "difficulty": "Medium"
+          },
+          {
+            "question": "Scalability scenario: Platform can accommodate X users. What if X+1 users try to access? (Expected: cloud-based solutions)",
+            "difficulty": "Medium",
+            "topics": ["System Design", "Cloud Computing"]
+          },
+          {
+            "question": "SQL: How to find duplicates in a table?",
+            "difficulty": "Medium",
+            "topics": ["SQL"],
+            "solution": "Self-join or GROUP BY with HAVING COUNT > 1."
+          },
+          {
+            "question": "Explain advantages and disadvantages of RESTful APIs.",
+            "difficulty": "Medium"
+          },
+          {
+            "question": "Discuss ethical concerns in AI implementation.",
+            "difficulty": "Medium"
+          }
+        ],
+        "behavioral_questions": [
+          {
+            "question": "As a team leader, one teammate's mistake caused the project to miss the deadline and the manager asks you to fire someone.",
+            "category": "Situational"
+          }
+        ],
+        "tips": [
+          "Always prepare to explain projects in both technical and layman terms.",
+          "Expect cloud computing, SQL, REST APIs, and AI-related questions.",
+          "Be ready for situational and stress-test behavioral questions."
+        ]
+      }
+    ],
+    "key_tips": [
+      "Revise SQL thoroughly (joins, GROUP BY, duplicates, aggregate functions).",
+      "Practice medium-level DSA problems (arrays and strings).",
+      "Understand REST APIs and basic cloud concepts.",
+      "Explain projects clearly with focus on architecture, scalability, and security.",
+      "Practice leadership and conflict-resolution scenarios.",
+      "Explain in simple terms first, then add technical depth if asked.",
+      "End with a thoughtful question to the interviewer."
+    ],
+    "mistakes_to_avoid": [
+      "Do not refer to YouTube videos!"
+    ],
+    "tags": ["deloitte", "analyst", "consultative offering", "full-time", "java", "javascript", "python", "sql", "react.js", "azure", "mongodb"]
+  },
+  {
+    "company": "Fidelity Investments",
+    "role": "Software Development Engineer Intern",
+    "type": "Summer",
+    "duration": "2 months",
+    "work_mode": "On-site",
+    "location": "Chennai",
+    "compensation_inr": 35000,
+    "application_date": "2024-09-09",
+    "total_rounds": 2,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 1,
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": "In-Person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Questions based on projects listed in the resume.",
+            "difficulty": "Easy"
+          }
+        ],
+        "mcq_section": {
+          "total_questions": 1,
+          "difficulty": "Medium",
+          "topics": ["Aptitude", "Arrays", "Strings", "English Language"]
+        }
+      },
+      {
+        "round_number": 2,
+        "type": "HR",
+        "duration_minutes": 15,
+        "platform": "In-Person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "behavioral_questions": [
+          "Explain about your hackathon experiences.",
+          "Preferred location (Chennai/Bangalore)."
+        ]
+      }
+    ],
+    "key_tips": [
+      "Mock Interviews are helpful."
+    ],
+    "mistakes_to_avoid": [
+      "Explain in depth — interviewers like to ask further questions based on your answer."
+    ],
+    "tags": ["fidelity investments", "software development engineer intern", "summer"]
+  },
+  {
+    "company": "Fiorano Software",
+    "role": "Software Developer",
+    "type": "Full-time",
+    "duration": "6 months",
+    "work_mode": "On-site",
+    "location": "Bangalore, India",
+    "compensation_inr": 30000,
+    "application_date": "2025-07-30",
+    "total_rounds": 3,
+    "overall_rating": "4/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 1,
+    "resources_used": ["LeetCode", "GeeksForGeeks", "MongoDB Documentation", "C Language Reference", "ChatGPT"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 90,
+        "platform": "Own platform",
+        "result": "Selected",
+        "experience_rating": "4/5",
+        "technical_questions": [
+          {
+            "section": "Aptitude",
+            "count": 20,
+            "topics": ["Quantitative", "Logical Reasoning", "Verbal"],
+            "difficulty": "Medium",
+            "tip": "Practice using IndiaBix or GFG aptitude MCQs."
+          },
+          {
+            "section": "DSA",
+            "count": 20,
+            "topics": ["Arrays", "Recursion", "String operations", "Algorithms"],
+            "difficulty": "Hard"
+          },
+          {
+            "section": "Programming (C or Java)",
+            "topics": ["Syntax", "Logic", "Output prediction", "Pointers in C", "OOPs in Java"],
+            "difficulty": "Medium"
+          }
+        ],
+        "tips": [
+          "Start with your strongest section to build confidence.",
+          "Roughly 1.5 minutes per question — skip tough ones and return later.",
+          "Aptitude: IndiaBix, classic puzzles. DSA: GFG coding MCQs."
+        ]
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 30,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Given a sorted array of size n and target k, check if k is a majority element (appears more than n/2 times).",
+            "topics": ["Arrays", "Binary Search"],
+            "difficulty": "Easy",
+            "solution": "Binary search for first occurrence, then check if arr[firstIndex + n/2] == k. Time: O(log n)."
+          },
+          {
+            "question": "Given an array of side lengths, count the number of triplets (a, b, c) that can form a triangle.",
+            "topics": ["Arrays", "Binary Search"],
+            "difficulty": "Medium",
+            "solution": "Sort array, build prefix difference array, use binary search to count valid triplets. Complexity: O(n log n)."
+          }
+        ],
+        "tips": [
+          "Start with problem restatement to show you understood it.",
+          "Ask for constraints — it shows you understand the problem deeply.",
+          "Outline your approach step-by-step before jumping into code.",
+          "Justify your complexity and explain why you chose this method."
+        ]
+      },
+      {
+        "round_number": 3,
+        "type": "Technical",
+        "duration_minutes": 30,
+        "platform": "Google Meet",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "behavioral_questions": [
+          {
+            "question": "Walk through your resume, highlight one project, and explain: why you built it, what problem it solves, why you chose specific tools, and how you optimized it.",
+            "category": "Company-specific"
+          }
+        ],
+        "additional_topics": [
+          "MongoDB indexing and optimization",
+          "Secure data storage and hashing",
+          "Generating pseudo-random numbers without libraries (using time as seed)",
+          "C syntax: difference between 'char const' and 'const char'"
+        ],
+        "tips": [
+          "Be strong in everything you put in your resume.",
+          "For group projects, clearly explain your contribution.",
+          "Justify why you used a specific language or tool.",
+          "Expect syntax and fundamentals questions if you claim a language."
+        ]
+      }
+    ],
+    "key_tips": [
+      "Be thorough with your resume; know every project inside-out.",
+      "Be ready to justify your choice of tools, tech stacks, and design decisions.",
+      "Practice DSA regularly, focusing on time/space complexity.",
+      "Revise fundamentals of at least one programming language deeply."
+    ],
+    "mistakes_to_avoid": [
+      "Don't list skills or tools you haven't used practically.",
+      "Don't give vague answers — always explain with reasoning.",
+      "Avoid overcomplicating answers.",
+      "Don't neglect basic syntax or fundamentals."
+    ],
+    "tags": ["fiorano software", "software developer", "full-time", "python", "c"]
+  },
+  {
+    "company": "FOODHUB Software Solutions",
+    "role": "Software Engineer",
+    "type": "Full-time",
+    "work_mode": "On-site",
+    "application_date": "2025-07-21",
+    "total_rounds": 4,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 8,
+    "resources_used": ["R S Agarwal book", "LeetCode", "InterviewBit", "Gaurav Sen (YouTube - System Design)", "IndiaBIX", "GeeksForGeeks"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 120,
+        "platform": "HackerEarth",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "MCQs on Aptitude, Communication, Logical reasoning, and 2 DSA problems: Climbing Stairs (with modifications) and a 2D Dynamic Programming problem.",
+            "topics": ["Aptitude", "DSA", "Logical Reasoning", "Dynamic Programming"],
+            "difficulty": "Medium"
+          }
+        ],
+        "tips": "Prepare basic aptitude, technical, and easy-medium DSA questions."
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 20,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Design a social media app with 4 given constraints — create the database schema and write SQL queries satisfying the constraints.",
+            "topics": ["System Design", "SQL", "Database Schema"],
+            "difficulty": "Medium"
+          },
+          {
+            "question": "One easy DSA question from 1D array.",
+            "topics": ["Arrays"],
+            "difficulty": "Easy"
+          }
+        ],
+        "tips": [
+          "Ask clarifying questions to fully understand and structure the problem.",
+          "Explain your reasoning and complexity as you write on paper.",
+          "Stay calm and communicate confidently, even if unsure."
+        ]
+      },
+      {
+        "round_number": 3,
+        "type": "Technical",
+        "duration_minutes": 20,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Puzzle: You have 27 coins, all look the same but one is heavier. Find the heavier coin using a balance scale in the minimum number of weighings.",
+            "topics": ["Puzzles", "Divide and Conquer"],
+            "difficulty": "Easy"
+          },
+          {
+            "question": "Valid Parenthesis.",
+            "topics": ["Stacks"],
+            "difficulty": "Easy"
+          }
+        ],
+        "tips": "Be technically strong and add projects you feel confident speaking about."
+      },
+      {
+        "round_number": 4,
+        "type": "HR",
+        "duration_minutes": 15,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Questions from GitHub profile — projects, problem statement, tech stack, and database choices.",
+            "difficulty": "Medium"
+          }
+        ],
+        "tips": [
+          "Keep your GitHub up to date with well-documented projects.",
+          "Be ready to walk through your projects confidently.",
+          "Confidence is key — stay calm and answer behavioral questions clearly."
+        ]
+      }
+    ],
+    "key_tips": [
+      "Learn system design.",
+      "Stay confident.",
+      "Have a strong GitHub profile and good projects on resume."
+    ],
+    "mistakes_to_avoid": [
+      "Ignoring edge cases or constraints.",
+      "Overstating your experience.",
+      "Including projects you're not clear about in your resume.",
+      "Getting nervous if you don't know an answer."
+    ],
+    "tags": ["foodhub software solutions", "software engineer", "engineering", "full-time"]
+  },
+  {
+    "company": "Genworx",
+    "role": "Software Development Engineer-1",
+    "type": "Full-time",
+    "work_mode": "On-site",
+    "location": "Chennai",
+    "compensation_inr": 1200000,
+    "total_rounds": 2,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 4,
+    "resources_used": ["Striver coding sheet"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 60,
+        "result": "Selected",
+        "experience_rating": "4/5",
+        "technical_questions": [
+          {
+            "question": "Stream of digits into fixed boxes: fill sequentially first, then for remaining digits assign to any box to maximize the concatenated number.",
+            "topics": ["Priority Queue", "Greedy"],
+            "difficulty": "Medium"
+          },
+          {
+            "question": "Word Search II (LeetCode).",
+            "topics": ["DFS", "Trie"],
+            "difficulty": "Hard"
+          }
+        ],
+        "tips": "Be good at DSA."
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 120,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "4/5",
+        "tips": "Be good at DSA, able to explain your project, and have some knowledge of system design."
+      }
+    ],
+    "key_tips": ["Be confident."],
+    "mistakes_to_avoid": ["Don't be nervous."],
+    "tags": ["genworx", "software development engineer-1", "full-time"]
+  },
+  {
+    "company": "Goldman Sachs",
+    "role": "Seasonal Analyst",
+    "department": "Operations",
+    "type": "PPO",
+    "duration": "6 months",
+    "work_mode": "On-site",
+    "compensation_inr": 72000,
+    "application_date": "2025-08-31",
+    "total_rounds": 4,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 4,
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 80,
+        "platform": "HackerRank",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "mcq_section": {
+          "total_questions": 45,
+          "time_limit_minutes": 80,
+          "difficulty": "Medium",
+          "topics": ["Verbal Ability", "Quantitative Ability", "Advanced Analytical Ability"]
+        },
+        "tips": [
+          "Use shortcut techniques for faster calculations.",
+          "Attempt easy questions first.",
+          "Avoid careless mistakes; read data carefully.",
+          "Eliminate obviously wrong options.",
+          "Accuracy matters more than speed."
+        ]
+      },
+      {
+        "round_number": 2,
+        "type": "Group Discussion",
+        "duration_minutes": 30,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "tips": [
+          "If you have a strong opening point, begin the discussion; otherwise allow 2-3 participants to speak first.",
+          "Conclude only if you have a strong, collective point.",
+          "Do not interrupt while someone is speaking.",
+          "Prefer to speak during the 2nd or 3rd chance. Limit speaking to 2-3 minutes.",
+          "Stay focused on the topic; back points with real-life examples, facts, or statistics.",
+          "State your stance when you are speaking."
+        ]
+      },
+      {
+        "round_number": 3,
+        "type": "Technical",
+        "duration_minutes": 15,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Explain your internship project — nature, your role, key objectives, use of edge devices, risks faced, and explanation in layman terms.",
+            "difficulty": "Medium"
+          }
+        ],
+        "tips": [
+          "Explain in simple terms first, then go technical if asked.",
+          "Highlight the 'why' behind choices.",
+          "Avoid going on too long."
+        ]
+      },
+      {
+        "round_number": 4,
+        "type": "Technical",
+        "duration_minutes": 25,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Explain each project in detail; identify your favorite, datasets used, how data was collected, your role, technologies chosen, and potential societal impact.",
+            "difficulty": "Medium"
+          }
+        ],
+        "behavioral_questions": [
+          {
+            "question": "If one colleague doesn't complete a task and the deadline is approaching, how would you handle the situation?",
+            "category": "Situational",
+            "approach": "Use STAR method."
+          },
+          {
+            "question": "Given four values — Integrity, Respect, Experience, and Service — how would you prioritize them and why?",
+            "category": "Personal"
+          }
+        ],
+        "tips": [
+          "Know yourself well.",
+          "Use the STAR method.",
+          "Prepare for common questions.",
+          "Show soft skills.",
+          "Be confident but polite.",
+          "Ask thoughtful questions."
+        ]
+      }
+    ],
+    "key_tips": [
+      "Understand your projects, internships, and roles thoroughly.",
+      "Use STAR method for behavioral questions.",
+      "Maintain eye contact, positive tone, and composed body language.",
+      "Ask thoughtful questions at the end of the interview."
+    ],
+    "mistakes_to_avoid": [
+      "Deviating from the topic in GDs or interviews.",
+      "Not highlighting learning or problem-solving from challenges faced.",
+      "Spending too long on tough MCQs.",
+      "Not being thorough with your projects."
+    ],
+    "tags": ["goldman sachs", "seasonal analyst", "operations", "ppo"]
+  },
+  {
+    "company": "Google",
+    "role": "Application Engineer Intern",
+    "type": "Summer",
+    "duration": "10 weeks",
+    "work_mode": "On-site",
+    "location": "Bengaluru, India",
+    "compensation_inr": 123333,
+    "application_date": "2024-09-04",
+    "result_date": "2024-09-16",
+    "total_rounds": 2,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 10,
+    "resources_used": ["LeetCode", "GeeksForGeeks", "YouTube"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Technical",
+        "duration_minutes": 45,
+        "platform": "Google Meet",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "A set of ~5 questions each building upon the previous. Only input and output were specified. Final question was a variation of 'Best Time to Buy and Sell Stock'.",
+            "topics": ["Arrays", "Greedy"],
+            "difficulty": "Medium",
+            "solution": "For each I/O pair, identified the underlying problem, explained approach, discussed optimizations with time and space complexity analysis."
+          }
+        ],
+        "tips": "Practice identifying patterns from only inputs and outputs, without seeing the actual question. Communicate your approach clearly with the interviewer."
+      },
+      {
+        "round_number": 2,
+        "type": "System Design",
+        "duration_minutes": 45,
+        "platform": "Google Meet",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Design a restaurant reservation system — identify functional and non-functional requirements, design the DB (primary/foreign keys, normalization, joins), list REST endpoints, explain overall architecture, handle concurrent users, and ensure scalability and data consistency.",
+            "topics": ["System Design", "Database Design", "REST APIs"],
+            "difficulty": "Medium"
+          }
+        ],
+        "tips": "Be strong in fundamentals like database systems and system design principles."
+      }
+    ],
+    "key_tips": [
+      "Practice DSA consistently.",
+      "Revise core subjects like DBMS and OS.",
+      "Go through common aptitude patterns.",
+      "Be prepared to answer anything from your resume.",
+      "Have a structured preparation plan and split time effectively."
+    ],
+    "mistakes_to_avoid": [
+      "Don't get overwhelmed in the initial phase. Be patient, stay consistent, and keep trying."
+    ],
+    "tags": ["google", "application engineer intern", "cse (ai&ml)", "summer"]
+  },
+  {
+    "company": "HPE",
+    "role": "College Intern + Graduate Software Engineer",
+    "department": "Engineering",
+    "type": "Full-time",
+    "work_mode": "On-site",
+    "application_date": "2025-09-04",
+    "total_rounds": 3,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 2,
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": "Microsoft Teams",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {"question": "What is an object in Python? Which is the base class in Python?", "difficulty": "Easy"},
+          {"question": "Write a Python class with a function accepting different data types (int, string, object). Predict and explain output for each case.", "difficulty": "Easy"},
+          {"question": "What do you mean by race condition, semaphore, and mutex?", "difficulty": "Easy"},
+          {"question": "Write a Python program to create and manage threads.", "topics": ["Multithreading"], "difficulty": "Medium"},
+          {"question": "Implement multilevel inheritance in Python or Java.", "difficulty": "Easy"},
+          {"question": "For a given scenario, which CPU scheduling algorithm (FCFS, Round Robin, SJF, Priority) would you choose and why?", "difficulty": "Easy"},
+          {"question": "What was your role and contribution in your project?", "difficulty": "Easy"},
+          {"question": "What was the final outcome/result of your project?", "difficulty": "Easy"},
+          {"question": "How did your project address the identified problem?", "difficulty": "Easy"}
+        ]
+      },
+      {
+        "round_number": 2,
+        "type": "HR",
+        "duration_minutes": 45,
+        "platform": "Microsoft Teams",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {"question": "Difference between interpreter and compiler, working process of both, which takes more time and why.", "difficulty": "Medium"},
+          {"question": "Your specific contribution to the project.", "difficulty": "Easy"},
+          {"question": "Final result or outcome achieved through your project.", "difficulty": "Easy"},
+          {"question": "Difference between FastAPI and a traditional REST API framework, and main HTTP methods used in REST API.", "difficulty": "Easy"},
+          {"question": "Difference between Machine Learning and Deep Learning.", "difficulty": "Easy"}
+        ],
+        "behavioral_questions": [
+          "What does your family do for a living?",
+          "Can you mention some modern technologies used in agriculture today?",
+          "Why did you choose Computer Science and Engineering?"
+        ]
+      },
+      {
+        "round_number": 3,
+        "type": "HR",
+        "duration_minutes": 45,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {"question": "Explain projects mentioned in resume and your specific contribution.", "difficulty": "Easy"},
+          {"question": "Latest advancements in AI and new features in ChatGPT.", "difficulty": "Easy"},
+          {"question": "Internship experience and key learnings.", "difficulty": "Easy"}
+        ],
+        "behavioral_questions": [
+          "How do you manage your time effectively while handling multiple tasks?",
+          "Managing a project for a client within one week with only five employees and no overtime — how would you plan?",
+          "What do you know about HPE (products, services, culture)?",
+          "Why do you want to join HPE?",
+          "Who is the current CEO of HPE?",
+          "Any recent news, releases, or innovations related to HPE?",
+          "Top three companies you aspire to work for.",
+          "Tell me something about yourself not on your resume.",
+          "Are you willing to relocate to Bangalore?"
+        ]
+      }
+    ],
+    "key_tips": [
+      "Be thorough with your resume — projects, internships, skills, and outcomes.",
+      "Focus on core fundamental concepts.",
+      "Research HPE's background, products, and latest innovations.",
+      "Always ask a meaningful question at the end — don't say 'No questions'."
+    ],
+    "mistakes_to_avoid": [
+      "Not knowing your resume or project details.",
+      "Being hesitant to share thoughts in situational questions.",
+      "Saying 'No questions' when asked if you have any."
+    ],
+    "tags": ["hpe", "college intern + graduate software engineer", "engineering", "full-time"]
+  },
+  {
+    "company": "HPE",
+    "role": "College Intern + Graduate Software Engineer",
+    "type": "Full-time",
+    "duration": "6 months internship + FTE",
+    "work_mode": "On-site",
+    "compensation_inr": 1800000,
+    "application_date": "2025-08-24",
+    "result_date": "2025-09-05",
+    "total_rounds": 3,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 4,
+    "resources_used": ["LeetCode", "GFG", "InterviewBit"],
+    "note": "No online assessment as candidate completed a project with HPE as part of the Career Preview Program. Project: Time Series Data Analysis Using Apache Superset.",
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Technical",
+        "duration_minutes": 90,
+        "platform": "Microsoft Teams",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {"question": "Currency Denomination Problem.", "topics": ["Arrays", "DP"], "difficulty": "Medium"},
+          {"question": "Implement Demorgan's Law without using built-in functions.", "topics": ["Arrays"], "difficulty": "Medium"},
+          {"question": "Lowest Common Ancestor in Binary Tree and BST — differentiate both approaches.", "topics": ["Trees"], "difficulty": "Medium"},
+          {
+            "question": "OS: Virtual memory, Round Robin scheduling, Process synchronization. DBMS: SQL queries, ACID properties, NoSQL. ML: Bayesian Network with real-world example. OOPs: For ATM, implement 4 pillars of OOPs.",
+            "difficulty": "Medium"
+          }
+        ],
+        "round_feedback": "Asked to focus more on Machine Learning.",
+        "tips": ["Be thorough with basics.", "Know your strengths."]
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 30,
+        "platform": "Microsoft Teams",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {"question": "Implement linear search and binary search.", "topics": ["Arrays"], "difficulty": "Medium"},
+          {"question": "Merge k sorted lists problem.", "difficulty": "Medium"},
+          {"question": "OS: system calls, paging vs segmentation, fork() system call. DBMS: SQL queries. CN: subnet mask, SMTP, logical vs physical address, DNS server.", "difficulty": "Medium"}
+        ],
+        "behavioral_questions": [
+          "Family background and hobbies.",
+          "About HPE, its mission, and HPE products."
+        ],
+        "tips": "Be strong with basic algorithms."
+      },
+      {
+        "round_number": 3,
+        "type": "HR",
+        "duration_minutes": 25,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "behavioral_questions": [
+          "Family background and favorite place to explore.",
+          "About the project done at HPE CPP program, why HPE, HPE Aruba networks, and projects in resume."
+        ],
+        "tips": "Know your resume well."
+      }
+    ],
+    "key_tips": ["Be strong in OS, CN, and OOPs."],
+    "mistakes_to_avoid": [
+      "In coding, first explain your approach clearly, then proceed with implementation."
+    ],
+    "tags": ["hpe", "college intern + graduate software engineer", "cse", "full-time", "c", "java", "os", "dbms", "cn", "oops"]
+  },
+  {
+    "company": "HPE",
+    "role": "Engineer",
+    "type": "Full-time",
+    "duration": "6 Month Internship + FTE",
+    "work_mode": "On-site",
+    "location": "Bangalore",
+    "compensation_inr": 1750000,
+    "application_date": "2025-08-29",
+    "total_rounds": 3,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 1,
+    "resources_used": ["LeetCode", "GFG", "Careerride"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Technical",
+        "duration_minutes": 45,
+        "platform": "Microsoft Teams",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Explain Abstraction in OOPs with an example.",
+            "topics": ["OOPs"],
+            "difficulty": "Easy",
+            "solution": "Hiding implementation details and showing only essential features. Example: A car — we use steering, brake, accelerator without knowing the engine mechanism."
+          },
+          {
+            "question": "What is Encapsulation?",
+            "topics": ["OOPs"],
+            "difficulty": "Easy",
+            "solution": "Banking example: account balance is private, accessible only via getter/setter methods."
+          },
+          {
+            "question": "Write code to demonstrate Method Overriding.",
+            "difficulty": "Easy",
+            "solution": "Animal class with sound(), Dog extends Animal and overrides sound() to print 'Dog barks'."
+          },
+          {
+            "question": "Give a real-world example of Stack and Queue.",
+            "topics": ["Stack", "Queue"],
+            "difficulty": "Easy",
+            "solution": "Stack: Browser undo, Ctrl+Shift+T. Queue: Spotify playlist (circular queue)."
+          },
+          {
+            "question": "Follow-up: How would you randomize a playlist in Spotify?",
+            "topics": ["Arrays", "Algorithms"],
+            "difficulty": "Easy",
+            "solution": "Fisher-Yates shuffle algorithm for equal probability of each song in any position."
+          },
+          {
+            "question": "Explain is-a and has-a relationship in OOPs.",
+            "topics": ["OOPs"],
+            "difficulty": "Easy",
+            "solution": "is-a: Inheritance (Dog is an Animal). has-a: Composition (Car has an Engine)."
+          },
+          {
+            "question": "What is the difference between WHERE and HAVING in SQL?",
+            "topics": ["SQL", "DBMS"],
+            "difficulty": "Easy",
+            "solution": "WHERE filters rows before grouping. HAVING filters groups after aggregation."
+          },
+          {
+            "question": "Explain your projects in detail.",
+            "difficulty": "Easy"
+          }
+        ],
+        "tips": [
+          "Most questions revolve around basics: OOPs, DBMS, OS, CN, Data Structures.",
+          "Know your projects inside-out — purpose, tech stack, challenges, your role.",
+          "Use online whiteboards and live code in virtual rounds."
+        ]
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 30,
+        "platform": "Microsoft Teams",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Write a program to find vowels in a string, count occurrences. Convert uppercase vowels to lowercase. Print count of each vowel.",
+            "topics": ["Strings"],
+            "difficulty": "Easy",
+            "solution": "Convert to lowercase, iterate and count vowels using a dictionary or Counter."
+          },
+          {"question": "Project Discussion — idea, tech stack, challenges, your role.", "difficulty": "Easy"},
+          {
+            "question": "As team lead, how do you recover from conflicts in your team?",
+            "difficulty": "Easy",
+            "solution": "Listen to both sides, understand concerns, facilitate middle ground; focus on common project goal."
+          },
+          {
+            "question": "How do you ensure a project is completed within the deadline?",
+            "difficulty": "Medium",
+            "solution": "Analyze requirements, plan timeline, split into modules, set weekly goals, track progress, address delays early."
+          }
+        ],
+        "tips": [
+          "Know your projects well — idea, role, tech stack, challenges, deployment.",
+          "Handle managerial questions with teamwork, leadership, and conflict-resolution focus.",
+          "Steer discussion towards your strong areas."
+        ]
+      },
+      {
+        "round_number": 3,
+        "type": "HR",
+        "duration_minutes": 20,
+        "platform": "In-Person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "behavioral_questions": [
+          "Tell me about your family background.",
+          "Where do you see yourself after three years?",
+          "If a high-paying offer comes from abroad, would you accept it?"
+        ],
+        "tips": [
+          "Speak clearly and with a smile.",
+          "Communicate naturally, don't memorize answers.",
+          "Show enthusiasm for the company, role, and learning."
+        ]
+      }
+    ],
+    "key_tips": [
+      "Watch the interviewer — notice topics they linger on or react to.",
+      "Pivot confidently to topics you know well.",
+      "Prove it, don't bluff — speak only about things you actually did.",
+      "Be honest if you don't know something — mention related skills.",
+      "Be strong in OOPs, DBMS, OS, CN, and Data Structures with real-world examples."
+    ],
+    "mistakes_to_avoid": [
+      "Don't bluff answers — wrong or made-up answers create a negative impression."
+    ],
+    "tags": ["hpe", "engineer", "full-time"]
+  },
+  {
+    "company": "HPE",
+    "role": "Graduate Software Developer",
+    "type": "Full-time",
+    "duration": "6 months internship + FTE",
+    "work_mode": "On-site",
+    "location": "Bangalore, India",
+    "compensation_inr": 1800000,
+    "application_date": "2025-08-26",
+    "total_rounds": 3,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 4,
+    "resources_used": ["LeetCode", "GeeksForGeeks", "Company Interview Questions"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Technical",
+        "duration_minutes": 45,
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {"question": "Explain OOPs and its four pillars. Explain method overriding with code and a real-life scenario.", "topics": ["OOPs"], "difficulty": "Easy"},
+          {"question": "What is a virtual function in C++?", "difficulty": "Medium"},
+          {"question": "What is static in Java and where is it used?", "difficulty": "Easy"},
+          {"question": "Explain IPC (Inter-Process Communication) mechanisms.", "difficulty": "Easy"},
+          {"question": "What do you know about sockets? How do you connect a client and server? Role of bind, connect, and listen in socket programming?", "topics": ["OS"], "difficulty": "Medium"},
+          {"question": "Remove duplicate characters from a string.", "topics": ["Strings"], "difficulty": "Easy"},
+          {"question": "Explain the project done during HPE CPP program.", "difficulty": "Easy"}
+        ],
+        "tips": [
+          "Revise core subjects: DSA, OOPs, DBMS, OS, and Computer Networks.",
+          "Connect technical concepts to real-world applications.",
+          "Reason logically if you don't know the exact answer."
+        ]
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 30,
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {"question": "Explain the HPE CPP project.", "difficulty": "Easy"},
+          {"question": "What do you know about heap memory and stack memory?", "topics": ["OS", "Memory Management"], "difficulty": "Easy"},
+          {"question": "What are the different types of memory?", "topics": ["OS", "Memory Management"], "difficulty": "Easy"},
+          {"question": "How is data or voice transmitted during a call or this interview?", "topics": ["Computer Networks", "Data Transmission"], "difficulty": "Medium"}
+        ],
+        "tips": "Revise core OS and CN concepts. Relate them to real-world scenarios."
+      },
+      {
+        "round_number": 3,
+        "type": "HR",
+        "duration_minutes": 20,
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "behavioral_questions": [
+          "Questions about projects — scope and how to expand in the future.",
+          "Family background.",
+          "What do you know about HPE?"
+        ],
+        "tips": "Be confident about projects and their future scope. Keep family background brief. Show genuine interest in HPE."
+      }
+    ],
+    "key_tips": [
+      "Focus on DSA, OOPs, DBMS, OS, and Computer Networks.",
+      "Confidently explain projects — role, challenges, solutions, real-world connections.",
+      "Show awareness of the company and ask thoughtful questions."
+    ],
+    "mistakes_to_avoid": [
+      "Unclear answers, low confidence, and not knowing enough about the company's work."
+    ],
+    "tags": ["hpe", "graduate software developer", "cse", "full-time"]
+  },
+  {
+    "company": "HPE",
+    "role": "Graduate Software Developer",
+    "type": "Full-time",
+    "work_mode": "On-site",
+    "application_date": "2025-08-26",
+    "result_date": "2025-09-05",
+    "total_rounds": 2,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 2,
+    "resources_used": ["LeetCode", "GeeksForGeeks", "Company Interview Questions", "Mock Interviews"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": "Microsoft Teams",
+        "result": "Selected",
+        "experience_rating": "4/5",
+        "technical_questions": [
+          {
+            "question": "Write a program to check if a string is a palindrome using recursion.",
+            "topics": ["Strings", "Recursion"],
+            "difficulty": "Medium",
+            "solution": "Recursive function: base case if length <= 1 return True, check if first and last chars equal, recurse on substring excluding both ends."
+          },
+          {
+            "question": "Puzzle: Two ropes, each takes 60 minutes to burn. Measure exactly 45 minutes. Cannot cut, fold, or measure.",
+            "topics": ["Logical Reasoning", "Puzzles"],
+            "difficulty": "Medium",
+            "solution": "Burn Rope 1 from both ends and Rope 2 from one end (Rope 1 finishes in 30 mins). Then burn Rope 2 from the other end (burns in 15 more mins). Total = 45 mins."
+          },
+          {
+            "question": "Write an SQL query to find the second highest salary from a table.",
+            "topics": ["SQL"],
+            "difficulty": "Easy",
+            "solution": "SELECT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET 1;"
+          },
+          {"question": "Difference between Python and Java.", "topics": ["Programming Languages"], "difficulty": "Easy", "solution": "Both OOP. Python is interpreted. Java is compiled."},
+          {"question": "Difference between Java and JavaScript.", "topics": ["Programming Languages"], "difficulty": "Easy"},
+          {
+            "question": "About HPE — products and domains.",
+            "difficulty": "Easy",
+            "solution": "Edge: Aruba Networks. Cloud: GreenLake. Data: InfoSight analytics. Servers: Blade, rack, GPUs, El Capitan supercomputer."
+          }
+        ],
+        "behavioral_questions": [
+          "Team preference — all-girls, all-boys, or mixed team?"
+        ],
+        "tips": [
+          "Revise core subjects: DSA, OOPs, DBMS, OS, CN.",
+          "Be clear with project explanation: what you did, your role, challenges, solutions.",
+          "Admit honestly if you don't know something; reason out.",
+          "Communicate your thought process while solving."
+        ]
+      },
+      {
+        "round_number": 2,
+        "type": "HR",
+        "duration_minutes": 30,
+        "platform": "Microsoft Teams",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {"question": "About internship project.", "difficulty": "Easy"}
+        ],
+        "behavioral_questions": [
+          "If given a new project, what factors would you consider before accepting?",
+          "If strict 1-month deadline, how will you plan?",
+          "If you face a blocker/dead-end, what will you do?",
+          "Scenario: In a hospital, an instrument you deployed is not working. What will you do?",
+          "Do you have higher studies plans?",
+          "Are you open to relocation?",
+          "If you get married, will you stop working?"
+        ],
+        "tips": [
+          "Be clear about projects and internships.",
+          "Stay calm — tricky/hypothetical questions test composure.",
+          "Show ability to work in a team.",
+          "Keep answers short and direct."
+        ]
+      }
+    ],
+    "key_tips": [
+      "Revise core subjects: DSA, OOPs, DBMS, OS, CN.",
+      "Practice coding regularly — focus on problem-solving speed.",
+      "Be confident and clear; explain thought process.",
+      "For HR: prepare 'Tell me about yourself', strengths, weaknesses, and situational answers."
+    ],
+    "mistakes_to_avoid": [
+      "Don't spend too much time on a single coding question.",
+      "Don't memorize answers — understand concepts.",
+      "Avoid vague or generic answers in HR."
+    ],
+    "tags": ["hpe", "graduate software developer", "cse", "full-time", "python", "java", "sql", "c", "machine learning"]
+  },
+  {
+    "company": "IBM",
+    "role": "Software Engineer",
+    "type": "Winter Internship",
+    "duration": "6 months",
+    "work_mode": "On-site",
+    "location": "Bangalore, India",
+    "compensation_inr": 30000,
+    "application_date": "2025-08-05",
+    "result_date": "2025-08-20",
+    "total_rounds": 3,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 1,
+    "resources_used": ["LeetCode", "GeeksForGeeks", "Striver's Sheet", "InterviewBit (OOPs, DBMS, OS)"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Technical (OA)",
+        "duration_minutes": 89,
+        "platform": "HackerRank",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Pack balls into boxes (max 4 per box). Cost of box = sum of two most expensive balls. Minimize total cost.",
+            "topics": ["Arrays", "Greedy"],
+            "difficulty": "Easy",
+            "solution": "Sort in descending order. For each group of 4, sum the first two (highest prices). Total of these sums = minimum cost."
+          },
+          {
+            "question": "Given a matrix of strings, determine if word 'alert' appears horizontally (L-R or R-L) or vertically (top-bottom or bottom-top).",
+            "topics": ["Arrays", "DFS"],
+            "difficulty": "Medium",
+            "solution": "For every cell starting with 'a', perform DFS in 4 directions, checking each character against 'alert'."
+          },
+          {
+            "question": "Given a 2D array where each row is sorted, find the second largest element.",
+            "topics": ["Array", "Heap"],
+            "difficulty": "Easy",
+            "solution": "Insert all elements into a max-heap. Remove the largest, then the next element is the second largest."
+          }
+        ],
+        "tips": "The questions look tricky but solutions are simple. Brute force is enough but optimized is better."
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 45,
+        "platform": "In-Person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "OS: CPU scheduling (FCFS, Priority, Round Robin, SJF), deadlocks, conditions for deadlock, Wait-For Graph, Linux commands.",
+            "topics": ["Operating Systems"],
+            "difficulty": "Medium"
+          },
+          {
+            "question": "Read from a file containing English alphabets, reverse each line, and store the result. (Solved by reversing each string using two-pointer technique.)",
+            "topics": ["Strings", "File Handling"],
+            "difficulty": "Medium"
+          }
+        ],
+        "tips": "Focus on core CS subjects: Operating Systems, OOPs, and DBMS. Most questions relate to OS and projects."
+      },
+      {
+        "round_number": 3,
+        "type": "HR",
+        "duration_minutes": 45,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Write code in React and explain how it works.",
+            "topics": ["React"],
+            "difficulty": "Medium"
+          },
+          {
+            "question": "Explain Software Engineering models: Waterfall, Prototyping, Agile, Spiral — and when each is best suited.",
+            "topics": ["Software Engineering"],
+            "difficulty": "Medium"
+          }
+        ],
+        "behavioral_questions": [
+          "Problems faced during group projects and how you overcame them.",
+          "How you handle pressure in challenging situations.",
+          "Typical day in your routine.",
+          "How does IBM make money and what do you know about IBM.",
+          "Why you want to work at IBM."
+        ],
+        "tips": "Be confident. Interviewer observes body language. Prepare for current affairs. Don't panic."
+      }
+    ],
+    "key_tips": [
+      "Focus on core CS subjects: OS, OOPs, DBMS.",
+      "Be confident and clear while answering.",
+      "Prepare to explain projects and contributions.",
+      "Practice coding and DSA.",
+      "Be ready for HR questions on teamwork, pressure, daily routine, company knowledge.",
+      "Always be honest and maintain good body language."
+    ],
+    "mistakes_to_avoid": [
+      "Don't fear the outcome — focus on doing your best.",
+      "Luck also plays a role."
+    ],
+    "tags": ["ibm", "software engineer", "cse", "winter internship", "python", "react", "django", "dsa", "sql"]
+  },
+  {
+    "company": "IBM",
+    "role": "Software Engineer",
+    "type": "PPO",
+    "duration": "6 months",
+    "work_mode": "On-site",
+    "location": "Bangalore, India",
+    "compensation_inr": 30000,
+    "application_date": "2025-08-13",
+    "result_date": "2025-08-22",
+    "total_rounds": 1,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 16,
+    "resources_used": ["LeetCode (400+ problems)", "GeeksForGeeks", "Personal notes"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Process Virtual Memory Space — what is it?",
+            "topics": ["Operating System"],
+            "difficulty": "Medium",
+            "solution": "A process has its own memory including stack and heap. PCB manages it."
+          },
+          {
+            "question": "Difference between Process and Threads.",
+            "topics": ["Operating System"],
+            "difficulty": "Medium",
+            "solution": "A process is the active state of a program. A thread is the smallest execution unit. A process is a combination of threads."
+          },
+          {
+            "question": "Write a C program to insert a value in a descending-order sorted linked list (no syntax errors, handle edge cases).",
+            "topics": ["Linked List"],
+            "difficulty": "Medium"
+          },
+          {
+            "question": "What are Virtual Machines?",
+            "topics": ["Operating System"],
+            "difficulty": "Medium",
+            "solution": "Digitalized versions of physical resources. A hypervisor manages requests. Each VM can have its own guest OS."
+          },
+          {
+            "question": "Explain Context Switching.",
+            "topics": ["Operating System"],
+            "difficulty": "Medium",
+            "solution": "Process sends interrupt, interrupt handler captures it. If another process is running, its state is saved to stack. After interrupt is served, RETI restores the saved state."
+          },
+          {
+            "question": "Reverse the order of words in a string. Example: 'I have a nice day !' → '! day nice a have I'",
+            "topics": ["String", "Sliding Window"],
+            "difficulty": "Medium",
+            "solution": "Sliding window: right = n-1, left = n-1. Reduce left until space, append substring. Continue until start."
+          }
+        ],
+        "tips": [
+          "Believe in yourself — confidence matters as much as knowledge.",
+          "Build strong problem-solving skills (400+ LeetCode problems recommended).",
+          "Use template-based coding for backtracking, DP, sliding window.",
+          "Master one primary language but be comfortable in others.",
+          "For core CS subjects, study with 'why and what' mindset — understand system-level view.",
+          "During OAs: stay calm, focus only on the problem, set a target and execute."
+        ]
+      }
+    ],
+    "key_tips": [
+      "Self-belief is as important as technical knowledge.",
+      "Don't enter interviews with self-doubt.",
+      "Avoid giving only theoretical answers — connect to practical/system-level perspectives.",
+      "Don't skip edge cases while coding — always dry-run your solution.",
+      "Never feel crushed by rejection — every rejection is feedback."
+    ],
+    "mistakes_to_avoid": [
+      "Self-doubt overshadowing actual knowledge.",
+      "Only theoretical answers without system-level perspective.",
+      "Skipping edge cases in code.",
+      "Being discouraged by rejections."
+    ],
+    "tags": ["ibm", "software engineer", "cse", "ppo", "java", "python", "sql", "reactjs", "spring boot", "machine learning"]
+  },
+  {
+    "company": "IBM",
+    "role": "Software Engineer",
+    "type": "Summer",
+    "work_mode": "On-site",
+    "application_date": "2025-08-13",
+    "total_rounds": 3,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 1,
+    "resources_used": ["HackerRank", "LeetCode", "GeeksForGeeks"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Technical (OA)",
+        "duration_minutes": 120,
+        "platform": "HackerRank",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Pack balls into boxes (max 4 per box). Cost = two highest-priced balls per box. Minimize total cost.",
+            "topics": ["Arrays"],
+            "difficulty": "Medium",
+            "solution": "Sort ascending. r = n % 4. First box has r balls, rest have 4. Cost = sum of two highest in each box."
+          },
+          {
+            "question": "Given a matrix of strings, find if word 'alert' appears horizontally or vertically (including reverse).",
+            "topics": ["Arrays", "Strings"],
+            "difficulty": "Medium",
+            "solution": "Check each row for 'alert'/'trela'. Build vertical strings and check similarly."
+          },
+          {
+            "question": "Given a sorted 2D matrix, find the 2nd largest element.",
+            "topics": ["Arrays"],
+            "difficulty": "Easy",
+            "solution": "Brute force: append all to array, sort, and find 2nd largest."
+          },
+          {
+            "question": "15 MCQs on Linux commands, OS, Computer Networks, DSA.",
+            "topics": ["OS", "Networks", "Linux", "DSA"],
+            "difficulty": "Medium"
+          }
+        ],
+        "tips": "Review the basics. Practice different types of problems. Start simple, then move to harder."
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 40,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Given a list of prices and an amount, return the products matching the amount (used dictionary and linear search). Find a given number in an integer array with minimum time complexity (binary search). Trace binary search for a given number.",
+            "topics": ["Arrays", "Binary Search"],
+            "difficulty": "Medium"
+          },
+          {
+            "question": "List Linux commands and their usage, variations of ls command, OSI layers in detail.",
+            "topics": ["Linux", "OS", "Networks"],
+            "difficulty": "Medium"
+          }
+        ],
+        "tips": ["Revise OS, Linux, Networks concepts.", "Be confident and give clear answers."]
+      },
+      {
+        "round_number": 3,
+        "type": "HR",
+        "duration_minutes": 40,
+        "platform": "In-person",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "behavioral_questions": [
+          "Self-introduction.",
+          "Internship project details — separate mentor, communication, outcome, understanding, testing.",
+          "Co-curricular and extracurricular activities.",
+          "Hackathons participation.",
+          "Explanation of various roles and opportunities at IBM."
+        ],
+        "tips": "Be confident and authentic. Show enthusiasm for the role and company. Listen actively."
+      }
+    ],
+    "key_tips": [
+      "Research the company and review the job description beforehand.",
+      "Be confident and enthusiastic.",
+      "Listen actively, answer clearly and concisely.",
+      "Show genuine interest in the role."
+    ],
+    "mistakes_to_avoid": [
+      "If you don't know the answer, say so. Don't provide irrelevant or completely wrong answers."
+    ],
+    "tags": ["ibm", "software engineer", "cse", "summer", "c", "python", "java", "sql"]
+  },
+  {
+    "company": "IBM",
+    "role": "Software Engineer",
+    "type": "Full-time",
+    "duration": "6 months",
+    "work_mode": "On-site",
+    "location": "Bengaluru, India",
+    "compensation_inr": 30000,
+    "application_date": "2025-08-06",
+    "result_date": "2025-09-20",
+    "total_rounds": 3,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 1,
+    "resources_used": ["LeetCode", "GeeksForGeeks", "ChatGPT"],
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Technical (OA)",
+        "duration_minutes": 120,
+        "platform": "HackerRank",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Pack balls into boxes (max 4 per box). Weight of box = two heaviest balls. Minimize total weight.",
+            "topics": ["Greedy", "Arrays"],
+            "difficulty": "Medium",
+            "solution": "Sort descending. Fill boxes with 4 balls each. Sum two largest in each box. Only passed half test cases due to time complexity."
+          },
+          {
+            "question": "Given a matrix of strings, find if word 'alert' is present horizontally, vertically, or in reverse.",
+            "topics": ["Arrays", "Strings"],
+            "difficulty": "Medium",
+            "solution": "Check each row for 'alert'. Convert to matrix, form vertical strings, check those. Also check reverse ('trela'). Passed all test cases."
+          },
+          {
+            "question": "Given a matrix sorted row-wise and column-wise, find 2nd largest element.",
+            "topics": ["Arrays"],
+            "difficulty": "Easy",
+            "solution": "Brute force: append all to array, find 2nd largest. Passed all test cases."
+          },
+          {
+            "question": "15 MCQs on Linux, OS, Computer Networks, DSA.",
+            "topics": ["OS", "Networks", "Linux"],
+            "difficulty": "Medium"
+          }
+        ]
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 40,
+        "platform": "Physical",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {"question": "Find a value in a doubly linked list.", "difficulty": "Easy"},
+          {"question": "Swap two values without using a third variable.", "difficulty": "Easy"},
+          {"question": "Multiply 2 numbers without using multiplication operator.", "difficulty": "Easy"},
+          {"question": "Linux commands — list and what they do. Situation: backup files in office from home without internet (SSH/SCP).", "topics": ["Linux"], "difficulty": "Medium"},
+          {"question": "What is an Operating System?", "topics": ["OS"], "difficulty": "Easy"},
+          {"question": "CPU scheduling algorithms and types.", "topics": ["OS"], "difficulty": "Easy"},
+          {"question": "List OSI layers. Address used in Data Link layer and Network layer.", "topics": ["Computer Networks"], "difficulty": "Easy"},
+          {"question": "What is a Data Structure? Types of Data Structures.", "topics": ["DSA"], "difficulty": "Easy"}
+        ]
+      },
+      {
+        "round_number": 3,
+        "type": "HR",
+        "duration_minutes": 60,
+        "platform": "Physical",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "behavioral_questions": [
+          "Introduce yourself.",
+          "Where are you from.",
+          "What do you do in your free time.",
+          "Who is your inspiration.",
+          "Interests and what drives you to excel.",
+          "Project you faced the most difficulty in and how you tackled it.",
+          "Hobbies.",
+          "PoSH-related activities (candidate-specific)."
+        ],
+        "tips": "Be confident. Answer uniquely to stand out. Take a second to process before answering."
+      }
+    ],
+    "key_tips": [
+      "Confidence is key — if you are confident, you are 50% done.",
+      "Be unique and clear while answering.",
+      "Take a second to process the question before answering."
+    ],
+    "mistakes_to_avoid": [
+      "Even if you don't know, keep trying — don't give up immediately.",
+      "Read their requirements and align your interests carefully."
+    ],
+    "tags": ["ibm", "software engineer", "cse", "full-time", "linux", "os", "dsa", "computer networks"]
+  },
+  {
+    "company": "Infibeam Avenues",
+    "role": "DevOps Engineer",
+    "type": "Full-time",
+    "duration": "6 Months Internship + Full-time",
+    "work_mode": "On-site",
+    "location": "Bangalore",
+    "application_date": "2025-08-27",
+    "total_rounds": 4,
+    "overall_rating": "5/5",
+    "final_result": "Selected",
+    "would_recommend": true,
+    "preparation_time_weeks": 4,
+    "resources_used": ["LeetCode", "NeetCode", "GeeksForGeeks", "InterviewBit"],
+    "note": "No HR round. Process consists of 3 technical rounds after OA.",
+    "rounds": [
+      {
+        "round_number": 1,
+        "type": "Online Assessment",
+        "duration_minutes": 90,
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Given a binary tree, find its height considering only nodes with odd values. Even-valued nodes are skipped.",
+            "topics": ["Trees", "Recursion"],
+            "difficulty": "Easy",
+            "solution": "DFS: if node is odd, return 1 + max(left, right); else return max(left, right). Maximum odd-only path = height."
+          },
+          {
+            "question": "Given two integers L (length of encoded output) and V (1-based index in sequence), return the V-th encoded string of length L.",
+            "topics": ["String", "Math", "Simulation"],
+            "difficulty": "Hard",
+            "solution": "If V falls in numeric range, return it directly. Otherwise compute letter prefix using (V - numeric_range) / suffix_size and numeric suffix using modulo."
+          }
+        ],
+        "mcq_section": {
+          "total_questions": 20,
+          "difficulty": "Medium",
+          "topics": ["Aptitude", "DSA", "DBMS", "OOPs", "OS"]
+        },
+        "tips": [
+          "Prepare Aptitude from IndiaBix.",
+          "Revise DBMS and OS from GeeksForGeeks and InterviewBit.",
+          "Practice from LeetCode/NeetCode Top 150."
+        ]
+      },
+      {
+        "round_number": 2,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": "Google Meet",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Flatten Binary Tree to Linked List (LeetCode).",
+            "topics": ["Binary Tree", "Linked List", "Recursion"],
+            "difficulty": "Medium",
+            "leetcode_link": "https://leetcode.com/problems/flatten-binary-tree-to-linked-list/",
+            "solution": "First solved in O(n²) recursion. Optimized to O(n) with hint."
+          },
+          {
+            "question": "Puzzle: 8 identical balls, one is heavier. Find it in minimum number of weighings using a balance scale.",
+            "topics": ["Puzzle"],
+            "difficulty": "Medium",
+            "solution": "Divide into groups of 3, 3, 2. Compare first two groups (3 vs 3). If equal, heavier is in the pair — 1 more weighing. If unequal, divide the heavier group of 3 — compare any 2, 1 more weighing. Minimum = 2 weighings.",
+            "gfg_link": "https://www.geeksforgeeks.org/aptitude/puzzle-8-balls-problem/"
+          }
+        ],
+        "tips": "Go through commonly asked puzzles on GeeksForGeeks. Don't hesitate to ask for hints."
+      },
+      {
+        "round_number": 3,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": "Google Meet",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Gas Station problem (LeetCode) — n cities in a circle, each gives fuel, find start city to complete full circle.",
+            "topics": ["Array", "Greedy"],
+            "difficulty": "Medium",
+            "leetcode_link": "https://leetcode.com/problems/gas-station/",
+            "solution": "Explain approach and write logic in mathematical terms (not code)."
+          },
+          {
+            "question": "SQL: Two tables (Manager, Employee). Find managers whose total employee salary sum exceeds 100,000.",
+            "topics": ["SQL", "GROUP BY", "JOIN", "HAVING"],
+            "difficulty": "Medium",
+            "solution": "JOIN Manager and Employee on manager_id. GROUP BY manager. HAVING SUM(salary) > 100000."
+          }
+        ],
+        "tips": "Be clear with SQL concepts — GROUP BY, JOIN, HAVING. Explain the mathematical approach clearly for algorithmic questions."
+      },
+      {
+        "round_number": 4,
+        "type": "Technical",
+        "duration_minutes": 60,
+        "platform": "Google Meet",
+        "result": "Selected",
+        "experience_rating": "5/5",
+        "technical_questions": [
+          {
+            "question": "Josephus Problem variant: 50 people in a circle numbered 1-50. Each person shoots the next and passes the gun to the person after. Which person survives?",
+            "topics": ["Puzzle"],
+            "difficulty": "Medium",
+            "gfg_link": "https://www.geeksforgeeks.org/dsa/josephus-problem/"
+          },
+          {
+            "question": "Candy problem (LeetCode): n children in a line with ratings. Each must get at least 1 candy. Higher-rated child gets more than immediate neighbors. Find minimum candies.",
+            "topics": ["Array", "Greedy"],
+            "difficulty": "Medium",
+            "leetcode_link": "https://leetcode.com/problems/candy/"
+          },
+          {
+            "question": "Name all sorting algorithms. Implement Merge Sort.",
+            "topics": ["Sorting"],
+            "difficulty": "Medium"
+          }
+        ],
+        "tips": [
+          "Be familiar with commonly asked sorting algorithms.",
+          "Practice puzzles on GeeksForGeeks and problems on LeetCode."
+        ]
+      }
+    ],
+    "key_tips": [
+      "Infibeam mainly focuses on puzzles and coding problems.",
+      "If strong in DSA, interview is relatively easy.",
+      "Interviewers are supportive and provide hints — don't hesitate to ask.",
+      "Keep solving LeetCode daily consistently.",
+      "Revise previously solved problems regularly.",
+      "Be strong in all Top 150 LeetCode interview questions."
+    ],
+    "mistakes_to_avoid": [
+      "If stuck, don't waste too much time — ask for hints.",
+      "Don't be frustrated by rejections — learn, improve, and continue.",
+      "Never compare yourself with others — focus on your own growth and consistency."
+    ],
+    "tags": ["infibeam avenues", "devops engineer", "full-time"]
+  }
+]

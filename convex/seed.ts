@@ -2,13 +2,11 @@ import { internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
 export const seedExperiences = internalMutation({
-  args: {
-    experiences: v.array(v.any()),
-  },
-  handler: async (ctx, args) => {
+  args: {},
+  handler: async (ctx) => {
     const allExperiences = args.experiences;
 
-    console.log(`Loaded ${allExperiences.length} experiences from JSON files`);
+    console.log(`Processing ${allExperiences.length} experiences`);
 
     const freePreviewCompanies = new Set<string>();
     let count = 0;
@@ -35,7 +33,7 @@ export const seedExperiences = internalMutation({
       let difficulty: "easy" | "medium" | "hard" = "medium";
       if (raw.rounds) {
         const difficulties = raw.rounds.flatMap(
-          (r: any) => r.questions?.map((q: any) => q.difficulty?.toLowerCase()) || []
+          (r: any) => r.technical_questions?.map((q: any) => q.difficulty?.toLowerCase()) || []
         );
         if (difficulties.includes("hard")) difficulty = "hard";
         else if (difficulties.includes("easy") && !difficulties.includes("medium")) difficulty = "easy";
@@ -61,22 +59,22 @@ export const seedExperiences = internalMutation({
       if (raw.rounds) {
         let techRoundIdx = 0;
         for (const round of raw.rounds) {
-          if (round.questions) {
-            for (const q of round.questions) {
+          if (round.technical_questions) {
+            for (const q of round.technical_questions) {
               if (q.question) allQuestions.push(q.question);
             }
           }
           if (round.tips) allTips.push(round.tips);
 
-          const roundDesc = buildRoundDescription(round);
           const roundType = (round.type || "").toLowerCase();
 
-          if (roundType.includes("online assessment") || roundType.includes("coding round")) {
-            oaDetails = roundDesc;
-          } else if (roundType === "hr") {
-            hrRound = roundDesc;
+          if (roundType.includes("online assessment") || roundType.includes("coding") || roundType.includes("oa")) {
+            oaDetails = `${round.type} (${round.duration_minutes} mins) - ${round.result || "N/A"}`;
+          } else if (roundType === "hr" || roundType.includes("manager")) {
+            hrRound = `${round.type} (${round.duration_minutes} mins) - ${round.result || "N/A"}`;
           } else {
             techRoundIdx++;
+            const roundDesc = `${round.type} (${round.duration_minutes} mins) - ${round.result || "N/A"}`;
             if (techRoundIdx === 1) round1 = roundDesc;
             else if (techRoundIdx === 2) round2 = roundDesc;
             else if (techRoundIdx === 3) round3 = roundDesc;
@@ -135,27 +133,3 @@ export const seedExperiences = internalMutation({
     return { inserted: count };
   },
 });
-
-function buildRoundDescription(round: any): string {
-  const parts: string[] = [];
-  parts.push(`**${round.type}** (${round.duration_minutes} mins)`);
-  if (round.platform) parts.push(`Platform: ${round.platform}`);
-  if (round.result) parts.push(`Result: ${round.result}`);
-  if (round.experience_rating) parts.push(`Rating: ${round.experience_rating}`);
-
-  if (round.questions?.length > 0) {
-    parts.push("\nQuestions:");
-    for (const q of round.questions) {
-      let qLine = `• ${q.question}`;
-      if (q.topics?.length) qLine += ` [${q.topics.join(", ")}]`;
-      if (q.difficulty) qLine += ` (${q.difficulty})`;
-      parts.push(qLine);
-      if (q.solution) parts.push(`  → ${q.solution}`);
-    }
-  }
-
-  if (round.tips) parts.push(`\nTips: ${round.tips}`);
-  if (round.round_feedback) parts.push(`Feedback: ${round.round_feedback}`);
-
-  return parts.join("\n");
-}

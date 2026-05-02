@@ -42,10 +42,8 @@ function BrowseContent() {
 
   // Paginated query - fetch chunk by chunk
   const paginationArgs = {
-    paginationOpts: {
-      numItems: PAGE_SIZE,
-      cursor: cursor ?? undefined,
-    },
+    cursor: cursor ?? undefined,
+    numItems: PAGE_SIZE,
     ...filters,
   };
 

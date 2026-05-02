@@ -1,6 +1,5 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { paginationOptsValidator } from "convex/server";
 
 async function requireAuth(ctx: any) {
   const identity = await ctx.auth.getUserIdentity();
@@ -95,7 +94,8 @@ export const list = query({
  */
 export const paginatedList = query({
   args: {
-    paginationOpts: paginationOptsValidator,
+    cursor: v.optional(v.string()),
+    numItems: v.optional(v.number()),
     company: v.optional(v.string()),
     type: v.optional(v.string()),
     branch: v.optional(v.string()),
@@ -131,11 +131,11 @@ export const paginatedList = query({
       return true;
     });
 
-    // Manual pagination: slice the results based on cursor
-    const cursor = Number(args.paginationOpts.cursor ?? "0");
-    const numItems = args.paginationOpts.numItems;
-    const page = filtered.slice(cursor, cursor + numItems);
-    const nextCursor = cursor + numItems;
+    // Manual pagination
+    const cursorPos = Number(args.cursor ?? "0");
+    const pageSize = args.numItems ?? 8;
+    const page = filtered.slice(cursorPos, cursorPos + pageSize);
+    const nextCursor = cursorPos + pageSize;
     const isDone = nextCursor >= filtered.length;
 
     return {

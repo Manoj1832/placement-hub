@@ -26,7 +26,7 @@ export default function HomePage() {
 
       <main className="relative z-10">
         {/* Hero Section */}
-        <section className="container mx-auto px-4 sm:px-6 pt-6 sm:pt-10 md:pt-12 pb-8 sm:pb-12">
+        <section className="container mx-auto px-4 sm:px-6 pt-2 sm:pt-6 md:pt-8 pb-4 sm:pb-6 md:pb-8">
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="max-w-xl">
               <SplitText 
@@ -58,7 +58,7 @@ export default function HomePage() {
         </section>
 
         {/* Company Logos Bar */}
-        <div className="container mx-auto px-4 sm:px-6 mb-12 sm:mb-16 relative z-20">
+        <div className="container mx-auto px-4 sm:px-6 mb-8 sm:mb-12 relative z-20">
           <div className="bg-white rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 md:p-8 shadow-2xl relative overflow-hidden">
             <div style={{ height: '40px', position: 'relative' }}>
               <LogoLoop

@@ -73,7 +73,7 @@ export default function HomePage() {
 
         {/* Company Logos Bar */}
         <div className="container mx-auto px-4 sm:px-6 mb-8 sm:mb-12 relative z-20">
-          <div className="bg-white rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 md:p-8 shadow-2xl relative overflow-hidden">
+          <div className="max-w-5xl mx-auto bg-white rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 md:p-8 shadow-2xl relative overflow-hidden">
             <div style={{ height: '40px', position: 'relative' }}>
               <LogoLoop
                 logos={[

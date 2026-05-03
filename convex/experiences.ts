@@ -376,9 +376,14 @@ export const submit = mutation({
 });
 
 export const upvote = mutation({
-  args: { experienceId: v.id("experiences") },
+  args: { experienceId: v.id("experiences"), userEmail: v.string() },
   handler: async (ctx, args) => {
-    const { user } = await requireAuth(ctx);
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q: any) => q.eq("email", args.userEmail))
+      .first();
+    
+    if (!user) throw new Error("User not found");
 
     const existing = await ctx.db
       .query("votes")
@@ -405,9 +410,14 @@ export const upvote = mutation({
 });
 
 export const save = mutation({
-  args: { experienceId: v.id("experiences") },
+  args: { experienceId: v.id("experiences"), userEmail: v.string() },
   handler: async (ctx, args) => {
-    const { user } = await requireAuth(ctx);
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q: any) => q.eq("email", args.userEmail))
+      .first();
+      
+    if (!user) throw new Error("User not found");
 
     const existing = await ctx.db
       .query("savedExperiences")

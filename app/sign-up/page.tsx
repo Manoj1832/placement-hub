@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2, Mail, Lock, User, Check, X } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
 const passwordRequirements = [
   { label: "At least 8 characters", test: (p: string) => p.length >= 8 },
@@ -15,6 +16,7 @@ const passwordRequirements = [
 
 export default function SignUpPage() {
   const router = useRouter();
+  const { signUp } = useAuth();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -61,20 +63,10 @@ export default function SignUpPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
-          email: email.toLowerCase().trim(),
-          password,
-        }),
-      });
-
-      const data = await res.json();
+      const res = await signUp(name, email, password);
 
       if (!res.ok) {
-        setError(data.error || "Registration failed");
+        setError(res.error || "Registration failed");
         return;
       }
 

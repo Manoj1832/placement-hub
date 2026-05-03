@@ -415,11 +415,30 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
             )}
 
             <div className="flex flex-wrap gap-3 pt-4 border-t border-zinc-800">
-              <Button onClick={() => upvote({ experienceId: experience._id })} className="bg-zinc-800 hover:bg-zinc-700 text-white">
+              <Button 
+                onClick={() => {
+                  if (!userId) {
+                    router.push("/sign-in");
+                    return;
+                  }
+                  upvote({ experienceId: experience._id, userEmail: userId });
+                }} 
+                className="bg-zinc-800 hover:bg-zinc-700 text-white"
+              >
                 <ThumbsUp className="w-4 h-4 mr-2" />
                 Upvote ({experience.upvotes || 0})
               </Button>
-              <Button variant="outline" onClick={() => toggleSave({ experienceId: experience._id })} className="border-zinc-700 text-white hover:bg-zinc-800">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  if (!userId) {
+                    router.push("/sign-in");
+                    return;
+                  }
+                  toggleSave({ experienceId: experience._id, userEmail: userId });
+                }} 
+                className="border-zinc-700 text-white hover:bg-zinc-800"
+              >
                 <Bookmark className={`w-4 h-4 mr-2 ${saved ? "fill-current text-blue-400" : ""}`} />
                 {saved ? "Saved" : "Save"}
               </Button>

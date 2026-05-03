@@ -4,11 +4,13 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
 function SignInContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/browse";
+  const { signIn } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,16 +37,10 @@ function SignInContent() {
     }
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.toLowerCase().trim(), password }),
-      });
-
-      const data = await res.json();
+      const res = await signIn(email, password);
 
       if (!res.ok) {
-        setError(data.error || "Login failed");
+        setError(res.error || "Login failed");
         return;
       }
 

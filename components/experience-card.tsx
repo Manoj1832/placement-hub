@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { ThumbsUp, Bookmark, CheckCircle, MapPin, Briefcase, Clock, Users, Lock, Crown } from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "@clerk/nextjs";
+import { useSession } from "next-auth/react";
 
 interface ExperienceCardProps {
   experience: {
@@ -37,7 +37,8 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
   const upvote = useMutation(api.experiences.upvote);
   const toggleSave = useMutation(api.experiences.save);
 
-  const { userId } = useAuth();
+  const { data: session } = useSession();
+  const userId = session?.user?.email;
 
   const handleUpvote = (e: React.MouseEvent) => {
     e.preventDefault();

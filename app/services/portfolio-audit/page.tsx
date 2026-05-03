@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useAuth, SignInButton } from "@clerk/nextjs";
+import { useSession, signIn } from "next-auth/react";
 import Link from "next/link";
 import { Globe, ArrowLeft } from "lucide-react";
 
 export default function PortfolioAuditPage() {
   const [portfolioUrl, setPortfolioUrl] = useState("");
-  const { userId } = useAuth();
+  const { data: session } = useSession();
+  const userId = session?.user?.email;
   const createBooking = useMutation(api.bookings.create);
 
   const handleSubmit = async () => {
@@ -69,11 +70,12 @@ export default function PortfolioAuditPage() {
             </div>
 
             {!userId ? (
-              <SignInButton mode="modal">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                  Sign In to Book - ₹799
-                </Button>
-              </SignInButton>
+              <Button 
+                onClick={() => signIn()} 
+                className="w-full bg-blue-600 hover:bg-blue-700"
+              >
+                Sign In to Book - ₹799
+              </Button>
             ) : (
               <Button 
                 onClick={handleSubmit} 

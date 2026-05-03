@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/auth";
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     
     const { amount } = await req.json();
 
-    // Dynamic import to avoid crashes if razorpay module isn't configured
     const Razorpay = (await import("razorpay")).default;
 
     const razorpay = new Razorpay({
@@ -17,9 +16,9 @@ export async function POST(req: NextRequest) {
     });
     
     const order = await razorpay.orders.create({
-      amount: amount, // amount already in paise from frontend (9900 = ₹99)
+      amount: amount,
       currency: "INR",
-      receipt: `order_${userId}_${Date.now()}`,
+      receipt: `order_${session.user.email}_${Date.now()}`,
     });
     
     return NextResponse.json({ orderId: order.id, amount: order.amount });

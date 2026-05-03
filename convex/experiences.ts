@@ -223,7 +223,10 @@ export const getCompanies = query({
  * Returns limited data for premium experiences (unless user is premium).
  */
 export const getById = query({
-  args: { id: v.id("experiences") },
+  args: { 
+    id: v.id("experiences"),
+    userEmail: v.optional(v.string())
+  },
   handler: async (ctx, args) => {
     const experience = await ctx.db.get(args.id);
     if (!experience) return null;
@@ -233,11 +236,18 @@ export const getById = query({
       return { ...experience, accessLevel: "full" as const };
     }
 
-    // Check if user has premium
-    const user = await getOptionalUser(ctx);
-    const isPremiumUser =
-      user?.isPremium &&
-      (!user.premiumUntil || user.premiumUntil > Date.now());
+    // Check if user has premium via email
+    let isPremiumUser = false;
+    if (args.userEmail) {
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q: any) => q.eq("email", args.userEmail))
+        .first();
+      
+      if (user && user.isPremium && (!user.premiumUntil || user.premiumUntil > Date.now())) {
+        isPremiumUser = true;
+      }
+    }
 
     if (isPremiumUser) {
       return { ...experience, accessLevel: "full" as const };

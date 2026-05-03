@@ -101,3 +101,66 @@ export const isPremium = query({
     return true;
   },
 });
+
+/**
+ * Get or create a user by email — used with NextAuth sign-in flow.
+ * Auto-provisions user record on first sign-in.
+ */
+export const getOrCreateByEmail = mutation({
+  args: {
+    email: v.string(),
+    name: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q: any) => q.eq("email", args.email))
+      .first();
+
+    if (existing) {
+      return existing._id;
+    }
+
+    return ctx.db.insert("users", {
+      clerkId: `email_${args.email}`,
+      email: args.email,
+      name: args.name,
+      role: "student",
+      isPremium: false,
+      badges: [],
+      createdAt: Date.now(),
+    });
+  },
+});
+
+/**
+ * Check premium status by email — works with NextAuth (no Convex auth needed).
+ */
+export const isPremiumByEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q: any) => q.eq("email", args.email))
+      .first();
+    if (!user) return false;
+    if (!user.isPremium) return false;
+    if (user.premiumUntil && user.premiumUntil < Date.now()) {
+      return false;
+    }
+    return true;
+  },
+});
+
+/**
+ * Get user by email — works with NextAuth.
+ */
+export const getByEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    return ctx.db
+      .query("users")
+      .withIndex("by_email", (q: any) => q.eq("email", args.email))
+      .first();
+  },
+});

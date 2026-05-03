@@ -1,21 +1,32 @@
 "use client";
 
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Lock } from "lucide-react";
-import { useState } from "react";
-import { useAuth } from "@clerk/nextjs";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 interface PremiumGateProps {
   children: React.ReactNode;
 }
 
 export default function PremiumGate({ children }: PremiumGateProps) {
-  const isPremium = useQuery(api.users.isPremium);
-  const { userId } = useAuth();
+  const { data: session } = useSession();
+  const userId = session?.user?.email;
   const [loading, setLoading] = useState(false);
+  const [isPremium, setIsPremium] = useState<boolean | null>(null);
+
+  // Check premium status via API
+  useEffect(() => {
+    if (userId) {
+      fetch("/api/user/sync")
+        .then((res) => res.json())
+        .then((data) => setIsPremium(data.isPremium))
+        .catch(() => setIsPremium(false));
+    } else {
+      setIsPremium(false);
+    }
+  }, [userId]);
 
   const handleUpgrade = async () => {
     if (!userId) {
@@ -28,49 +39,77 @@ export default function PremiumGate({ children }: PremiumGateProps) {
       const res = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: 9900, productType: "premium", productId: "all-access" })
+        body: JSON.stringify({ amount: 9900 })
       });
       const data = await res.json();
       
-      if (!data.orderId) throw new Error("Order creation failed");
+      if (!res.ok || !data.orderId) throw new Error(data.error || "Order creation failed");
 
-      const options = {
+      // Load Razorpay SDK
+      if (!(window as any).Razorpay) {
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "https://checkout.razorpay.com/v1/checkout.js";
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error("Failed to load Razorpay SDK"));
+          document.body.appendChild(script);
+        });
+      }
+
+      const rzp = new (window as any).Razorpay({
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: data.amount,
         currency: "INR",
         name: "PSG Placement Hub",
-        description: "Premium Access Unlock",
+        description: "Premium Access - ₹99/mo",
         order_id: data.orderId,
-        handler: function (response: any) {
-          // After successful payment, the webhook handles the rest, but we can alert the user
-          alert("Payment Successful! Premium access is being granted. Please refresh the page in a few seconds.");
-          window.location.reload();
+        handler: async function (response: any) {
+          try {
+            const verifyRes = await fetch("/api/payment/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            });
+            const verifyData = await verifyRes.json();
+
+            if (verifyRes.ok && verifyData.success) {
+              setIsPremium(true);
+              alert("🎉 Payment Successful! Premium access granted for 30 days.");
+              window.location.reload();
+            } else {
+              alert("Payment received but verification failed. Contact support.");
+            }
+          } catch (err) {
+            console.error("Verification error:", err);
+            alert("Payment may have succeeded. Please refresh.");
+            window.location.reload();
+          }
         },
-        theme: { color: "#2D1A5C" }
-      };
-
-      const loadRazorpay = () => {
-        return new Promise((resolve) => {
-          const script = document.createElement("script");
-          script.src = "https://checkout.razorpay.com/v1/checkout.js";
-          script.onload = () => resolve(true);
-          script.onerror = () => resolve(false);
-          document.body.appendChild(script);
-        });
-      };
-
-      const isLoaded = await loadRazorpay();
-      if (!isLoaded) throw new Error("Failed to load Razorpay SDK");
-
-      const rzp = new (window as any).Razorpay(options);
+        prefill: {
+          email: userId,
+          name: session?.user?.name || "",
+        },
+        theme: { color: "#2D1A5C" },
+        modal: {
+          ondismiss: () => setLoading(false),
+        },
+      });
       rzp.open();
     } catch (err) {
       console.error(err);
       alert("Payment failed to initialize.");
-    } finally {
       setLoading(false);
     }
   };
+
+  // Still loading premium status
+  if (isPremium === null) {
+    return <div className="text-white text-center py-8">Checking access...</div>;
+  }
 
   if (isPremium) {
     return <>{children}</>;

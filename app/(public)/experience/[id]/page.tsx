@@ -2,21 +2,129 @@
 
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import { ThumbsUp, Bookmark, CheckCircle, MapPin, Briefcase, Clock, Lock, Crown, ExternalLink, Code2, Users } from "lucide-react";
 import Link from "next/link";
-import { useAuth, SignInButton } from "@clerk/nextjs";
+import { useSession, signIn } from "next-auth/react";
 
 export default function ExperienceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { userId } = useAuth();
-  const experience = useQuery(api.experiences.getById, { id: id as any });
+  const experienceId = id as Id<"experiences">;
+  const { data: session, status: sessionStatus } = useSession();
+  const userId = session?.user?.email as string | undefined;
+  const experience = useQuery(api.experiences.getById, { 
+    id: experienceId,
+    userEmail: userId
+  });
   const upvote = useMutation(api.experiences.upvote);
   const toggleSave = useMutation(api.experiences.save);
-  const saved = useQuery(api.experiences.isSaved, { experienceId: id as any });
+  const saved = useQuery(api.experiences.isSaved, { experienceId });
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
+  const [isPremiumUser, setIsPremiumUser] = useState(false);
+
+  // Sync user to Convex and check premium status when session is available
+  useEffect(() => {
+    if (sessionStatus === "authenticated" && userId) {
+      // Ensure user exists in Convex
+      fetch("/api/user/sync", { method: "POST" }).catch(console.error);
+
+      // Check premium status
+      fetch("/api/user/sync")
+        .then((res) => res.json())
+        .then((data) => setIsPremiumUser(data.isPremium))
+        .catch(console.error);
+    }
+  }, [sessionStatus, userId]);
+
+  const handleUpgrade = async () => {
+    if (!userId) {
+      signIn();
+      return;
+    }
+
+    try {
+      setUpgradeLoading(true);
+
+      // 1. Create Razorpay order via our API
+      const res = await fetch("/api/payment/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: 9900 }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.orderId) {
+        throw new Error(data.error || "Order creation failed");
+      }
+
+      // 2. Load Razorpay checkout script if not already loaded
+      if (!(window as any).Razorpay) {
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "https://checkout.razorpay.com/v1/checkout.js";
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error("Failed to load Razorpay SDK"));
+          document.body.appendChild(script);
+        });
+      }
+
+      // 3. Open Razorpay checkout popup
+      const rzp = new (window as any).Razorpay({
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: data.amount,
+        currency: "INR",
+        name: "PSG Placement Hub",
+        description: "Premium Access - ₹99/mo",
+        order_id: data.orderId,
+        handler: async function (response: any) {
+          try {
+            // 4. Verify payment server-side & grant premium
+            const verifyRes = await fetch("/api/payment/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            });
+            const verifyData = await verifyRes.json();
+
+            if (verifyRes.ok && verifyData.success) {
+              setIsPremiumUser(true);
+              alert("🎉 Payment Successful! You now have Premium access for 30 days.");
+              window.location.reload();
+            } else {
+              alert("Payment was received but verification failed. Please contact support.");
+            }
+          } catch (err) {
+            console.error("Verification error:", err);
+            alert("Payment may have succeeded. Please refresh the page.");
+            window.location.reload();
+          }
+        },
+        prefill: {
+          email: userId,
+          name: session?.user?.name || "",
+        },
+        theme: { color: "#eab308" },
+        modal: {
+          ondismiss: function () {
+            setUpgradeLoading(false);
+          },
+        },
+      });
+      rzp.open();
+    } catch (err: any) {
+      console.error("Payment init error:", err);
+      alert(err.message || "Payment failed to initialize. Please try again.");
+      setUpgradeLoading(false);
+    }
+  };
 
   if (experience === undefined) return (
     <div className="min-h-screen bg-black flex items-center justify-center">
@@ -35,7 +143,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
     </div>
   );
 
-  const isLocked = experience.accessLevel === "limited";
+  const isLocked = experience.accessLevel === "limited" && !isPremiumUser;
 
   let rounds: any[] = [];
   try {
@@ -145,18 +253,24 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
                   <Lock className="w-12 h-12 text-zinc-500 mb-4" />
                   <h3 className="text-xl font-bold text-white mb-2">Unlock the Full Experience</h3>
                   <p className="text-zinc-400 mb-6 max-w-md">
-                    This is a premium experience. Sign in to access round-by-round details, technical questions, and tips.
+                    This is a premium experience. Upgrade to access round-by-round details, technical questions, and tips.
                   </p>
                   {!userId ? (
-                    <SignInButton mode="modal">
-                      <Button className="bg-blue-600 hover:bg-blue-700">
-                        <Crown className="w-4 h-4 mr-2" />
-                        Sign In to Unlock - ₹99/mo
-                      </Button>
-                    </SignInButton>
+                    <Button 
+                      onClick={() => signIn()} 
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      <Crown className="w-4 h-4 mr-2" />
+                      Sign In to Unlock - ₹99/mo
+                    </Button>
                   ) : (
-                    <Button className="bg-yellow-600 hover:bg-yellow-700">
-                      Upgrade to Premium - ₹99/mo
+                    <Button 
+                      onClick={handleUpgrade}
+                      disabled={upgradeLoading}
+                      className="bg-yellow-600 hover:bg-yellow-700"
+                    >
+                      <Crown className="w-4 h-4 mr-2" />
+                      {upgradeLoading ? "Processing..." : "Upgrade to Premium - ₹99/mo"}
                     </Button>
                   )}
                 </CardContent>

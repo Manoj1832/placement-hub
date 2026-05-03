@@ -94,3 +94,64 @@ export const getByUser = query({
       .collect();
   },
 });
+
+/**
+ * Grant premium by email — called from our trusted server-side API route
+ * after Razorpay payment is verified. Does NOT require Convex auth since
+ * the NextAuth session is validated in the API route itself.
+ */
+export const grantPremiumByEmail = mutation({
+  args: {
+    email: v.string(),
+    razorpayOrderId: v.string(),
+    razorpayPaymentId: v.string(),
+    amount: v.number(),
+  },
+  handler: async (ctx, args) => {
+    // Find user by email
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q: any) => q.eq("email", args.email))
+      .first();
+
+    if (!user) throw new Error(`User not found for email: ${args.email}`);
+
+    // Check for duplicate payment
+    const existingOrders = await ctx.db
+      .query("orders")
+      .withIndex("by_razorpay_order", (q: any) =>
+        q.eq("razorpayOrderId", args.razorpayOrderId)
+      )
+      .collect();
+
+    if (existingOrders.length > 0) {
+      // Already processed — idempotent
+      return { alreadyProcessed: true };
+    }
+
+    // Create the order record
+    const orderId = await ctx.db.insert("orders", {
+      userId: user._id,
+      productType: "premium_monthly",
+      amount: args.amount,
+      currency: "INR",
+      razorpayOrderId: args.razorpayOrderId,
+      razorpayPaymentId: args.razorpayPaymentId,
+      paymentStatus: "paid",
+      createdAt: Date.now(),
+    });
+
+    // Grant 30 days of premium
+    const now = Date.now();
+    const currentUntil = user.premiumUntil || 0;
+    const startFrom = currentUntil > now ? currentUntil : now;
+    const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+
+    await ctx.db.patch(user._id, {
+      isPremium: true,
+      premiumUntil: startFrom + thirtyDays,
+    });
+
+    return { orderId, premiumUntil: startFrom + thirtyDays };
+  },
+});

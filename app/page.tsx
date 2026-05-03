@@ -3,73 +3,27 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { UserButton, SignInButton, useAuth } from "@clerk/nextjs";
-import { ArrowRight, Code2, BookOpen, Target } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import ExperienceCard from "@/components/experience-card";
 import FloatingCards from "@/components/floating-cards";
 import SplitText from "@/components/SplitText";
 import LogoLoop from "@/components/LogoLoop";
-import { useState } from "react";
+import Header from "@/components/header";
 
 export default function HomePage() {
   const recentExperiences = useQuery(api.experiences.getRecent, { limit: 4 });
-  const { userId } = useAuth();
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      window.location.href = `/browse?search=${encodeURIComponent(searchQuery)}`;
-    }
-  };
 
   return (
     <div className="min-h-screen bg-[#2D1A5C] text-white overflow-hidden selection:bg-[#00FF7F] selection:text-black">
-      {/* Background blobs for wavy effect */}
+      <Header />
+
+      {/* Background blobs */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#462888] opacity-50 blur-[100px]" />
         <div className="absolute top-[20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#392070] opacity-50 blur-[120px]" />
         <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-[#241350] opacity-80 blur-[80px]" />
       </div>
-
-      <header className="container mx-auto px-6 py-6 flex items-center justify-between relative z-10">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-white rounded-sm relative flex items-center justify-center">
-            <div className="w-3 h-3 bg-[#00FF7F] absolute -right-1 -top-1 rounded-sm" />
-          </div>
-          <Link href="/" className="text-xl font-bold tracking-tight text-white ml-2">
-            psg.hub
-          </Link>
-        </div>
-        
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white/80">
-          <Link href="/" className="text-white hover:text-[#00FF7F] transition">Home</Link>
-          <Link href="/browse" className="hover:text-[#00FF7F] transition">Browse</Link>
-          <Link href="/guidelines" className="hover:text-[#00FF7F] transition">Guidelines</Link>
-          <Link href="#" className="hover:text-[#00FF7F] transition">Help</Link>
-        </nav>
-
-        <div className="flex items-center gap-6">
-          {!userId ? (
-            <>
-              <SignInButton mode="modal">
-                <button className="text-sm font-medium text-white hover:text-white/80 transition hidden md:block">
-                  Sign In
-                </button>
-              </SignInButton>
-              <Link href="/sign-up">
-                <button className="text-sm font-semibold bg-[#00FF7F] text-black px-6 py-2.5 rounded-xl hover:bg-[#00e673] transition shadow-[0_0_20px_rgba(0,255,127,0.3)]">
-                  Registration
-                </button>
-              </Link>
-            </>
-          ) : (
-            <UserButton />
-          )}
-        </div>
-      </header>
 
       <main className="relative z-10">
         {/* Hero Section */}

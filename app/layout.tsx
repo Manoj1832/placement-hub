@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
+import { SessionProvider } from "@/components/session-provider";
 import ConvexClientProvider from "@/components/convex-provider";
 import "./globals.css";
 
@@ -16,11 +16,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ClerkProvider>
+        <SessionProvider>
           <ConvexClientProvider>
             {children}
           </ConvexClientProvider>
-        </ClerkProvider>
+        </SessionProvider>
       </body>
     </html>
   );

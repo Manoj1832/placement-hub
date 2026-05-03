@@ -2,23 +2,37 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useAuth, SignInButton, UserButton } from "@clerk/nextjs";
+import { useSession, signIn } from "next-auth/react";
 import Link from "next/link";
 import ExperienceCard from "@/components/experience-card";
-import { useState } from "react";
+import Header from "@/components/header";
+import { ArrowLeft, Bookmark } from "lucide-react";
 
 export default function SavedPage() {
-  const { userId } = useAuth();
+  const { data: session, status } = useSession();
+  const userId = session?.user?.email;
   const saved = useQuery(api.experiences.getSaved);
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
 
   if (!userId) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
+          <Bookmark className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
           <p className="text-zinc-400 mb-4">Please sign in to view saved experiences</p>
-          <SignInButton mode="modal">
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg">Sign In</button>
-          </SignInButton>
+          <button 
+            onClick={() => signIn()} 
+            className="px-4 py-2 bg-[#00FF7F] text-black rounded-lg font-semibold"
+          >
+            Sign In
+          </button>
         </div>
       </div>
     );
@@ -26,11 +40,13 @@ export default function SavedPage() {
 
   return (
     <div className="min-h-screen bg-black">
-      <div className="bg-zinc-950 border-b border-zinc-800">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-white">PSG Placement Hub</Link>
-          <UserButton />
-        </div>
+      <Header />
+
+      <div className="container mx-auto px-4 py-4 border-b border-zinc-800">
+        <Link href="/browse" className="text-sm text-zinc-400 hover:text-white inline-flex items-center">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to browse
+        </Link>
       </div>
 
       <div className="container mx-auto px-4 py-8">
@@ -42,8 +58,9 @@ export default function SavedPage() {
         </div>
         {saved?.length === 0 && (
           <div className="text-center py-12 bg-zinc-900 rounded-xl border border-zinc-800">
+            <Bookmark className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
             <p className="text-zinc-400">No saved experiences yet.</p>
-            <Link href="/browse" className="text-blue-400 hover:underline mt-2 inline-block">
+            <Link href="/browse" className="text-[#00FF7F] hover:underline mt-2 inline-block">
               Browse experiences
             </Link>
           </div>

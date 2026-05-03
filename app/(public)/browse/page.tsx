@@ -4,17 +4,15 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useState, useEffect, useCallback, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { useAuth, SignInButton } from "@clerk/nextjs";
 import ExperienceCard from "@/components/experience-card";
 import BrowseFilters from "@/components/browse-filters";
-import { Search, Users, Building2, Award, Crown, LogIn, UserPlus, Loader2 } from "lucide-react";
+import Header from "@/components/header";
+import { Search, Users, Building2, Award, Crown, Loader2 } from "lucide-react";
 
 const PAGE_SIZE = 8;
 
 function BrowseContent() {
   const searchParams = useSearchParams();
-  const { userId } = useAuth();
   const urlCompany = searchParams.get("company");
   const urlType = searchParams.get("type");
   const urlSearch = searchParams.get("search");
@@ -92,38 +90,14 @@ function BrowseContent() {
 
   return (
     <div className="min-h-screen bg-[#2D1A5C]">
-      <div className="bg-[#241350] border-b border-white/10">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-white">
-                Interview Experiences
-              </h1>
-              <p className="text-white/60 mt-1">
-                Real placement stories from PSG College students
-              </p>
-            </div>
-            
-            {!userId ? (
-              <SignInButton mode="modal">
-                <button className="flex items-center gap-2 px-4 py-2 bg-[#00FF7F] hover:bg-[#00cc66] text-black rounded-lg font-semibold shadow-[0_0_15px_rgba(0,255,127,0.3)] transition">
-                  <LogIn className="w-4 h-4" />
-                  Sign In
-                </button>
-              </SignInButton>
-            ) : (
-              <Link href="/dashboard">
-                <button className="flex items-center gap-2 px-4 py-2 bg-[#392070] hover:bg-[#462888] text-white rounded-lg font-medium border border-white/10 transition">
-                  <UserPlus className="w-4 h-4" />
-                  Dashboard
-                </button>
-              </Link>
-            )}
-          </div>
-        </div>
-      </div>
+      <Header />
 
       <div className="container mx-auto px-4 py-6">
+        <div className="mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-white">Interview Experiences</h1>
+          <p className="text-white/60 mt-1">Real placement stories from PSG College students</p>
+        </div>
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
           <div className="bg-[#392070] rounded-xl p-4 border border-white/10">
             <div className="flex items-center gap-2 text-white/70 text-sm">

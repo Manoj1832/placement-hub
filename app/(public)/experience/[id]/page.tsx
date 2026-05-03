@@ -7,9 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { use, useState, useEffect } from "react";
-import { ThumbsUp, Bookmark, CheckCircle, MapPin, Briefcase, Clock, Lock, Crown, ExternalLink, Code2, Users } from "lucide-react";
+import { ThumbsUp, Bookmark, CheckCircle, MapPin, Briefcase, Clock, Lock, Crown, ExternalLink, Code2, Users, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useSession, signIn } from "next-auth/react";
+import Header from "@/components/header";
 
 export default function ExperienceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -22,7 +23,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
   });
   const upvote = useMutation(api.experiences.upvote);
   const toggleSave = useMutation(api.experiences.save);
-  const saved = useQuery(api.experiences.isSaved, { experienceId });
+  const saved = useQuery(api.experiences.isSaved, { experienceId, userEmail: userId });
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [isPremiumUser, setIsPremiumUser] = useState(false);
 
@@ -164,12 +165,13 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <div className="min-h-screen bg-black">
-      <div className="bg-zinc-950 border-b border-zinc-800">
-        <div className="container mx-auto px-4 py-4">
-          <Link href="/browse" className="text-sm text-zinc-400 hover:text-white inline-flex items-center">
-            ← Back to experiences
-          </Link>
-        </div>
+      <Header />
+
+      <div className="container mx-auto px-4 py-4 border-b border-zinc-800">
+        <Link href="/browse" className="text-sm text-zinc-400 hover:text-white inline-flex items-center">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to experiences
+        </Link>
       </div>
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">

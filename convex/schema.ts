@@ -6,6 +6,7 @@ export default defineSchema({
     clerkId: v.string(),
     email: v.string(),
     name: v.string(),
+    password: v.optional(v.string()),
     branch: v.optional(v.string()),
     graduationYear: v.optional(v.number()),
     role: v.union(

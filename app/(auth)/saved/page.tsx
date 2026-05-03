@@ -10,8 +10,8 @@ import { ArrowLeft, Bookmark } from "lucide-react";
 
 export default function SavedPage() {
   const { data: session, status } = useSession();
-  const userId = session?.user?.email;
-  const saved = useQuery(api.experiences.getSaved);
+  const userId = session?.user?.email ?? undefined;
+  const saved = useQuery(api.experiences.getSaved, { userEmail: userId });
 
   if (status === "loading") {
     return (

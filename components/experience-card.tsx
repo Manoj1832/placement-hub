@@ -33,12 +33,15 @@ interface ExperienceCardProps {
 }
 
 export default function ExperienceCard({ experience }: ExperienceCardProps) {
-  const saved = useQuery(api.experiences.isSaved, { experienceId: experience._id });
-  const upvote = useMutation(api.experiences.upvote);
-  const toggleSave = useMutation(api.experiences.save);
-
   const { data: session } = useSession();
   const userId = session?.user?.email;
+
+  const saved = useQuery(api.experiences.isSaved, { 
+    experienceId: experience._id,
+    userEmail: userId ?? undefined
+  });
+  const upvote = useMutation(api.experiences.upvote);
+  const toggleSave = useMutation(api.experiences.save);
 
   const handleUpvote = (e: React.MouseEvent) => {
     e.preventDefault();

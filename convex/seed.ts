@@ -44,7 +44,7 @@ export const seedExperiences = internalMutation({
         branch: raw.branch || "CSE",
         year,
         month,
-        difficulty: raw.difficulty || "Medium",
+        difficulty: (raw.difficulty?.toLowerCase() || "medium") as "easy" | "medium" | "hard",
         location: raw.location || "",
         workMode: raw.work_mode || raw.workMode || "Hybrid",
         compensation: raw.ctc || raw.compensation || 0,
@@ -53,6 +53,15 @@ export const seedExperiences = internalMutation({
         upvotes: raw.upvotes || 0,
         status: "approved" as const,
         rounds: [],
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        isAnonymous: false,
+        isVerified: false,
+        questionsAsked: [],
+        tips: "",
+        totalRounds: 0,
+        overallRating: "5",
+        finalResult: "offer",
       };
 
       await ctx.db.insert("experiences", processed);
@@ -66,12 +75,25 @@ export const seedExperiences = internalMutation({
 export const seedBasic = internalMutation({
   args: {},
   handler: async (ctx) => {
+    const baseExp = {
+      month: 1,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      isAnonymous: false,
+      isVerified: false,
+      questionsAsked: [],
+      tips: "",
+      totalRounds: 0,
+      overallRating: "5",
+      finalResult: "offer" as const,
+    };
+
     const experiences = [
-      { companyName: "Google", roleTitle: "L3 SWE", opportunityType: "fulltime", branch: "CSE", year: 2024, difficulty: "Hard", location: "Bangalore", workMode: "Hybrid", isPremium: true, isFreePreview: false, upvotes: 52, status: "approved" },
-      { companyName: "Amazon", roleTitle: "SDE", opportunityType: "fulltime", branch: "CSE", year: 2024, difficulty: "Hard", location: "Bangalore", workMode: "Hybrid", isPremium: false, isFreePreview: true, upvotes: 45, status: "approved" },
-      { companyName: "Microsoft", roleTitle: "SDE", opportunityType: "fulltime", branch: "IT", year: 2024, difficulty: "Medium", location: "Hyderabad", workMode: "Hybrid", isPremium: false, isFreePreview: true, upvotes: 38, status: "approved" },
-      { companyName: "Goldman Sachs", roleTitle: "Analyst", opportunityType: "fulltime", branch: "ECE", year: 2024, difficulty: "Hard", location: "Bangalore", workMode: "Office", isPremium: true, isFreePreview: false, upvotes: 31, status: "approved" },
-      { companyName: "IBM", roleTitle: "Backend Developer", opportunityType: "fulltime", branch: "CSE", year: 2024, difficulty: "Easy", location: "Chennai", workMode: "Hybrid", isPremium: false, isFreePreview: true, upvotes: 27, status: "approved" },
+      { ...baseExp, companyName: "Google", roleTitle: "L3 SWE", opportunityType: "fulltime" as const, branch: "CSE", year: 2024, difficulty: "hard" as const, location: "Bangalore", workMode: "Hybrid", isPremium: true, isFreePreview: false, upvotes: 52, status: "approved" as const },
+      { ...baseExp, companyName: "Amazon", roleTitle: "SDE", opportunityType: "fulltime" as const, branch: "CSE", year: 2024, difficulty: "hard" as const, location: "Bangalore", workMode: "Hybrid", isPremium: false, isFreePreview: true, upvotes: 45, status: "approved" as const },
+      { ...baseExp, companyName: "Microsoft", roleTitle: "SDE", opportunityType: "fulltime" as const, branch: "IT", year: 2024, difficulty: "medium" as const, location: "Hyderabad", workMode: "Hybrid", isPremium: false, isFreePreview: true, upvotes: 38, status: "approved" as const },
+      { ...baseExp, companyName: "Goldman Sachs", roleTitle: "Analyst", opportunityType: "fulltime" as const, branch: "ECE", year: 2024, difficulty: "hard" as const, location: "Bangalore", workMode: "Office", isPremium: true, isFreePreview: false, upvotes: 31, status: "approved" as const },
+      { ...baseExp, companyName: "IBM", roleTitle: "Backend Developer", opportunityType: "fulltime" as const, branch: "CSE", year: 2024, difficulty: "easy" as const, location: "Chennai", workMode: "Hybrid", isPremium: false, isFreePreview: true, upvotes: 27, status: "approved" as const },
     ];
     
     for (const exp of experiences) {

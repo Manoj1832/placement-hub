@@ -134,6 +134,38 @@ export const getOrCreateByEmail = mutation({
 });
 
 /**
+ * Register a user with email and hashed password
+ */
+export const registerUser = mutation({
+  args: {
+    email: v.string(),
+    name: v.string(),
+    hashedPassword: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q: any) => q.eq("email", args.email))
+      .first();
+
+    if (existing) {
+      throw new Error("User already exists");
+    }
+
+    return ctx.db.insert("users", {
+      clerkId: `email_${args.email}`,
+      email: args.email,
+      name: args.name,
+      password: args.hashedPassword,
+      role: "student",
+      isPremium: false,
+      badges: [],
+      createdAt: Date.now(),
+    });
+  },
+});
+
+/**
  * Check premium status by email — works with NextAuth (no Convex auth needed).
  */
 export const isPremiumByEmail = query({

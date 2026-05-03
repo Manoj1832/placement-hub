@@ -1,51 +1,72 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
-import bcrypt from "bcryptjs";
+import { registerSchema, sanitize, hashPassword, checkRateLimit, GENERIC_ERROR } from "@/lib/auth";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, password } = await req.json();
-
-    if (!name || !email || !password) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    // Rate limiting by IP
+    const ip = req.headers.get("x-forwarded-for") || "unknown";
+    const rateLimit = checkRateLimit(`register:${ip}`);
+    if (!rateLimit.ok) {
+      return NextResponse.json(
+        { error: `Too many attempts. Try again in ${rateLimit.retryAfter}s` },
+        { status: 429 }
+      );
     }
 
-    // Password rules validation
-    if (password.length < 8) {
-      return NextResponse.json({ error: "Password must be at least 8 characters long" }, { status: 400 });
-    }
-    if (!/[A-Z]/.test(password)) {
-      return NextResponse.json({ error: "Password must contain at least one uppercase letter" }, { status: 400 });
-    }
-    if (!/[a-z]/.test(password)) {
-      return NextResponse.json({ error: "Password must contain at least one lowercase letter" }, { status: 400 });
-    }
-    if (!/[0-9]/.test(password)) {
-      return NextResponse.json({ error: "Password must contain at least one number" }, { status: 400 });
-    }
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-      return NextResponse.json({ error: "Password must contain at least one special character" }, { status: 400 });
+    // Parse and validate body
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
     }
 
-    // Hash the password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const result = registerSchema.safeParse(body);
+    if (!result.success) {
+      const firstError = result.error.errors[0]?.message || "Invalid input";
+      return NextResponse.json({ error: firstError }, { status: 400 });
+    }
 
-    // Register user via Convex
+    const { name, email, password } = result.data;
+
+    // Sanitize inputs
+    const sanitizedName = sanitize(name);
+    const sanitizedEmail = email.toLowerCase().trim();
+
+    // Check if user already exists
+    const existing = await convex.query(api.users.getByEmail, {
+      email: sanitizedEmail,
+    });
+
+    if (existing) {
+      return NextResponse.json(
+        { error: GENERIC_ERROR },
+        { status: 400 }
+      );
+    }
+
+    // Hash password
+    const hashedPassword = await hashPassword(password);
+
+    // Create user in Convex
     await convex.mutation(api.users.registerUser, {
-      name,
-      email,
+      name: sanitizedName,
+      email: sanitizedEmail,
       hashedPassword,
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json(
+      { success: true, message: "Account created successfully" },
+      { status: 201 }
+    );
   } catch (err: any) {
     console.error("Registration failed:", err);
     return NextResponse.json(
-      { error: err?.message === "User already exists" ? "User already exists" : "Registration failed" },
+      { error: GENERIC_ERROR },
       { status: 500 }
     );
   }

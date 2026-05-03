@@ -7,14 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useSession, signIn } from "next-auth/react";
+import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Globe, ArrowLeft } from "lucide-react";
 
 export default function PortfolioAuditPage() {
   const [portfolioUrl, setPortfolioUrl] = useState("");
-  const { data: session } = useSession();
-  const userId = session?.user?.email;
+  const router = useRouter();
+  const { user } = useAuth();
+  const userId = user?.email;
   const createBooking = useMutation(api.bookings.create);
 
   const handleSubmit = async () => {
@@ -71,7 +73,7 @@ export default function PortfolioAuditPage() {
 
             {!userId ? (
               <Button 
-                onClick={() => signIn()} 
+                onClick={() => router.push("/sign-in")} 
                 className="w-full bg-blue-600 hover:bg-blue-700"
               >
                 Sign In to Book - ₹799

@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 
     if (existing) {
       return NextResponse.json(
-        { error: GENERIC_ERROR },
+        { error: "Email already in use. Please sign in." },
         { status: 400 }
       );
     }

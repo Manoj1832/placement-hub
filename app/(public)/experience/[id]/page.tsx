@@ -9,14 +9,15 @@ import { Button } from "@/components/ui/button";
 import { use, useState, useEffect } from "react";
 import { ThumbsUp, Bookmark, CheckCircle, MapPin, Briefcase, Clock, Lock, Crown, ExternalLink, Code2, Users, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { useSession, signIn } from "next-auth/react";
+import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 import Header from "@/components/header";
 
 export default function ExperienceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const experienceId = id as Id<"experiences">;
-  const { data: session, status: sessionStatus } = useSession();
-  const userId = session?.user?.email as string | undefined;
+  const { user: sessionUser, loading: sessionLoading } = useAuth();
+  const userId = sessionUser?.email as string | undefined;
   const experience = useQuery(api.experiences.getById, { 
     id: experienceId,
     userEmail: userId

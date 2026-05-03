@@ -3,14 +3,16 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Link from "next/link";
-import { useSession, signIn } from "next-auth/react";
+import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, BookOpen, Shield, Users, Lock, Eye, HandHeart, Ban } from "lucide-react";
 
 export default function GuidelinesPage() {
-  const { data: session } = useSession();
-  const userId = session?.user?.email;
+  const router = useRouter();
+  const { user } = useAuth();
+  const userId = user?.email;
 
   const guidelines = [
     {
@@ -82,7 +84,7 @@ export default function GuidelinesPage() {
             </Link>
           ) : (
             <Button 
-              onClick={() => signIn()} 
+              onClick={() => router.push("/sign-in")} 
               className="bg-blue-600 hover:bg-blue-700"
             >
               Sign In to Contribute

@@ -2,18 +2,20 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useSession, signIn } from "next-auth/react";
+import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ExperienceCard from "@/components/experience-card";
 import Header from "@/components/header";
 import { ArrowLeft, Bookmark } from "lucide-react";
 
 export default function SavedPage() {
-  const { data: session, status } = useSession();
-  const userId = session?.user?.email ?? undefined;
+  const router = useRouter();
+  const { user: sessionUser, loading: sessionLoading } = useAuth();
+  const userId = sessionUser?.email ?? undefined;
   const saved = useQuery(api.experiences.getSaved, { userEmail: userId });
 
-  if (status === "loading") {
+  if (sessionLoading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-white">Loading...</div>
@@ -28,7 +30,7 @@ export default function SavedPage() {
           <Bookmark className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
           <p className="text-zinc-400 mb-4">Please sign in to view saved experiences</p>
           <button 
-            onClick={() => signIn()} 
+            onClick={() => router.push("/sign-in")} 
             className="px-4 py-2 bg-[#00FF7F] text-black rounded-lg font-semibold"
           >
             Sign In

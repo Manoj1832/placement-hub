@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SessionProvider } from "@/components/session-provider";
+import { AuthProvider } from "@/lib/auth-context";
 import ConvexClientProvider from "@/components/convex-provider";
 import "./globals.css";
 
@@ -16,11 +16,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SessionProvider>
+        <AuthProvider>
           <ConvexClientProvider>
             {children}
           </ConvexClientProvider>
-        </SessionProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { ThumbsUp, Bookmark, CheckCircle, MapPin, Briefcase, Clock, Users, Lock, Crown } from "lucide-react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/lib/auth-context";
 
 interface ExperienceCardProps {
   experience: {
@@ -33,8 +33,8 @@ interface ExperienceCardProps {
 }
 
 export default function ExperienceCard({ experience }: ExperienceCardProps) {
-  const { data: session } = useSession();
-  const userId = session?.user?.email;
+  const { user } = useAuth();
+  const userId = user?.email;
 
   const saved = useQuery(api.experiences.isSaved, { 
     experienceId: experience._id,

@@ -4,15 +4,15 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Lock } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/lib/auth-context";
 
 interface PremiumGateProps {
   children: React.ReactNode;
 }
 
 export default function PremiumGate({ children }: PremiumGateProps) {
-  const { data: session } = useSession();
-  const userId = session?.user?.email;
+  const { user } = useAuth();
+  const userId = user?.email;
   const [loading, setLoading] = useState(false);
   const [isPremium, setIsPremium] = useState<boolean | null>(null);
 

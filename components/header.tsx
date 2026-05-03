@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Crown, LogIn, LogOut, User } from "lucide-react";
 
 export default function Header() {
-  const { data: session } = useSession();
-  const userId = session?.user?.email;
+  const { user: session, signOut } = useAuth();
+  const userId = session?.email;
+  const router = useRouter();
   const [isPremium, setIsPremium] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -60,15 +62,15 @@ export default function Header() {
                 >
                   <User className="w-4 h-4 text-white/70" />
                   <span className="text-sm text-white hidden sm:inline truncate max-w-[120px]">
-                    {session.user?.name || session.user?.email}
+                    {session?.name || session?.email}
                   </span>
                 </button>
 
                 {menuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-[#241350] border border-white/10 rounded-lg shadow-xl overflow-hidden">
                     <div className="px-3 py-2 border-b border-white/10">
-                      <p className="text-sm text-white font-medium truncate">{session.user?.name}</p>
-                      <p className="text-xs text-white/50 truncate">{session.user?.email}</p>
+                      <p className="text-sm text-white font-medium truncate">{session?.name}</p>
+                      <p className="text-xs text-white/50 truncate">{session?.email}</p>
                     </div>
                     <Link
                       href="/dashboard"
@@ -106,7 +108,7 @@ export default function Header() {
               </div>
             ) : (
               <button
-                onClick={() => signIn()}
+                onClick={() => router.push("/sign-in")}
                 className="flex items-center gap-2 px-4 py-2 bg-[#00FF7F] hover:bg-[#00cc66] text-black rounded-lg font-semibold text-sm transition shadow-[0_0_15px_rgba(0,255,127,0.3)]"
               >
                 <LogIn className="w-4 h-4" />

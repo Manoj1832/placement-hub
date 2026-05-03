@@ -74,7 +74,7 @@ export default function HomePage() {
         {/* Company Logos Bar */}
         <div className="container mx-auto px-4 sm:px-6 mb-8 sm:mb-12 relative z-20">
           <div className="bg-white rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 md:p-8 shadow-2xl relative overflow-hidden">
-            <div style={{ height: '20px', position: 'relative' }}>
+            <div style={{ height: '10px', position: 'relative' }}>
               <LogoLoop
                 logos={[
                   { src: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", alt: "Google" },

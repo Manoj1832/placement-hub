@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { AUTH_COOKIE_NAME, verifyJWT } from "@/lib/auth";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
+import { cachedQuery, cacheKeys } from "@/lib/redis";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 /**
- * Called after NextAuth sign-in to ensure user exists in Convex DB.
+ * Called after sign-in to ensure user exists in Convex DB.
  */
 export async function POST(req: NextRequest) {
   try {
@@ -31,6 +32,7 @@ export async function POST(req: NextRequest) {
 
 /**
  * Check premium status for the current session user.
+ * Cached in Redis for 60s.
  */
 export async function GET(req: NextRequest) {
   try {
@@ -41,9 +43,15 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ isPremium: false });
     }
 
-    const isPremium = await convex.query(api.users.isPremiumByEmail, {
-      email: payload.email,
-    });
+    const isPremium = await cachedQuery(
+      cacheKeys.isPremium(payload.email),
+      async () => {
+        return await convex.query(api.users.isPremiumByEmail, {
+          email: payload.email,
+        });
+      },
+      60 // 1 minute TTL
+    );
 
     return NextResponse.json({ isPremium });
   } catch (err: any) {

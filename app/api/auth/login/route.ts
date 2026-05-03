@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
-import { loginSchema, verifyPassword, createJWT, checkRateLimit, GENERIC_ERROR, AUTH_COOKIE_NAME, getCookieConfig } from "@/lib/auth";
+import { loginSchema, verifyPassword, createJWT, GENERIC_ERROR, AUTH_COOKIE_NAME, getCookieConfig } from "@/lib/auth";
+import { checkRateLimitRedis } from "@/lib/redis";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
@@ -9,7 +10,7 @@ export async function POST(req: NextRequest) {
   try {
     // Rate limiting by IP
     const ip = req.headers.get("x-forwarded-for") || "unknown";
-    const rateLimit = checkRateLimit(`login:${ip}`);
+    const rateLimit = await checkRateLimitRedis(`login:${ip}`, 10, 900); // 10 attempts per 15min
     if (!rateLimit.ok) {
       return NextResponse.json(
         { error: `Too many attempts. Try again in ${rateLimit.retryAfter}s` },

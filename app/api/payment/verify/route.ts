@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { AUTH_COOKIE_NAME, verifyJWT } from "@/lib/auth";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
+import { invalidateCache, cacheKeys } from "@/lib/redis";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
@@ -39,6 +40,13 @@ export async function POST(req: NextRequest) {
       razorpayPaymentId: razorpay_payment_id,
       amount: 9900,
     });
+
+    // 3. Invalidate cached premium status so user sees update immediately
+    await invalidateCache(
+      cacheKeys.premiumStatus(payload.email),
+      cacheKeys.isPremium(payload.email),
+      cacheKeys.userProfile(payload.email)
+    );
 
     return NextResponse.json({ success: true, message: "Premium access granted!" });
   } catch (err: any) {

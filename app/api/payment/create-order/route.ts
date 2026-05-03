@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AUTH_COOKIE_NAME, verifyJWT } from "@/lib/auth";
+import { checkRateLimitRedis } from "@/lib/redis";
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,6 +8,15 @@ export async function POST(req: NextRequest) {
     if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const payload = await verifyJWT(token);
     if (!payload?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    // Rate limit: 5 payment attempts per 10 minutes per user
+    const rateLimit = await checkRateLimitRedis(`payment:${payload.email}`, 5, 600);
+    if (!rateLimit.ok) {
+      return NextResponse.json(
+        { error: `Too many payment attempts. Try again in ${rateLimit.retryAfter}s` },
+        { status: 429 }
+      );
+    }
     
     const { amount } = await req.json();
 

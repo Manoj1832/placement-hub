@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header";
+import { useToast } from "@/components/toast-modal";
 
 export default function ExperienceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -28,6 +29,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
   const saved = useQuery(api.experiences.isSaved, { experienceId, userEmail: userId });
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [isPremiumUser, setIsPremiumUser] = useState(false);
+  const { showToast } = useToast();
 
   // Sync user to Convex and check premium status when session is available
   useEffect(() => {
@@ -99,14 +101,14 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
 
             if (verifyRes.ok && verifyData.success) {
               setIsPremiumUser(true);
-              alert("🎉 Payment Successful! You now have Premium access for 1 year.");
+              showToast("success", "Payment Successful!", "You now have Premium access for 1 year. 🎉");
               window.location.reload();
             } else {
-              alert("Payment was received but verification failed. Please contact support.");
+              showToast("error", "Verification Failed", "Payment was received but verification failed. Please contact support.");
             }
           } catch (err) {
             console.error("Verification error:", err);
-            alert("Payment may have succeeded. Please refresh the page.");
+            showToast("info", "Payment Status", "Payment may have succeeded. Please refresh the page.");
             window.location.reload();
           }
         },
@@ -124,7 +126,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
       rzp.open();
     } catch (err: any) {
       console.error("Payment init error:", err);
-      alert(err.message || "Payment failed to initialize. Please try again.");
+      showToast("error", "Payment Error", err.message || "Payment failed to initialize. Please try again.");
       setUpgradeLoading(false);
     }
   };
@@ -263,29 +265,29 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
             {isLocked ? (
               <Card className="relative overflow-hidden border-zinc-700/50 bg-zinc-800/30">
                 <div className="absolute inset-0 bg-gradient-to-br from-yellow-900/10 to-purple-900/10" />
-                <CardContent className="relative flex flex-col items-center justify-center p-12 text-center">
-                  <div className="w-20 h-20 rounded-full bg-yellow-900/30 flex items-center justify-center mb-4">
-                    <Lock className="w-10 h-10 text-yellow-400" />
+                  <CardContent className="relative flex flex-col items-center justify-center p-6 sm:p-10 md:p-12 text-center">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-yellow-900/30 flex items-center justify-center mb-4">
+                    <Lock className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-400" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-3">Unlock the Full Experience</h3>
-                  <p className="text-zinc-400 mb-6 max-w-md text-lg">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">Unlock the Full Experience</h3>
+                  <p className="text-sm sm:text-base text-zinc-400 mb-6 max-w-md">
                     This is a premium experience. Upgrade to access round-by-round details, technical questions, and tips.
                   </p>
                   {!userId ? (
                     <Button 
                       onClick={() => router.push("/sign-in")} 
-                      className="bg-purple-600 hover:bg-purple-700 text-lg px-6 py-3"
+                      className="bg-purple-600 hover:bg-purple-700 text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3 w-full sm:w-auto"
                     >
-                      <Crown className="w-5 h-5 mr-2" />
+                      <Crown className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       Sign In to Unlock - ₹99/yr
                     </Button>
                   ) : (
                     <Button 
                       onClick={handleUpgrade}
                       disabled={upgradeLoading}
-                      className="bg-yellow-600 hover:bg-yellow-700 text-lg px-6 py-3"
+                      className="bg-yellow-600 hover:bg-yellow-700 text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3 w-full sm:w-auto"
                     >
-                      <Crown className="w-5 h-5 mr-2" />
+                      <Crown className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       {upgradeLoading ? "Processing..." : "Upgrade to Premium - ₹99/yr"}
                     </Button>
                   )}

@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { Upload, File, X } from "lucide-react";
 import { Button } from "./ui/button";
+import { useToast } from "@/components/toast-modal";
 
 interface FileUploaderProps {
   onUploadComplete?: (data: { r2Key: string; r2Url: string; fileName: string; fileSize: number; mimeType: string }) => void;
@@ -13,10 +14,11 @@ export default function FileUploader({ onUploadComplete, docType = "resume" }: F
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const { showToast } = useToast();
 
   const handleFile = async (f: File) => {
     if (!f.type.includes("pdf")) {
-      alert("Only PDF files are allowed");
+      showToast("warning", "Invalid File", "Only PDF files are allowed.");
       return;
     }
 
@@ -38,7 +40,7 @@ export default function FileUploader({ onUploadComplete, docType = "resume" }: F
       onUploadComplete?.(data);
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Failed to upload file");
+      showToast("error", "Upload Failed", "Failed to upload file. Please try again.");
     } finally {
       setUploading(false);
     }

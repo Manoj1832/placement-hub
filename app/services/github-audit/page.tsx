@@ -11,6 +11,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GitBranch as Github, ArrowLeft } from "lucide-react";
+import { useToast } from "@/components/toast-modal";
 
 export default function GitHubAuditPage() {
   const [githubUrl, setGithubUrl] = useState("");
@@ -18,6 +19,7 @@ export default function GitHubAuditPage() {
   const { user } = useAuth();
   const userId = user?.email;
   const createBooking = useMutation(api.bookings.create);
+  const { showToast } = useToast();
 
   const handleSubmit = async () => {
     if (!githubUrl) return;
@@ -27,9 +29,9 @@ export default function GitHubAuditPage() {
         githubUrl,
         amount: 599,
       });
-      alert("Booking created! Complete payment to proceed.");
+      showToast("success", "Booking Created!", "Complete payment to proceed.");
     } catch (e) {
-      alert("Error creating booking: " + e);
+      showToast("error", "Booking Error", "Error creating booking: " + e);
     }
   };
 

@@ -5,12 +5,14 @@ import Header from "@/components/header";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useToast } from "@/components/toast-modal";
 
 export default function SubmitPage() {
   const router = useRouter();
+  const { showToast } = useToast();
 
   const handleSuccess = () => {
-    alert("Experience submitted successfully! It will be reviewed by an admin.");
+    showToast("success", "Submitted!", "Experience submitted successfully. It will be reviewed by an admin.");
     router.push("/browse");
   };
 

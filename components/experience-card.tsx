@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 import { ThumbsUp, Bookmark, CheckCircle, MapPin, Briefcase, Clock, Users, Lock, Crown } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useToast } from "@/components/toast-modal";
 
 interface ExperienceCardProps {
   experience: {
@@ -38,6 +39,7 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
   const userId = user?.email;
   const [localUpvotes, setLocalUpvotes] = useState(experience.upvotes || 0);
   const [hasUpvoted, setHasUpvoted] = useState(false);
+  const { showToast } = useToast();
 
   const saved = useQuery(api.experiences.isSaved, { 
     experienceId: experience._id,
@@ -50,7 +52,7 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
     e.preventDefault();
     e.stopPropagation();
     if (!userId) {
-      alert("Please sign in to upvote experiences!");
+      showToast("warning", "Sign In Required", "Please sign in to upvote experiences!");
       return;
     }
     // Optimistic UI update queue
@@ -65,7 +67,7 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
     e.preventDefault();
     e.stopPropagation();
     if (!userId) {
-      alert("Please sign in to save experiences!");
+      showToast("warning", "Sign In Required", "Please sign in to save experiences!");
       return;
     }
     toggleSave({ experienceId: experience._id, userEmail: userId });

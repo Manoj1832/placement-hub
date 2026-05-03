@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/
 import { Lock } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
+import { useToast } from "@/components/toast-modal";
 
 interface PremiumGateProps {
   children: React.ReactNode;
@@ -15,6 +16,7 @@ export default function PremiumGate({ children }: PremiumGateProps) {
   const userId = user?.email;
   const [loading, setLoading] = useState(false);
   const [isPremium, setIsPremium] = useState<boolean | null>(null);
+  const { showToast } = useToast();
 
   // Check premium status via API
   useEffect(() => {
@@ -30,7 +32,7 @@ export default function PremiumGate({ children }: PremiumGateProps) {
 
   const handleUpgrade = async () => {
     if (!userId) {
-      alert("Please sign in first to upgrade to Premium!");
+      showToast("warning", "Sign In Required", "Please sign in first to upgrade to Premium!");
       return;
     }
     
@@ -78,14 +80,14 @@ export default function PremiumGate({ children }: PremiumGateProps) {
 
             if (verifyRes.ok && verifyData.success) {
               setIsPremium(true);
-              alert("🎉 Payment Successful! Premium access granted for 1 year.");
+              showToast("success", "Payment Successful!", "Premium access granted for 1 year. 🎉");
               window.location.reload();
             } else {
-              alert("Payment received but verification failed. Contact support.");
+              showToast("error", "Verification Failed", "Payment received but verification failed. Contact support.");
             }
           } catch (err) {
             console.error("Verification error:", err);
-            alert("Payment may have succeeded. Please refresh.");
+            showToast("info", "Payment Status", "Payment may have succeeded. Please refresh.");
             window.location.reload();
           }
         },
@@ -101,7 +103,7 @@ export default function PremiumGate({ children }: PremiumGateProps) {
       rzp.open();
     } catch (err) {
       console.error(err);
-      alert("Payment failed to initialize.");
+      showToast("error", "Payment Error", "Payment failed to initialize. Please try again.");
       setLoading(false);
     }
   };
@@ -136,9 +138,9 @@ export default function PremiumGate({ children }: PremiumGateProps) {
         <Button 
           onClick={handleUpgrade} 
           disabled={loading}
-          className="w-full bg-[#00FF7F] text-black hover:bg-[#00cc66] font-semibold text-base py-6 rounded-xl shadow-[0_0_20px_rgba(0,255,127,0.3)] transition"
+          className="w-full max-w-xs mx-auto bg-[#00FF7F] text-black hover:bg-[#00cc66] font-semibold text-sm sm:text-base py-3 sm:py-4 rounded-xl shadow-[0_0_20px_rgba(0,255,127,0.3)] transition"
         >
-          {loading ? "Initializing..." : "Unlock Premium - ₹99"}
+          {loading ? "Initializing..." : "Unlock Premium - ₹99/yr"}
         </Button>
       </CardContent>
     </Card>

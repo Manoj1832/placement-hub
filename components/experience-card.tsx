@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Badge } from "./ui/badge";
@@ -35,6 +36,8 @@ interface ExperienceCardProps {
 export default function ExperienceCard({ experience }: ExperienceCardProps) {
   const { user } = useAuth();
   const userId = user?.email;
+  const [localUpvotes, setLocalUpvotes] = useState(experience.upvotes || 0);
+  const [hasUpvoted, setHasUpvoted] = useState(false);
 
   const saved = useQuery(api.experiences.isSaved, { 
     experienceId: experience._id,
@@ -50,7 +53,12 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
       alert("Please sign in to upvote experiences!");
       return;
     }
-    upvote({ experienceId: experience._id });
+    // Optimistic UI update queue
+    if (!hasUpvoted) {
+      setLocalUpvotes(prev => prev + 1);
+      setHasUpvoted(true);
+      upvote({ experienceId: experience._id, userEmail: userId });
+    }
   };
 
   const handleSave = (e: React.MouseEvent) => {
@@ -60,7 +68,7 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
       alert("Please sign in to save experiences!");
       return;
     }
-    toggleSave({ experienceId: experience._id });
+    toggleSave({ experienceId: experience._id, userEmail: userId });
   };
 
   const difficultyColors: Record<string, string> = {
@@ -157,9 +165,9 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
               )}
             </div>
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="sm" className="h-8 px-2 hover:bg-zinc-800" onClick={handleUpvote}>
-                <ThumbsUp className="w-4 h-4 text-zinc-500" />
-                <span className="ml-1 text-xs font-medium text-zinc-400">{experience.upvotes || 0}</span>
+              <Button variant="ghost" size="sm" className={`h-8 px-2 hover:bg-zinc-800 ${hasUpvoted ? "bg-zinc-800" : ""}`} onClick={handleUpvote}>
+                <ThumbsUp className={`w-4 h-4 ${hasUpvoted ? "text-blue-400" : "text-zinc-500"}`} />
+                <span className={`ml-1 text-xs font-medium ${hasUpvoted ? "text-blue-400" : "text-zinc-400"}`}>{localUpvotes}</span>
               </Button>
               <Button variant="ghost" size="sm" className="h-8 px-2 hover:bg-zinc-800" onClick={handleSave}>
                 <Bookmark className={`w-4 h-4 ${saved ? "fill-current text-blue-400" : "text-zinc-500"}`} />

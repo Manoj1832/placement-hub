@@ -19,7 +19,7 @@ export function formatMonthYear(year: number, month: number): string {
 }
 
 export const PRICING = {
-  premium_monthly: { name: "Premium Monthly", price: 99, productType: "premium_monthly" as const },
+  premium_yearly: { name: "Premium Yearly", price: 99, productType: "premium_yearly" as const },
   starter_kit: { name: "Placement Starter Kit", price: 99, productType: "starter_kit" as const },
   resume_review: { name: "Resume Review", price: 299, productType: "resume_review" as const },
   github_audit: { name: "GitHub Audit", price: 599, productType: "github_audit" as const },

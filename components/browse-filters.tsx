@@ -37,13 +37,17 @@ export default function BrowseFilters({ onChange }: BrowseFiltersProps) {
     }
   }, [company, companies]);
 
-  const handleChange = () => {
-    onChange({
-      company: company || undefined,
-      type: type === "all" ? undefined : type || undefined,
-      difficulty: difficulty === "all" ? undefined : difficulty || undefined,
-    });
-  };
+  // Debounce the actual filter change for the parent
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onChange({
+        company: company || undefined,
+        type: type === "all" ? undefined : type || undefined,
+        difficulty: difficulty === "all" ? undefined : difficulty || undefined,
+      });
+    }, 400); // 400ms debounce
+    return () => clearTimeout(timer);
+  }, [company, type, difficulty]); // Removed onChange from dependency to avoid loop if it's not memoized
 
   const clearFilters = () => {
     setCompany("");
@@ -67,7 +71,6 @@ export default function BrowseFilters({ onChange }: BrowseFiltersProps) {
               value={company}
               onChange={(e) => {
                 setCompany(e.target.value);
-                handleChange();
               }}
               onFocus={() => {
                 if (filteredCompanies.length > 0) setShowCompanyDropdown(true);
@@ -87,7 +90,6 @@ export default function BrowseFilters({ onChange }: BrowseFiltersProps) {
                   onMouseDown={() => {
                     setCompany(c);
                     setShowCompanyDropdown(false);
-                    handleChange();
                   }}
                 >
                   {c}
@@ -100,7 +102,7 @@ export default function BrowseFilters({ onChange }: BrowseFiltersProps) {
         {/* Job Type */}
         <div className="min-w-[140px]">
           <label className="text-xs font-medium text-zinc-500 mb-1 block">Job Type</label>
-          <Select value={type || "all"} onValueChange={(v) => { setType(v); handleChange(); }}>
+          <Select value={type || "all"} onValueChange={(v) => { setType(v); }}>
             <SelectTrigger className="h-10 bg-black border-zinc-800 text-white">
               <SelectValue placeholder="All Types" />
             </SelectTrigger>
@@ -115,7 +117,7 @@ export default function BrowseFilters({ onChange }: BrowseFiltersProps) {
         {/* Difficulty */}
         <div className="min-w-[140px]">
           <label className="text-xs font-medium text-zinc-500 mb-1 block">Difficulty</label>
-          <Select value={difficulty || "all"} onValueChange={(v) => { setDifficulty(v); handleChange(); }}>
+          <Select value={difficulty || "all"} onValueChange={(v) => { setDifficulty(v); }}>
             <SelectTrigger className="h-10 bg-black border-zinc-800 text-white">
               <SelectValue placeholder="All Levels" />
             </SelectTrigger>

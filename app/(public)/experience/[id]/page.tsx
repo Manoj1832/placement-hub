@@ -81,7 +81,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
         amount: data.amount,
         currency: "INR",
         name: "PSG Placement Hub",
-        description: "Premium Access - ₹99/mo",
+        description: "Premium Access - ₹99/yr",
         order_id: data.orderId,
         handler: async function (response: any) {
           try {
@@ -99,7 +99,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
 
             if (verifyRes.ok && verifyData.success) {
               setIsPremiumUser(true);
-              alert("🎉 Payment Successful! You now have Premium access for 30 days.");
+              alert("🎉 Payment Successful! You now have Premium access for 1 year.");
               window.location.reload();
             } else {
               alert("Payment was received but verification failed. Please contact support.");
@@ -265,7 +265,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
                       className="bg-blue-600 hover:bg-blue-700"
                     >
                       <Crown className="w-4 h-4 mr-2" />
-                      Sign In to Unlock - ₹99/mo
+                      Sign In to Unlock - ₹99/yr
                     </Button>
                   ) : (
                     <Button 
@@ -274,7 +274,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
                       className="bg-yellow-600 hover:bg-yellow-700"
                     >
                       <Crown className="w-4 h-4 mr-2" />
-                      {upgradeLoading ? "Processing..." : "Upgrade to Premium - ₹99/mo"}
+                      {upgradeLoading ? "Processing..." : "Upgrade to Premium - ₹99/yr"}
                     </Button>
                   )}
                 </CardContent>

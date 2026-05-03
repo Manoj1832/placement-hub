@@ -15,7 +15,7 @@ async function requireAuth(ctx: any) {
 export const create = mutation({
   args: {
     productType: v.union(
-      v.literal("premium_monthly"),
+      v.literal("premium_yearly"),
       v.literal("starter_kit"),
       v.literal("company_pack")
     ),
@@ -62,7 +62,7 @@ export const markPaid = mutation({
     const order = await ctx.db.get(args.orderId);
     if (!order) throw new Error("Order not found");
 
-    if (order.productType === "premium_monthly") {
+    if (order.productType === "premium_yearly") {
       const userOrders = await ctx.db
         .query("orders")
         .withIndex("by_user", (q: any) => q.eq("userId", order.userId))
@@ -75,11 +75,11 @@ export const markPaid = mutation({
       const currentUntil = user.premiumUntil || 0;
       const now = Date.now();
       const startFrom = currentUntil > now ? currentUntil : now;
-      const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+      const oneYear = 365 * 24 * 60 * 60 * 1000;
 
       await ctx.db.patch(userId, {
         isPremium: true,
-        premiumUntil: startFrom + thirtyDays,
+        premiumUntil: startFrom + oneYear,
       });
     }
   },
@@ -132,7 +132,7 @@ export const grantPremiumByEmail = mutation({
     // Create the order record
     const orderId = await ctx.db.insert("orders", {
       userId: user._id,
-      productType: "premium_monthly",
+      productType: "premium_yearly",
       amount: args.amount,
       currency: "INR",
       razorpayOrderId: args.razorpayOrderId,
@@ -141,17 +141,17 @@ export const grantPremiumByEmail = mutation({
       createdAt: Date.now(),
     });
 
-    // Grant 30 days of premium
+    // Grant 365 days of premium
     const now = Date.now();
     const currentUntil = user.premiumUntil || 0;
     const startFrom = currentUntil > now ? currentUntil : now;
-    const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+    const oneYear = 365 * 24 * 60 * 60 * 1000;
 
     await ctx.db.patch(user._id, {
       isPremium: true,
-      premiumUntil: startFrom + thirtyDays,
+      premiumUntil: startFrom + oneYear,
     });
 
-    return { orderId, premiumUntil: startFrom + thirtyDays };
+    return { orderId, premiumUntil: startFrom + oneYear };
   },
 });

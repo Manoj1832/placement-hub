@@ -477,11 +477,52 @@ export const getSaved = query({
       .withIndex("by_user", (q: any) => q.eq("userId", user._id))
       .collect();
 
+    const isPremiumUser = user.isPremium && (!user.premiumUntil || user.premiumUntil > Date.now());
+
     const experiences = await Promise.all(
       saved.map((s) => ctx.db.get(s.experienceId))
     );
 
-    return experiences.filter(Boolean);
+    const validExperiences = experiences.filter(Boolean);
+
+    if (isPremiumUser) {
+      return validExperiences.map(e => ({ ...e, accessLevel: "full" as const }));
+    }
+
+    // Strip premium fields for expired/non-premium users
+    return validExperiences.map(e => {
+      if (e?.isFreePreview) {
+        return { ...e, accessLevel: "full" as const };
+      }
+      return {
+        _id: e!._id,
+        _creationTime: e!._creationTime,
+        companyName: e!.companyName,
+        roleTitle: e!.roleTitle,
+        opportunityType: e!.opportunityType,
+        branch: e!.branch,
+        year: e!.year,
+        month: e!.month,
+        difficulty: e!.difficulty,
+        isAnonymous: e!.isAnonymous,
+        isVerified: e!.isVerified,
+        isPremium: e!.isPremium,
+        isFreePreview: e!.isFreePreview,
+        status: e!.status,
+        upvotes: e!.upvotes,
+        totalRounds: e!.totalRounds,
+        overallRating: e!.overallRating,
+        finalResult: e!.finalResult,
+        tags: e!.tags,
+        location: e!.location,
+        workMode: e!.workMode,
+        duration: e!.duration,
+        compensation: e!.compensation,
+        createdAt: e!.createdAt,
+        updatedAt: e!.updatedAt,
+        accessLevel: "limited" as const,
+      };
+    });
   },
 });
 

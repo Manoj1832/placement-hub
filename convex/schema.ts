@@ -150,6 +150,7 @@ export default defineSchema({
     userId: v.id("users"),
     productType: v.union(
       v.literal("premium_monthly"),
+      v.literal("premium_yearly"),
       v.literal("starter_kit"),
       v.literal("company_pack")
     ),

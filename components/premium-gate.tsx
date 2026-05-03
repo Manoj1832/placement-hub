@@ -61,7 +61,7 @@ export default function PremiumGate({ children }: PremiumGateProps) {
         amount: data.amount,
         currency: "INR",
         name: "PSG Placement Hub",
-        description: "Premium Access - ₹99/mo",
+        description: "Premium Access - ₹99/yr",
         order_id: data.orderId,
         handler: async function (response: any) {
           try {
@@ -78,7 +78,7 @@ export default function PremiumGate({ children }: PremiumGateProps) {
 
             if (verifyRes.ok && verifyData.success) {
               setIsPremium(true);
-              alert("🎉 Payment Successful! Premium access granted for 30 days.");
+              alert("🎉 Payment Successful! Premium access granted for 1 year.");
               window.location.reload();
             } else {
               alert("Payment received but verification failed. Contact support.");

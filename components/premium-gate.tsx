@@ -91,7 +91,7 @@ export default function PremiumGate({ children }: PremiumGateProps) {
         },
         prefill: {
           email: userId,
-          name: session?.user?.name || "",
+          name: user?.name || "",
         },
         theme: { color: "#2D1A5C" },
         modal: {

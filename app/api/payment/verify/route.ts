@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { AUTH_COOKIE_NAME, verifyJWT } from "@/lib/auth";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 
@@ -7,8 +7,10 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.email) {
+    const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
+    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const payload = await verifyJWT(token);
+    if (!payload?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -32,7 +34,7 @@ export async function POST(req: NextRequest) {
 
     // 2. Grant premium to the user via Convex
     await convex.mutation(api.orders.grantPremiumByEmail, {
-      email: session.user.email,
+      email: payload.email,
       razorpayOrderId: razorpay_order_id,
       razorpayPaymentId: razorpay_payment_id,
       amount: 9900,

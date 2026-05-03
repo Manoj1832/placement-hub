@@ -17,6 +17,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
   const { id } = use(params);
   const experienceId = id as Id<"experiences">;
   const { user: sessionUser, loading: sessionLoading } = useAuth();
+  const router = useRouter();
   const userId = sessionUser?.email as string | undefined;
   const experience = useQuery(api.experiences.getById, { 
     id: experienceId,
@@ -30,7 +31,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
 
   // Sync user to Convex and check premium status when session is available
   useEffect(() => {
-    if (sessionStatus === "authenticated" && userId) {
+    if (!sessionLoading && userId) {
       // Ensure user exists in Convex
       fetch("/api/user/sync", { method: "POST" }).catch(console.error);
 
@@ -40,11 +41,11 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
         .then((data) => setIsPremiumUser(data.isPremium))
         .catch(console.error);
     }
-  }, [sessionStatus, userId]);
+  }, [sessionLoading, userId]);
 
   const handleUpgrade = async () => {
     if (!userId) {
-      signIn();
+      router.push("/sign-in");
       return;
     }
 
@@ -111,7 +112,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
         },
         prefill: {
           email: userId,
-          name: session?.user?.name || "",
+          name: sessionUser?.name || "",
         },
         theme: { color: "#eab308" },
         modal: {
@@ -260,7 +261,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
                   </p>
                   {!userId ? (
                     <Button 
-                      onClick={() => signIn()} 
+                      onClick={() => router.push("/sign-in")} 
                       className="bg-blue-600 hover:bg-blue-700"
                     >
                       <Crown className="w-4 h-4 mr-2" />

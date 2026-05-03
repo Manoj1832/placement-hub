@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { AUTH_COOKIE_NAME, verifyJWT } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
+    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const payload = await verifyJWT(token);
+    if (!payload?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     
     const { amount } = await req.json();
 
@@ -18,7 +20,7 @@ export async function POST(req: NextRequest) {
     const order = await razorpay.orders.create({
       amount: amount,
       currency: "INR",
-      receipt: `order_${session.user.email}_${Date.now()}`,
+      receipt: `order_${payload.email}_${Date.now()}`,
     });
     
     return NextResponse.json({ orderId: order.id, amount: order.amount });

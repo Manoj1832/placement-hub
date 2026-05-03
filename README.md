@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+redis
+🔌 STEP 5: Create Redis client
 
-First, run the development server:
+Create file:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+// lib/redis.ts
+import { Redis } from "@upstash/redis";
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+export const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
+🧠 STEP 6: First test (IMPORTANT)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create test API:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+// app/api/test-redis/route.ts
+import { redis } from "@/lib/redis";
 
-## Learn More
+export async function GET() {
+  await redis.set("test", "working", { ex: 60 });
+  const value = await redis.get("test");
 
-To learn more about Next.js, take a look at the following resources:
+  return Response.json({ value });
+}
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+👉 Open:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+http://localhost:3000/api/test-redis
 
-## Deploy on Vercel
+✅ Expected:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+{ "value": "working" }
+🚀 STEP 7: Add caching to your app
+Example: caching Convex query
+import { redis } from "@/lib/redis";
+import { convex } from "@/lib/convex";
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+export async function getUser(id: string) {
+  const key = `user:${id}`;
+
+  // 1. check cache
+  const cached = await redis.get(key);
+  if (cached) return cached;
+
+  // 2. fetch from DB
+  const user = await convex.query(api.users.get, { id });
+
+  // 3. store in cache
+  await redis.set(key, user, { ex: 60 });
+
+  return user;
+}
+🧹 STEP 8: Cache invalidation (CRITICAL)
+
+Whenever data changes:
+
+await redis.del(`user:${id}`);
+
+👉 If you skip this → users see outdated data
+
+📊 STEP 9: What YOU should cache
+
+Start with:
+
+✅ High impact
+Dashboard stats
+User profile
+Public resources
+Listings / feeds
+❌ Don’t cache
+Auth/session data
+Payment state (real-time)
+Sensitive info
+⚡ STEP 10: Smart patterns (VERY IMPORTANT)
+1. Use short TTL
+{ ex: 60 } // 1 minute
+2. Use structured keys
+user:123
+dashboard:123
+posts:page:1
+3. Prevent cache stampede (basic)
+if (!cached) {
+  // fetch + set
+}
+
+(advanced locking later)
+
+🧠 Real-world tip (important for YOU)
+
+Since you're using Convex:
+
+👉 Convex = real-time writes
+👉 Redis = fast reads
+
+Perfect combo when used like this:
+
+Request → Redis → (miss) →  Convex → Redis → Response
+✅ DONE CHECKLIST
+
+✔ Redis connected
+✔ API test working
+✔ Cache implemented
+✔ Invalidation added
+Cache session (later with Redis)

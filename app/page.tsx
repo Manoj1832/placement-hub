@@ -44,12 +44,26 @@ export default function HomePage() {
               <p className="text-sm sm:text-base md:text-lg text-white/70 mb-6 sm:mb-8 leading-relaxed font-light">
                 Finding the right company and role is not always easy, but with this platform you will see that finding the right insights can be easy and fast!
               </p>
-              <Link href="/browse">
-                <button className="text-sm sm:text-base font-semibold bg-[#00FF7F] text-black px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl hover:bg-[#00e673] transition shadow-[0_0_20px_rgba(0,255,127,0.3)] inline-flex items-center gap-2">
-                  Browse Experiences
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </Link>
+              <div className="flex flex-wrap gap-3 sm:gap-4">
+                <Link href="/browse">
+                  <button className="text-sm sm:text-base font-semibold bg-[#00FF7F] text-black px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl hover:bg-[#00e673] transition shadow-[0_0_20px_rgba(0,255,127,0.3)] inline-flex items-center gap-2">
+                    Browse Experiences
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </Link>
+                <Link href="/resume-tips">
+                  <button className="text-sm sm:text-base font-semibold bg-[#392070]/60 backdrop-blur text-white border border-white/10 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl hover:bg-[#392070] hover:border-white/20 transition inline-flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-purple-400" />
+                    Resume Tips
+                  </button>
+                </Link>
+                <Link href="/roadmap">
+                  <button className="text-sm sm:text-base font-semibold bg-[#392070]/60 backdrop-blur text-white border border-white/10 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl hover:bg-[#392070] hover:border-white/20 transition inline-flex items-center gap-2">
+                    <Map className="w-4 h-4 text-blue-400" />
+                    Roadmap
+                  </button>
+                </Link>
+              </div>
             </div>
             <div className="relative h-[300px] sm:h-[350px] md:h-[450px] flex items-center justify-center animate-in fade-in zoom-in duration-1000">
               <FloatingCards />

@@ -7,12 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { use, useState, useEffect } from "react";
-import { ThumbsUp, Bookmark, CheckCircle, MapPin, Briefcase, Clock, Lock, Crown, ExternalLink, Code2, Users, ArrowLeft } from "lucide-react";
+import { ThumbsUp, Bookmark, CheckCircle, CheckCircle2, MapPin, Briefcase, Clock, Lock, Crown, ExternalLink, Code2, Users, ArrowLeft, Lightbulb, AlertTriangle, XCircle, Circle } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header";
 import { useToast } from "@/components/toast-modal";
+import CompanyLogo from "@/components/company-logo";
 
 export default function ExperienceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -101,7 +102,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
 
             if (verifyRes.ok && verifyData.success) {
               setIsPremiumUser(true);
-              showToast("success", "Payment Successful!", "You now have Premium access for 1 year. 🎉");
+              showToast("success", "Payment Successful!", "You now have Premium access for 1 year.");
               window.location.reload();
             } else {
               showToast("error", "Verification Failed", "Payment was received but verification failed. Please contact support.");
@@ -185,9 +186,12 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500" />
             <CardHeader className="pb-4">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                <div>
-                  <CardTitle className="text-3xl font-bold text-white">{experience.companyName}</CardTitle>
-                  <p className="text-xl text-zinc-400 mt-1">{experience.roleTitle}</p>
+                <div className="flex items-start gap-4">
+                  <CompanyLogo companyName={experience.companyName} size="lg" />
+                  <div>
+                    <CardTitle className="text-3xl font-bold text-white">{experience.companyName}</CardTitle>
+                    <p className="text-xl text-zinc-400 mt-1">{experience.roleTitle}</p>
+                  </div>
                 </div>
                 <div className="flex gap-2 flex-wrap">
                   {experience.opportunityType && (
@@ -248,13 +252,13 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
             {experience.keyTips && experience.keyTips.length > 0 && (
               <div className="relative bg-gradient-to-r from-purple-900/20 to-pink-900/20 border border-purple-500/20 rounded-xl p-5">
                 <div className="absolute -left-2 -top-2 w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center">
-                  <span className="text-purple-400 text-lg">💡</span>
+                  <Lightbulb className="w-4 h-4 text-purple-400" />
                 </div>
                 <h3 className="font-bold text-purple-400 text-lg mb-3">Key Tips</h3>
                 <ul className="space-y-2">
                   {experience.keyTips.map((tip: string, i: number) => (
                     <li key={i} className="flex items-start gap-2 text-zinc-300">
-                      <span className="text-purple-400 mt-1">•</span>
+                      <CheckCircle2 className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
                       <span>{tip}</span>
                     </li>
                   ))}
@@ -382,7 +386,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
                               <ul className="space-y-2">
                                 {round.behavioral_questions.map((bq: any, i: number) => (
                                   <li key={i} className="flex items-start gap-2 text-zinc-400">
-                                    <span className="text-pink-400 mt-1">•</span>
+                                    <Circle className="w-3 h-3 text-pink-400 mt-1.5 flex-shrink-0" />
                                     <span className="text-sm">{typeof bq === 'string' ? bq : bq.question}</span>
                                   </li>
                                 ))}
@@ -463,14 +467,14 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
               <div className="bg-gradient-to-r from-red-900/20 to-pink-900/20 border border-red-500/20 rounded-xl p-5">
                 <h3 className="font-bold text-red-400 text-lg mb-3 flex items-center gap-2">
                   <span className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
-                    ⚠️
+                    <AlertTriangle className="w-4 h-4 text-red-400" />
                   </span>
                   Mistakes to Avoid
                 </h3>
                 <ul className="space-y-2">
                   {experience.mistakesToAvoid.map((mistake: string, i: number) => (
                     <li key={i} className="flex items-start gap-2 text-zinc-300">
-                      <span className="text-red-400 mt-1">✕</span>
+                      <XCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
                       <span>{mistake}</span>
                     </li>
                   ))}

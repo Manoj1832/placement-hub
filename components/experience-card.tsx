@@ -10,6 +10,7 @@ import { ThumbsUp, Bookmark, CheckCircle, MapPin, Briefcase, Clock, Users, Lock,
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/components/toast-modal";
+import CompanyLogo from "./company-logo";
 import BorderGlow from "./ui/border-glow";
 
 interface ExperienceCardProps {
@@ -102,7 +103,8 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
       <Card className="group relative overflow-hidden hover:-translate-y-1 transition-all duration-300 h-full bg-transparent border-0 shadow-none">
         
         <CardHeader className="pb-2 relative z-10">
-          <div className="flex items-start justify-between gap-2">
+          <div className="flex items-start gap-3">
+            <CompanyLogo companyName={experience.companyName} size="md" />
             <div className="min-w-0 flex-1">
               <CardTitle className="text-lg font-bold text-white truncate leading-tight group-hover:text-purple-400 transition-colors">
                 {experience.companyName}

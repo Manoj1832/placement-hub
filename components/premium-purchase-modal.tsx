@@ -72,7 +72,7 @@ export function PremiumPurchaseModal({ isOpen, onClose, onSuccess }: PremiumPurc
             const verifyData = await verifyRes.json();
 
             if (verifyRes.ok && verifyData.success) {
-              showToast("success", "Payment Successful!", "You now have Premium access for 1 year. 🎉");
+              showToast("success", "Payment Successful!", "You now have Premium access for 1 year.");
               if (onSuccess) onSuccess();
               onClose();
               window.location.reload();

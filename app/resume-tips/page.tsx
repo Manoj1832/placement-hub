@@ -95,7 +95,7 @@ export default function ResumeTipsPage() {
 
             if (verifyRes.ok && verifyData.success) {
               setIsPremiumUser(true);
-              showToast("success", "Payment Successful!", "You now have Premium access for 1 year. 🎉");
+              showToast("success", "Payment Successful!", "You now have Premium access for 1 year.");
             } else {
               showToast("error", "Verification Failed", "Payment was received but verification failed. Please contact support.");
             }

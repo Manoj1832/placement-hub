@@ -32,7 +32,7 @@ export default function HomePage() {
                 Unlock Your Placement Potential
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-                Crack Your Dream Company with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#22C55E] to-[#4ADE80]">Real Interview Insights</span> 🚀
+                Crack Your Dream Company with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#22C55E] to-[#4ADE80]">Real Interview Insights</span>
               </h1>
               <p className="text-base md:text-lg lg:text-xl text-white/70 mb-8 max-w-lg font-light leading-relaxed">
                 Explore real interview experiences, role insights, and preparation strategies.
@@ -95,7 +95,7 @@ export default function HomePage() {
               {[
                 { label: "students", value: "450+", icon: Users },
                 { label: "experiences", value: "70+", icon: Briefcase },
-                { label: "rating", value: "4.8⭐", icon: Star }
+                { label: "rating", value: "4.8", icon: Star }
               ].map((stat, i) => (
                 <div key={i} className="flex flex-col items-center justify-center cursor-default animate-text-blink" style={{ animationDelay: `${i * 0.8 + 0.4}s` }}>
                   <div className="flex items-center gap-3 mb-2 text-[#22C55E]">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ExternalLink, X, CheckCircle2, BookOpen, Lock, ChevronDown } from "lucide-react";
+import { ExternalLink, X, CheckCircle2, BookOpen, Lock, ChevronDown, Code, Database, Cpu, Settings, Palette, Monitor, Sparkles } from "lucide-react";
 import gsap from "gsap";
 import { useAuth } from "@/lib/auth-context";
 import { PremiumPurchaseModal } from "@/components/premium-purchase-modal";
@@ -10,8 +10,8 @@ type Resource = { name: string; url: string };
 type RoleNode = { id: string; label: string; x: number; y: number; prerequisites?: string[]; resources: Resource[]; weeks: number; description: string };
 type Edge = { from: string; to: string };
 
-const ROLE_TREES: Record<string, { label: string; emoji: string; nodes: RoleNode[] }> = {
-  swe: { label: "Software Engineer", emoji: "💻", nodes: [
+const ROLE_TREES: Record<string, { label: string; icon: React.ElementType; nodes: RoleNode[] }> = {
+  swe: { label: "Software Engineer", icon: Code, nodes: [
     { id: "dsa-basics", label: "Arrays & Strings", x: 50, y: 0, weeks: 2, description: "Foundation of coding interviews", resources: [{ name: "Striver SDE Sheet", url: "https://takeuforward.org/interviews/strivers-sde-sheet-top-coding-interview-problems/" }, { name: "NeetCode 150", url: "https://neetcode.io/" }] },
     { id: "ll-stack", label: "Linked List & Stack", x: 30, y: 1, weeks: 2, prerequisites: ["dsa-basics"], description: "Pointers, stack operations", resources: [{ name: "Striver A2Z", url: "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/" }] },
     { id: "sorting-search", label: "Sorting & Searching", x: 70, y: 1, weeks: 1, prerequisites: ["dsa-basics"], description: "Binary search, quick sort", resources: [{ name: "GeeksforGeeks", url: "https://www.geeksforgeeks.org/sorting-algorithms/" }] },
@@ -25,7 +25,7 @@ const ROLE_TREES: Record<string, { label: string; emoji: string; nodes: RoleNode
     { id: "projects", label: "Projects & Resume", x: 35, y: 5, weeks: 2, prerequisites: ["lld"], description: "Build 2-3 strong projects", resources: [{ name: "PSG custResume", url: "/resume-tips" }] },
     { id: "hr-mock", label: "HR & Mock Interviews", x: 65, y: 5, weeks: 1, prerequisites: ["hld"], description: "STAR method, behavioral prep", resources: [{ name: "STAR Method", url: "https://www.themuse.com/advice/star-interview-method" }] },
   ]},
-  data: { label: "Data / ML Engineer", emoji: "📊", nodes: [
+  data: { label: "Data / ML Engineer", icon: Database, nodes: [
     { id: "python", label: "Python Mastery", x: 50, y: 0, weeks: 2, description: "Pandas, NumPy, data wrangling", resources: [{ name: "Kaggle Python", url: "https://www.kaggle.com/learn/python" }] },
     { id: "stats", label: "Statistics", x: 30, y: 1, weeks: 3, prerequisites: ["python"], description: "Probability, distributions, hypothesis", resources: [{ name: "Khan Academy", url: "https://www.khanacademy.org/math/statistics-probability" }] },
     { id: "sql", label: "Advanced SQL", x: 70, y: 1, weeks: 2, prerequisites: ["python"], description: "Joins, window functions, CTEs", resources: [{ name: "Mode SQL", url: "https://mode.com/sql-tutorial/" }] },
@@ -35,7 +35,7 @@ const ROLE_TREES: Record<string, { label: string; emoji: string; nodes: RoleNode
     { id: "cloud", label: "Cloud & Deploy", x: 70, y: 3, weeks: 2, prerequisites: ["etl"], description: "AWS/GCP, Docker, MLOps", resources: [{ name: "AWS ML Specialty", url: "https://aws.amazon.com/certification/certified-machine-learning-specialty/" }] },
     { id: "portfolio", label: "Kaggle & Portfolio", x: 50, y: 4, weeks: 3, prerequisites: ["dl", "cloud"], description: "Competitions, end-to-end projects", resources: [{ name: "Kaggle Competitions", url: "https://www.kaggle.com/competitions" }] },
   ]},
-  embedded: { label: "Embedded / Hardware", emoji: "🔧", nodes: [
+  embedded: { label: "Embedded / Hardware", icon: Cpu, nodes: [
     { id: "e-c", label: "C/C++ Fundamentals", x: 50, y: 0, weeks: 3, description: "Pointers, memory, structs", resources: [{ name: "Learn-C.org", url: "https://www.learn-c.org/" }, { name: "GFG C Programming", url: "https://www.geeksforgeeks.org/c-programming-language/" }] },
     { id: "e-micro", label: "Microprocessors", x: 30, y: 1, weeks: 2, prerequisites: ["e-c"], description: "8086, ARM architecture", resources: [{ name: "Neso Academy", url: "https://www.youtube.com/playlist?list=PLBlnK6fEyqRjMH3mWf6kwqiTbT798eAO" }] },
     { id: "e-os", label: "RTOS & OS Internals", x: 70, y: 1, weeks: 2, prerequisites: ["e-c"], description: "Scheduling, interrupts, RTOS", resources: [{ name: "FreeRTOS Docs", url: "https://www.freertos.org/Documentation/RTOS_book.html" }] },
@@ -43,7 +43,7 @@ const ROLE_TREES: Record<string, { label: string; emoji: string; nodes: RoleNode
     { id: "e-embedded", label: "Embedded Systems", x: 70, y: 2, weeks: 3, prerequisites: ["e-os"], description: "I2C, SPI, UART protocols", resources: [{ name: "Embedded Systems Course", url: "https://www.coursera.org/specializations/introduction-embedded-systems" }] },
     { id: "e-projects", label: "Projects & Interview", x: 50, y: 3, weeks: 2, prerequisites: ["e-coa", "e-embedded"], description: "Hardware projects, interview prep", resources: [{ name: "PSG custResume", url: "/resume-tips" }] },
   ]},
-  devops: { label: "DevOps Engineer", emoji: "⚙️", nodes: [
+  devops: { label: "DevOps Engineer", icon: Settings, nodes: [
     { id: "do-linux", label: "Linux & Shell", x: 50, y: 0, weeks: 2, description: "Bash, filesystem, permissions", resources: [{ name: "Linux Journey", url: "https://linuxjourney.com/" }, { name: "The Linux Command Line", url: "https://linuxcommand.org/tlcl.php" }] },
     { id: "do-git", label: "Git & CI/CD", x: 30, y: 1, weeks: 2, prerequisites: ["do-linux"], description: "GitHub Actions, Jenkins, pipelines", resources: [{ name: "GitHub Actions Docs", url: "https://docs.github.com/en/actions" }] },
     { id: "do-docker", label: "Docker & K8s", x: 70, y: 1, weeks: 3, prerequisites: ["do-linux"], description: "Containers, orchestration", resources: [{ name: "Docker Docs", url: "https://docs.docker.com/get-started/" }, { name: "KodeKloud", url: "https://kodekloud.com/" }] },
@@ -51,7 +51,7 @@ const ROLE_TREES: Record<string, { label: string; emoji: string; nodes: RoleNode
     { id: "do-monitor", label: "Monitoring & Logging", x: 70, y: 2, weeks: 2, prerequisites: ["do-docker"], description: "Prometheus, Grafana, ELK", resources: [{ name: "Prometheus Docs", url: "https://prometheus.io/docs/" }] },
     { id: "do-iac", label: "IaC & Automation", x: 50, y: 3, weeks: 2, prerequisites: ["do-cloud", "do-monitor"], description: "Terraform, Ansible", resources: [{ name: "Terraform Learn", url: "https://developer.hashicorp.com/terraform/tutorials" }] },
   ]},
-  ui: { label: "UI / Frontend Dev", emoji: "🎨", nodes: [
+  ui: { label: "UI / Frontend Dev", icon: Monitor, nodes: [
     { id: "u-html", label: "HTML/CSS Mastery", x: 50, y: 0, weeks: 2, description: "Semantic HTML, Flexbox, Grid", resources: [{ name: "MDN Web Docs", url: "https://developer.mozilla.org/en-US/docs/Learn" }, { name: "CSS Tricks", url: "https://css-tricks.com/" }] },
     { id: "u-js", label: "JavaScript Deep Dive", x: 30, y: 1, weeks: 3, prerequisites: ["u-html"], description: "ES6+, async/await, closures", resources: [{ name: "javascript.info", url: "https://javascript.info/" }] },
     { id: "u-design", label: "UI/UX Principles", x: 70, y: 1, weeks: 2, prerequisites: ["u-html"], description: "Design systems, accessibility", resources: [{ name: "Refactoring UI", url: "https://www.refactoringui.com/" }] },
@@ -137,7 +137,7 @@ export default function RoleSkillTree() {
           >
             {Object.entries(ROLE_TREES).map(([key, r]) => (
               <option key={key} value={key}>
-                {r.emoji} {r.label} {key !== "swe" && !isPremium ? " (Premium)" : ""}
+                {r.label} {key !== "swe" && !isPremium ? " (Premium)" : ""}
               </option>
             ))}
           </select>

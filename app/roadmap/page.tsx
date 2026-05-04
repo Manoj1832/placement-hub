@@ -2,7 +2,7 @@
 
 import Header from "@/components/header";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Code2, Briefcase, Building2 } from "lucide-react";
 import { useState } from "react";
 import RoleSkillTree from "@/components/roadmap/role-skill-tree";
 import CompanyGuide from "@/components/roadmap/company-guide";
@@ -43,7 +43,8 @@ export default function RoadmapPage() {
                   activeTab === "dsa" ? "bg-gradient-to-r from-orange-500 to-yellow-600 text-white shadow-lg" : "text-white/60 hover:text-white bg-white/5 sm:bg-transparent"
                 }`}
               >
-                🧠 DSA Tree
+                <Code2 className="w-4 h-4 inline mr-2" />
+                DSA Tree
               </button>
               <button
                 onClick={() => setActiveTab("roles")}
@@ -51,7 +52,8 @@ export default function RoadmapPage() {
                   activeTab === "roles" ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg" : "text-white/60 hover:text-white bg-white/5 sm:bg-transparent"
                 }`}
               >
-                🎯 Role Trees
+                <Briefcase className="w-4 h-4 inline mr-2" />
+                Role Trees
               </button>
               <button
                 onClick={() => setActiveTab("companies")}
@@ -59,7 +61,8 @@ export default function RoadmapPage() {
                   activeTab === "companies" ? "bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg" : "text-white/60 hover:text-white bg-white/5 sm:bg-transparent"
                 }`}
               >
-                🏢 Company Guides
+                <Building2 className="w-4 h-4 inline mr-2" />
+                Company Guides
               </button>
             </div>
           </div>

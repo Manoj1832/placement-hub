@@ -33,13 +33,13 @@ export const seedExperiences = internalMutation({
         }
       }
 
-      const companyName = raw.company_name || raw.companyName || "";
+      const companyName = raw.company || raw.company_name || raw.companyName || "Unknown";
       const isPremium = raw.is_premium === true || raw.isPremium === true;
       const isFreePreview = !isPremium;
 
       const processed = {
         companyName,
-        roleTitle: raw.job_title || raw.roleTitle || "",
+        roleTitle: raw.role || raw.job_title || raw.roleTitle || "Unknown Role",
         opportunityType,
         branch: raw.branch || "CSE",
         year,
@@ -47,21 +47,21 @@ export const seedExperiences = internalMutation({
         difficulty: (raw.difficulty?.toLowerCase() || "medium") as "easy" | "medium" | "hard",
         location: raw.location || "",
         workMode: raw.work_mode || raw.workMode || "Hybrid",
-        compensation: raw.ctc || raw.compensation || 0,
+        compensation: raw.compensation_INR || raw.ctc || raw.compensation || 0,
         isPremium,
         isFreePreview,
         upvotes: raw.upvotes || 0,
         status: "approved" as const,
-        rounds: [],
+        roundsJson: JSON.stringify(raw.rounds || []),
         createdAt: Date.now(),
         updatedAt: Date.now(),
         isAnonymous: false,
         isVerified: false,
         questionsAsked: [],
         tips: "",
-        totalRounds: 0,
-        overallRating: "5",
-        finalResult: "offer",
+        totalRounds: raw.total_rounds || 0,
+        overallRating: raw.overall_rating || "5/5",
+        finalResult: raw.result || "offer",
       };
 
       await ctx.db.insert("experiences", processed);

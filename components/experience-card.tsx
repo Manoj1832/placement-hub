@@ -10,6 +10,7 @@ import { ThumbsUp, Bookmark, CheckCircle, MapPin, Briefcase, Clock, Users, Lock,
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/components/toast-modal";
+import BorderGlow from "./ui/border-glow";
 
 interface ExperienceCardProps {
   experience: {
@@ -42,8 +43,7 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
   const { showToast } = useToast();
 
   const saved = useQuery(api.experiences.isSaved, { 
-    experienceId: experience._id,
-    userEmail: userId ?? undefined
+    experienceId: experience._id
   });
   const upvote = useMutation(api.experiences.upvote);
   const toggleSave = useMutation(api.experiences.save);
@@ -59,7 +59,7 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
     if (!hasUpvoted) {
       setLocalUpvotes(prev => prev + 1);
       setHasUpvoted(true);
-      upvote({ experienceId: experience._id, userEmail: userId });
+      upvote({ experienceId: experience._id });
     }
   };
 
@@ -70,7 +70,7 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
       showToast("warning", "Sign In Required", "Please sign in to save experiences!");
       return;
     }
-    toggleSave({ experienceId: experience._id, userEmail: userId });
+    toggleSave({ experienceId: experience._id });
   };
 
   const difficultyColors: Record<string, string> = {
@@ -88,11 +88,18 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
 
   return (
     <Link href={`/experience/${experience._id}`}>
-      <Card className="group relative overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-2 transition-all duration-300 h-full bg-zinc-900/80 backdrop-blur-sm border-zinc-800/60 hover:border-purple-500/30">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500" />
-        <div className="absolute -right-8 -top-8 w-24 h-24 bg-purple-500/10 rounded-full blur-xl group-hover:bg-purple-500/20 transition-all duration-300" />
-        <div className="absolute -left-8 -bottom-8 w-24 h-24 bg-blue-500/10 rounded-full blur-xl group-hover:bg-blue-500/20 transition-all duration-300" />
+      <BorderGlow
+        edgeSensitivity={35}
+        glowColor="270 60 70"
+        backgroundColor="#18181b"
+        borderRadius={16}
+        glowRadius={30}
+        glowIntensity={0.8}
+        coneSpread={20}
+        colors={['#a855f7', '#ec4899', '#3b82f6']}
+        className="h-full"
+      >
+      <Card className="group relative overflow-hidden hover:-translate-y-1 transition-all duration-300 h-full bg-transparent border-0 shadow-none">
         
         <CardHeader className="pb-2 relative z-10">
           <div className="flex items-start justify-between gap-2">
@@ -187,6 +194,7 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
           </div>
         </CardContent>
       </Card>
+      </BorderGlow>
     </Link>
   );
 }

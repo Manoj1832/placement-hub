@@ -2,13 +2,47 @@ import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
 async function requireAuth(ctx: any) {
-  // Stub for now - auth handled at API layer
-  return { identity: null, user: { _id: null as any } };
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) {
+    throw new Error("Unauthenticated. Please log in.");
+  }
+  
+  let user = await ctx.db
+    .query("users")
+    .withIndex("by_clerk_id", (q: any) => q.eq("clerkId", identity.subject))
+    .first();
+    
+  if (!user && identity.email) {
+    user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q: any) => q.eq("email", identity.email))
+      .first();
+  }
+
+  if (!user) {
+    throw new Error("User profile not found in database.");
+  }
+  
+  return { identity, user };
 }
 
 async function getOptionalUser(ctx: any) {
-  // No auth check in Convex - auth handled at API layer
-  return null;
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) return null;
+  
+  let user = await ctx.db
+    .query("users")
+    .withIndex("by_clerk_id", (q: any) => q.eq("clerkId", identity.subject))
+    .first();
+    
+  if (!user && identity.email) {
+    user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q: any) => q.eq("email", identity.email))
+      .first();
+  }
+  
+  return user;
 }
 
 /**
@@ -149,6 +183,7 @@ export const paginatedList = query({
       })),
       isDone,
       continueCursor: isDone ? null : String(nextCursor),
+      totalCount: filtered.length,
     };
   },
 });
@@ -215,7 +250,6 @@ export const getCompanies = query({
 export const getById = query({
   args: { 
     id: v.id("experiences"),
-    userEmail: v.optional(v.string())
   },
   handler: async (ctx, args) => {
     const experience = await ctx.db.get(args.id);
@@ -226,17 +260,12 @@ export const getById = query({
       return { ...experience, accessLevel: "full" as const };
     }
 
-    // Check if user has premium via email
+    // Check if user has premium securely
     let isPremiumUser = false;
-    if (args.userEmail) {
-      const user = await ctx.db
-        .query("users")
-        .withIndex("by_email", (q: any) => q.eq("email", args.userEmail))
-        .first();
-      
-      if (user && user.isPremium && (!user.premiumUntil || user.premiumUntil > Date.now())) {
-        isPremiumUser = true;
-      }
+    const user = await getOptionalUser(ctx);
+    
+    if (user && user.isPremium && (!user.premiumUntil || user.premiumUntil > Date.now())) {
+      isPremiumUser = true;
     }
 
     if (isPremiumUser) {
@@ -376,14 +405,9 @@ export const submit = mutation({
 });
 
 export const upvote = mutation({
-  args: { experienceId: v.id("experiences"), userEmail: v.string() },
+  args: { experienceId: v.id("experiences") },
   handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q: any) => q.eq("email", args.userEmail))
-      .first();
-    
-    if (!user) throw new Error("User not found");
+    const { user } = await requireAuth(ctx);
 
     const existing = await ctx.db
       .query("votes")
@@ -410,14 +434,9 @@ export const upvote = mutation({
 });
 
 export const save = mutation({
-  args: { experienceId: v.id("experiences"), userEmail: v.string() },
+  args: { experienceId: v.id("experiences") },
   handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q: any) => q.eq("email", args.userEmail))
-      .first();
-      
-    if (!user) throw new Error("User not found");
+    const { user } = await requireAuth(ctx);
 
     const existing = await ctx.db
       .query("savedExperiences")
@@ -442,13 +461,9 @@ export const save = mutation({
 });
 
 export const isSaved = query({
-  args: { experienceId: v.id("experiences"), userEmail: v.optional(v.string()) },
+  args: { experienceId: v.id("experiences") },
   handler: async (ctx, args) => {
-    if (!args.userEmail) return false;
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q: any) => q.eq("email", args.userEmail))
-      .first();
+    const user = await getOptionalUser(ctx);
     if (!user) return false;
 
     const saved = await ctx.db
@@ -463,13 +478,9 @@ export const isSaved = query({
 });
 
 export const getSaved = query({
-  args: { userEmail: v.optional(v.string()) },
-  handler: async (ctx, args) => {
-    if (!args.userEmail) return [];
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q: any) => q.eq("email", args.userEmail))
-      .first();
+  args: {},
+  handler: async (ctx) => {
+    const user = await getOptionalUser(ctx);
     if (!user) return [];
 
     const saved = await ctx.db

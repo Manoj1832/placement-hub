@@ -21,12 +21,11 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
   const router = useRouter();
   const userId = sessionUser?.email as string | undefined;
   const experience = useQuery(api.experiences.getById, { 
-    id: experienceId,
-    userEmail: userId
+    id: experienceId
   });
   const upvote = useMutation(api.experiences.upvote);
   const toggleSave = useMutation(api.experiences.save);
-  const saved = useQuery(api.experiences.isSaved, { experienceId, userEmail: userId });
+  const saved = useQuery(api.experiences.isSaved, { experienceId });
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [isPremiumUser, setIsPremiumUser] = useState(false);
   const { showToast } = useToast();
@@ -58,7 +57,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
       const res = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: 9900 }),
+        body: JSON.stringify({ productId: "premium_yearly" }),
       });
       const data = await res.json();
 
@@ -83,7 +82,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
         amount: data.amount,
         currency: "INR",
         name: "PSG Placement Hub",
-        description: "Premium Access - ₹99/yr",
+        description: data.description || "Premium Access — ₹99/yr",
         order_id: data.orderId,
         handler: async function (response: any) {
           try {
@@ -95,6 +94,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
+                productId: "premium_yearly",
               }),
             });
             const verifyData = await verifyRes.json();
@@ -485,7 +485,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
                     router.push("/sign-in");
                     return;
                   }
-                  upvote({ experienceId: experience._id, userEmail: userId });
+                  upvote({ experienceId: experience._id });
                 }} 
                 className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5"
               >
@@ -499,7 +499,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
                     router.push("/sign-in");
                     return;
                   }
-                  toggleSave({ experienceId: experience._id, userEmail: userId });
+                  toggleSave({ experienceId: experience._id });
                 }} 
                 className="border-zinc-600 text-white hover:bg-zinc-800 px-5 py-2.5"
               >

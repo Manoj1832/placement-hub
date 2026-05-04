@@ -1,32 +1,74 @@
+"use client";
+
 import Header from "@/components/header";
 import Link from "next/link";
-import { ArrowLeft, Construction } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import RoleSkillTree from "@/components/roadmap/role-skill-tree";
+import CompanyGuide from "@/components/roadmap/company-guide";
+import DsaRoadmap from "@/components/roadmap/dsa-roadmap";
 
 export default function RoadmapPage() {
+  const [activeTab, setActiveTab] = useState<"dsa" | "roles" | "companies">("dsa");
+
   return (
-    <div className="min-h-screen bg-[#2D1A5C] text-white">
+    <div className="min-h-screen bg-[#0a0a1a] text-white overflow-x-hidden">
       <Header />
-      
-      <div className="container mx-auto px-4 sm:px-6 py-6 border-b border-white/10">
-        <Link href="/" className="text-sm text-white/60 hover:text-white inline-flex items-center transition">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to home
-        </Link>
+
+      <div className="w-full px-4 sm:px-6 py-4 border-b border-white/10">
+        <div className="max-w-7xl mx-auto">
+          <Link href="/" className="text-sm text-white/60 hover:text-white inline-flex items-center transition">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to home
+          </Link>
+        </div>
       </div>
 
-      <main className="container mx-auto px-4 sm:px-6 py-20 flex flex-col items-center justify-center text-center">
-        <div className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mb-6 border border-blue-500/30">
-          <Construction className="w-10 h-10 text-blue-400" />
+      <main className="w-full px-4 sm:px-6 py-8 sm:py-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
+              Placement Roadmap
+            </h1>
+            <p className="text-sm sm:text-lg text-white/50 max-w-2xl mx-auto">
+              Interactive skill trees and company-specific prep guides built from real PSG placement data.
+            </p>
+          </div>
+
+          <div className="flex justify-center mb-10 w-full">
+            <div className="bg-black/50 backdrop-blur-md p-1.5 rounded-xl flex flex-wrap sm:inline-flex gap-1.5 border border-white/10 w-full sm:w-auto">
+              <button
+                onClick={() => setActiveTab("dsa")}
+                className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                  activeTab === "dsa" ? "bg-gradient-to-r from-orange-500 to-yellow-600 text-white shadow-lg" : "text-white/60 hover:text-white bg-white/5 sm:bg-transparent"
+                }`}
+              >
+                🧠 DSA Tree
+              </button>
+              <button
+                onClick={() => setActiveTab("roles")}
+                className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                  activeTab === "roles" ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg" : "text-white/60 hover:text-white bg-white/5 sm:bg-transparent"
+                }`}
+              >
+                🎯 Role Trees
+              </button>
+              <button
+                onClick={() => setActiveTab("companies")}
+                className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                  activeTab === "companies" ? "bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg" : "text-white/60 hover:text-white bg-white/5 sm:bg-transparent"
+                }`}
+              >
+                🏢 Company Guides
+              </button>
+            </div>
+          </div>
+
+          {activeTab === "dsa" && <DsaRoadmap />}
+
+          {activeTab === "roles" && <RoleSkillTree />}
+          {activeTab === "companies" && <CompanyGuide />}
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">Placement Roadmap</h1>
-        <p className="text-lg text-white/60 max-w-lg mb-8">
-          We are building a step-by-step roadmap tailored for your branch to help you land your dream job. Coming soon!
-        </p>
-        <Link href="/browse">
-          <button className="bg-[#00FF7F] text-black px-6 py-3 rounded-xl font-semibold hover:bg-[#00cc66] transition shadow-[0_0_15px_rgba(0,255,127,0.3)]">
-            Read Interview Experiences instead
-          </button>
-        </Link>
       </main>
     </div>
   );

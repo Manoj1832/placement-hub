@@ -13,7 +13,7 @@ export default function SavedPage() {
   const router = useRouter();
   const { user: sessionUser, loading: sessionLoading } = useAuth();
   const userId = sessionUser?.email ?? undefined;
-  const saved = useQuery(api.experiences.getSaved, { userEmail: userId });
+  const saved = useQuery(api.experiences.getSaved, {});
 
   if (sessionLoading) {
     return (

@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function FloatingCards() {
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -103,6 +105,7 @@ export default function FloatingCards() {
             }}
           >
             <div
+              onClick={() => router.push('/browse')}
               className={`
                 bg-white rounded-2xl p-4 sm:p-5 shadow-xl border border-zinc-200 
                 transition-all duration-300 cursor-pointer

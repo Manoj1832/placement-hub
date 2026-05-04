@@ -192,4 +192,39 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_status", ["bookingStatus"]),
+
+  resumes: defineTable({
+    title: v.string(),
+    company: v.optional(v.string()), // e.g., "Google", "Amazon" (for vault)
+    role: v.string(), // e.g., "SWE", "Data Analyst"
+    type: v.union(v.literal("vault"), v.literal("template")),
+    isPremium: v.boolean(),
+    docId: v.optional(v.id("documents")), // reference to the PDF in documents table
+    previewImageUrl: v.optional(v.string()), // thumbnail image
+    upvotes: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_type", ["type"])
+    .index("by_premium", ["isPremium"]),
+
+  roadmaps: defineTable({
+    title: v.string(),
+    description: v.string(),
+    type: v.union(v.literal("role_based"), v.literal("company_guide")),
+    target: v.string(), // e.g., "Software Engineer" or "Amazon"
+    isPremium: v.boolean(),
+    nodesJson: v.string(), // JSON string representing the tree/timeline nodes and links
+    createdAt: v.number(),
+  })
+    .index("by_type", ["type"]),
+
+  userProgress: defineTable({
+    userId: v.id("users"),
+    roadmapId: v.id("roadmaps"),
+    completedNodes: v.array(v.string()), // Array of node IDs the user has checked off
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_roadmap", ["userId", "roadmapId"]),
 });

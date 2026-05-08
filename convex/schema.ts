@@ -218,13 +218,115 @@ export default defineSchema({
   })
     .index("by_type", ["type"]),
 
-  userProgress: defineTable({
+userProgress: defineTable({
     userId: v.id("users"),
     roadmapId: v.id("roadmaps"),
-    completedNodes: v.array(v.string()), // Array of node IDs the user has checked off
+    completedNodes: v.array(v.string()),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_user", ["userId"])
     .index("by_user_roadmap", ["userId", "roadmapId"]),
+
+  // Comprehensive student activity tracking
+  studentActivity: defineTable({
+    userId: v.id("users"),
+    activityType: v.union(
+      v.literal("roadmap_node_completed"),
+      v.literal("experience_viewed"),
+      v.literal("experience_upvoted"),
+      v.literal("experience_saved"),
+      v.literal("experience_submitted"),
+      v.literal("resource_downloaded"),
+      v.literal("mock_completed"),
+      v.literal("goal_set"),
+      v.literal("goal_completed"),
+      v.literal("streak_milestone"),
+      v.literal("badge_earned"),
+      v.literal("lesson_completed"),
+      v.literal("quiz_completed")
+    ),
+    metadata: v.optional(v.string()), // JSON string with additional data
+    description: v.string(),
+    points: v.number(),
+    relatedId: v.optional(v.string()), // ID of related entity (experience, roadmap, etc.)
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_activity", ["userId", "activityType"])
+    .index("by_created", ["createdAt"]),
+
+  // Student goals and targets
+  studentGoals: defineTable({
+    userId: v.id("users"),
+    title: v.string(),
+    description: v.optional(v.string()),
+    goalType: v.union(
+      v.literal("daily"),
+      v.literal("weekly"),
+      v.literal("monthly"),
+      v.literal("custom")
+    ),
+    targetValue: v.number(),
+    currentValue: v.number(),
+    unit: v.optional(v.string()),
+    deadline: v.optional(v.number()),
+    status: v.union(
+      v.literal("active"),
+      v.literal("completed"),
+      v.literal("cancelled")
+    ),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_status", ["userId", "status"]),
+
+  // Learning streaks
+  studentStreaks: defineTable({
+    userId: v.id("users"),
+    currentStreak: v.number(),
+    longestStreak: v.number(),
+    lastActivityDate: v.number(),
+    totalActiveDays: v.number(),
+    weeklyGoal: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"]),
+
+  // XP and levels
+  studentLevels: defineTable({
+    userId: v.id("users"),
+    xp: v.number(),
+    level: v.number(),
+    totalXpEarned: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"]),
+
+  // Achievements and badges
+  studentAchievements: defineTable({
+    userId: v.id("users"),
+    badgeId: v.string(),
+    name: v.string(),
+    description: v.string(),
+    icon: v.optional(v.string()),
+    earnedAt: v.number(),
+  })
+    .index("by_user", ["userId"]),
+
+  // Daily progress snapshots for analytics
+  dailyProgress: defineTable({
+    userId: v.id("users"),
+    date: v.number(), // Unix timestamp for start of day
+    xpEarned: v.number(),
+    pointsEarned: v.number(),
+    activitiesCompleted: v.number(),
+    focusTimeMinutes: v.optional(v.number()),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_date", ["userId", "date"]),
 });

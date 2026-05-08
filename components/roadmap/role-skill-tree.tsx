@@ -1,10 +1,19 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ExternalLink, X, CheckCircle2, BookOpen, Lock, ChevronDown, Code, Database, Cpu, Settings, Palette, Monitor, Sparkles } from "lucide-react";
+import { ExternalLink, X, CheckCircle2, BookOpen, Lock, ChevronDown, Code, Database, Cpu, Settings, Palette, Monitor, Sparkles, Trophy, Flame, TrendingUp, Circle } from "lucide-react";
 import gsap from "gsap";
 import { useAuth } from "@/lib/auth-context";
 import { PremiumPurchaseModal } from "@/components/premium-purchase-modal";
+
+const ROLE_STORAGE_KEY = "psg_role_progress";
+
+type RoleProgress = {
+  completedNodes: string[];
+  lastSolved: number;
+  streak: number;
+  lastActive: number;
+};
 
 type Resource = { name: string; url: string };
 type RoleNode = { id: string; label: string; x: number; y: number; prerequisites?: string[]; resources: Resource[]; weeks: number; description: string };
@@ -64,7 +73,12 @@ const ROLE_TREES: Record<string, { label: string; icon: React.ElementType; nodes
 export default function RoleSkillTree() {
   const [selectedRole, setSelectedRole] = useState("swe");
   const [selectedNode, setSelectedNode] = useState<RoleNode | null>(null);
-  const [completedNodes, setCompletedNodes] = useState<Set<string>>(new Set());
+  const [progress, setProgress] = useState<RoleProgress>({
+    completedNodes: [],
+    lastSolved: 0,
+    streak: 0,
+    lastActive: 0,
+  });
   const [lines, setLines] = useState<{ x1: number; y1: number; x2: number; y2: number }[]>([]);
   const treeRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -72,6 +86,66 @@ export default function RoleSkillTree() {
   const { user } = useAuth();
   const [isPremium, setIsPremium] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+
+  // Load progress from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem(ROLE_STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const now = Date.now();
+        const dayMs = 24 * 60 * 60 * 1000;
+        const lastActive = parsed.lastActive || 0;
+        const daysSince = Math.floor((now - lastActive) / dayMs);
+        
+        if (daysSince <= 1 && lastActive > 0) {
+          parsed.streak = parsed.streak || 1;
+        } else if (daysSince > 1) {
+          parsed.streak = 0;
+        }
+        setProgress(parsed);
+      } catch (e) {
+        console.error("Failed to parse progress", e);
+      }
+    }
+  }, []);
+
+  // Save progress
+  const saveProgress = (newProgress: RoleProgress) => {
+    localStorage.setItem(ROLE_STORAGE_KEY, JSON.stringify(newProgress));
+    setProgress(newProgress);
+  };
+
+  // Toggle node completion
+  const toggleNodeCompletion = (nodeId: string) => {
+    const isCompleted = progress.completedNodes.includes(nodeId);
+    const now = Date.now();
+    const dayMs = 24 * 60 * 60 * 1000;
+    const lastActive = progress.lastActive || 0;
+    const daysSince = Math.floor((now - lastActive) / dayMs);
+    
+    let newStreak = progress.streak;
+    if (daysSince <= 1 && lastActive > 0) {
+      newStreak = progress.streak || 1;
+    } else if (daysSince > 1) {
+      newStreak = 1;
+    }
+
+    let newCompleted: string[];
+    if (isCompleted) {
+      newCompleted = progress.completedNodes.filter(n => n !== nodeId);
+    } else {
+      newCompleted = [...progress.completedNodes, nodeId];
+    }
+
+    const newProgress: RoleProgress = {
+      completedNodes: newCompleted,
+      lastSolved: isCompleted ? progress.lastSolved : now,
+      streak: newStreak,
+      lastActive: now,
+    };
+    saveProgress(newProgress);
+  };
 
   useEffect(() => {
     if (user?.email) {
@@ -85,8 +159,11 @@ export default function RoleSkillTree() {
   nodes.forEach(n => n.prerequisites?.forEach(p => edges.push({ from: p, to: n.id })));
 
   const totalWeeks = nodes.reduce((a, n) => a + n.weeks, 0);
-  const doneWeeks = nodes.filter(n => completedNodes.has(n.id)).reduce((a, n) => a + n.weeks, 0);
-  const progress = totalWeeks > 0 ? Math.round((doneWeeks / totalWeeks) * 100) : 0;
+  const doneWeeks = nodes.filter(n => progress.completedNodes.includes(n.id)).reduce((a, n) => a + n.weeks, 0);
+  const progressPercent = totalWeeks > 0 ? Math.round((doneWeeks / totalWeeks) * 100) : 0;
+
+  const solvedCount = progress.completedNodes.length;
+  const totalNodes = nodes.length;
 
   useEffect(() => {
     const measure = () => {
@@ -145,9 +222,26 @@ export default function RoleSkillTree() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto mb-8">
-        <div className="flex justify-between text-xs text-white/50 mb-2"><span>{nodes.filter(n => completedNodes.has(n.id)).length}/{nodes.length} skills</span><span className="font-bold text-white">{progress}%</span></div>
-        <div className="h-3 bg-white/10 rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-green-500 to-emerald-400 rounded-full transition-all duration-700" style={{ width: `${progress}%` }} /></div>
+      <div className="max-w-2xl mx-auto mb-8 p-4 rounded-xl bg-white/5 border border-white/10">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex gap-4">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-yellow-500" />
+              <span className="text-sm text-white">{solvedCount}/{totalNodes}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Flame className="w-4 h-4 text-orange-500" />
+              <span className="text-sm text-white">{progress.streak || 0}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-green-500" />
+              <span className="text-sm text-white">{progressPercent}%</span>
+            </div>
+          </div>
+        </div>
+        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all" style={{ width: `${progressPercent}%` }} />
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
@@ -158,7 +252,7 @@ export default function RoleSkillTree() {
             </svg>
             {nodes.map(node => {
               const isSelected = selectedNode?.id === node.id;
-              const isDone = completedNodes.has(node.id);
+              const isDone = progress.completedNodes.includes(node.id);
               return (
                 <button key={node.id} ref={el => { nodeRefs.current[node.id] = el; }} onClick={() => setSelectedNode(node)}
                   className={`absolute transform -translate-x-1/2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-[10px] sm:text-xs font-semibold whitespace-nowrap transition-all hover:scale-110 border z-10 ${
@@ -199,9 +293,9 @@ export default function RoleSkillTree() {
                   ))}
                 </div>
               </div>
-              <button onClick={() => setCompletedNodes(prev => { const n = new Set(prev); n.has(selectedNode.id) ? n.delete(selectedNode.id) : n.add(selectedNode.id); return n; })}
-                className={`w-full py-3 rounded-xl font-medium text-sm transition-all ${completedNodes.has(selectedNode.id) ? "bg-green-600 text-white" : "bg-white/10 text-white hover:bg-white/20"}`}>
-                {completedNodes.has(selectedNode.id) ? "✓ Completed" : "Mark as Complete"}
+              <button onClick={() => toggleNodeCompletion(selectedNode.id)}
+                className={`w-full py-3 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2 ${progress.completedNodes.includes(selectedNode.id) ? "bg-green-600 text-white" : "bg-white/10 text-white hover:bg-white/20"}`}>
+                {progress.completedNodes.includes(selectedNode.id) ? <><CheckCircle2 className="w-4 h-4" /> Completed</> : "Mark as Complete"}
               </button>
             </div>
           </div>

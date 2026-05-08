@@ -1,11 +1,20 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ExternalLink, X, CheckCircle2, Zap, Target, Lock, ChevronDown, BarChart3, BookOpen, GraduationCap, Lightbulb, ArrowRight, TrendingUp, Layers, Clock, FileText } from "lucide-react";
+import { ExternalLink, X, CheckCircle2, Zap, Target, Lock, ChevronDown, BarChart3, BookOpen, GraduationCap, Lightbulb, ArrowRight, TrendingUp, Layers, Clock, FileText, Circle, Trophy, Flame } from "lucide-react";
 import gsap from "gsap";
 import { useAuth } from "@/lib/auth-context";
 import { PremiumPurchaseModal } from "@/components/premium-purchase-modal";
 import CompanyLogo from "@/components/company-logo";
+
+const COMPANY_STORAGE_KEY = "psg_company_progress";
+
+type CompanyProgress = {
+  completedNodes: string[];
+  lastSolved: number;
+  streak: number;
+  lastActive: number;
+};
 
 type PhaseNode = { id: string; label: string; x: number; y: number; prerequisites?: string[]; focus: string[]; leetcode?: { name: string; url: string }[]; tips: string[] };
 type Edge = { from: string; to: string };
@@ -98,7 +107,12 @@ const COMPANIES: Record<string, CompanyPlan> = {
 export default function CompanyGuide() {
   const [selectedCompany, setSelectedCompany] = useState("amazon");
   const [selectedNode, setSelectedNode] = useState<PhaseNode | null>(null);
-  const [completedNodes, setCompletedNodes] = useState<Set<string>>(new Set());
+  const [progress, setProgress] = useState<CompanyProgress>({
+    completedNodes: [],
+    lastSolved: 0,
+    streak: 0,
+    lastActive: 0,
+  });
   const [lines, setLines] = useState<{ x1: number; y1: number; x2: number; y2: number }[]>([]);
   const treeRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -106,6 +120,66 @@ export default function CompanyGuide() {
   const { user } = useAuth();
   const [isPremium, setIsPremium] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+
+  // Load progress from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem(COMPANY_STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const now = Date.now();
+        const dayMs = 24 * 60 * 60 * 1000;
+        const lastActive = parsed.lastActive || 0;
+        const daysSince = Math.floor((now - lastActive) / dayMs);
+        
+        if (daysSince <= 1 && lastActive > 0) {
+          parsed.streak = parsed.streak || 1;
+        } else if (daysSince > 1) {
+          parsed.streak = 0;
+        }
+        setProgress(parsed);
+      } catch (e) {
+        console.error("Failed to parse progress", e);
+      }
+    }
+  }, []);
+
+  // Save progress
+  const saveProgress = (newProgress: CompanyProgress) => {
+    localStorage.setItem(COMPANY_STORAGE_KEY, JSON.stringify(newProgress));
+    setProgress(newProgress);
+  };
+
+  // Toggle node completion
+  const toggleNodeCompletion = (nodeId: string) => {
+    const isCompleted = progress.completedNodes.includes(nodeId);
+    const now = Date.now();
+    const dayMs = 24 * 60 * 60 * 1000;
+    const lastActive = progress.lastActive || 0;
+    const daysSince = Math.floor((now - lastActive) / dayMs);
+    
+    let newStreak = progress.streak;
+    if (daysSince <= 1 && lastActive > 0) {
+      newStreak = progress.streak || 1;
+    } else if (daysSince > 1) {
+      newStreak = 1;
+    }
+
+    let newCompleted: string[];
+    if (isCompleted) {
+      newCompleted = progress.completedNodes.filter(n => n !== nodeId);
+    } else {
+      newCompleted = [...progress.completedNodes, nodeId];
+    }
+
+    const newProgress: CompanyProgress = {
+      completedNodes: newCompleted,
+      lastSolved: isCompleted ? progress.lastSolved : now,
+      streak: newStreak,
+      lastActive: now,
+    };
+    saveProgress(newProgress);
+  };
 
   useEffect(() => {
     if (user?.email) {
@@ -117,7 +191,8 @@ export default function CompanyGuide() {
   const nodes = plan?.nodes || [];
   const edges: Edge[] = [];
   nodes.forEach(n => n.prerequisites?.forEach(p => edges.push({ from: p, to: n.id })));
-  const progress = nodes.length > 0 ? Math.round((nodes.filter(n => completedNodes.has(n.id)).length / nodes.length) * 100) : 0;
+  const solvedCount = nodes.filter(n => progress.completedNodes.includes(n.id)).length;
+  const progressPercent = nodes.length > 0 ? Math.round(solvedCount / nodes.length * 100) : 0;
 
   useEffect(() => {
     const measure = () => {
@@ -188,12 +263,28 @@ export default function CompanyGuide() {
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="max-w-3xl mx-auto mb-6">
-        <div className="flex justify-between text-xs text-white/50 mb-2">
-          <span className="flex items-center gap-2"><TrendingUp className="w-3 h-3" />{plan.label} Prep Plan</span>
-          <span className="font-bold text-white">{progress}%</span>
+{/* Progress */}
+      <div className="max-w-3xl mx-auto mb-6 p-4 rounded-xl bg-white/5 border border-white/10">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex gap-4">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-yellow-500" />
+              <span className="text-sm text-white">{solvedCount}/{nodes.length}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Flame className="w-4 h-4 text-orange-500" />
+              <span className="text-sm text-white">{progress.streak || 0}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-green-500" />
+              <span className="text-sm text-white">{progressPercent}%</span>
+            </div>
+          </div>
         </div>
+        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+          <div className={`h-full bg-gradient-to-r ${plan.color} rounded-full transition-all`} style={{ width: `${progressPercent}%` }} />
+        </div>
+      </div>
         <div className="h-2.5 bg-white/10 rounded-full overflow-hidden"><div className={`h-full bg-gradient-to-r ${plan.color} rounded-full transition-all duration-700`} style={{ width: `${progress}%` }} /></div>
       </div>
 
@@ -205,7 +296,7 @@ export default function CompanyGuide() {
             </svg>
             {nodes.map(node => {
               const isSelected = selectedNode?.id === node.id;
-              const isDone = completedNodes.has(node.id);
+              const isDone = progress.completedNodes.includes(node.id);
               return (
                 <button key={node.id} ref={el => { nodeRefs.current[node.id] = el; }} onClick={() => setSelectedNode(node)}
                   className={`absolute transform -translate-x-1/2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-[10px] sm:text-xs font-semibold whitespace-nowrap transition-all hover:scale-110 border z-10 ${
@@ -259,9 +350,9 @@ export default function CompanyGuide() {
                   {selectedNode.tips.map((t, i) => <div key={i} className="flex items-start gap-2 text-xs text-white/50 mb-1.5"><ArrowRight className="w-3 h-3 text-yellow-500 mt-0.5 shrink-0" /><span>{t}</span></div>)}
                 </div>
               )}
-              <button onClick={() => setCompletedNodes(prev => { const n = new Set(prev); n.has(selectedNode.id) ? n.delete(selectedNode.id) : n.add(selectedNode.id); return n; })}
-                className={`w-full py-3 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2 ${completedNodes.has(selectedNode.id) ? "bg-green-600 text-white" : "bg-white/10 text-white hover:bg-white/20"}`}>
-                {completedNodes.has(selectedNode.id) ? <><CheckCircle2 className="w-4 h-4" /> Completed</> : "Mark as Complete"}
+              <button onClick={() => toggleNodeCompletion(selectedNode.id)}
+                className={`w-full py-3 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2 ${progress.completedNodes.includes(selectedNode.id) ? "bg-green-600 text-white" : "bg-white/10 text-white hover:bg-white/20"}`}>
+                {progress.completedNodes.includes(selectedNode.id) ? <><CheckCircle2 className="w-4 h-4" /> Completed</> : "Mark as Complete"}
               </button>
             </div>
 

@@ -1,15 +1,29 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ExternalLink, X, CheckCircle2, Lock } from "lucide-react";
+import { ExternalLink, X, CheckCircle2, Lock, Circle, Trophy, Flame, TrendingUp } from "lucide-react";
 import gsap from "gsap";
 import { useAuth } from "@/lib/auth-context";
 import { PremiumPurchaseModal } from "@/components/premium-purchase-modal";
-import { NODES, EDGES, DIFF_COLORS, TopicNode } from "./dsa-data";
+import { NODES, EDGES, DIFF_COLORS, TopicNode, Problem } from "./dsa-data";
+
+const STORAGE_KEY = "psg_dsa_progress";
+
+type DSAProgress = {
+  solvedProblems: string[];
+  lastSolved: number;
+  streak: number;
+  lastActive: number;
+};
 
 export default function DsaRoadmap() {
   const [selectedNode, setSelectedNode] = useState<TopicNode | null>(null);
-  const [completed, setCompleted] = useState<Set<string>>(new Set());
+  const [progress, setProgress] = useState<DSAProgress>({
+    solvedProblems: [],
+    lastSolved: 0,
+    streak: 0,
+    lastActive: 0,
+  });
   const panelRef = useRef<HTMLDivElement>(null);
   const treeContainerRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -19,6 +33,67 @@ export default function DsaRoadmap() {
   const [isPremium, setIsPremium] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
 
+  // Load progress from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const now = Date.now();
+        const dayMs = 24 * 60 * 60 * 1000;
+        const lastActive = parsed.lastActive || 0;
+        const daysSince = Math.floor((now - lastActive) / dayMs);
+        
+        if (daysSince <= 1 && lastActive > 0) {
+          parsed.streak = parsed.streak || 1;
+        } else if (daysSince > 1) {
+          parsed.streak = 0;
+        }
+        setProgress(parsed);
+      } catch (e) {
+        console.error("Failed to parse progress", e);
+      }
+    }
+  }, []);
+
+  // Save progress
+  const saveProgress = (newProgress: DSAProgress) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newProgress));
+    setProgress(newProgress);
+  };
+
+  const markSolved = (problemUrl: string) => {
+    const isSolved = progress.solvedProblems.includes(problemUrl);
+    const now = Date.now();
+    const dayMs = 24 * 60 * 60 * 1000;
+    const lastActive = progress.lastActive || 0;
+    const daysSince = Math.floor((now - lastActive) / dayMs);
+    
+    let newStreak = progress.streak;
+    if (daysSince <= 1 && lastActive > 0) {
+      newStreak = progress.streak || 1;
+    } else if (daysSince > 1) {
+      newStreak = 1;
+    } else {
+      newStreak = 1;
+    }
+
+    let newSolved: string[];
+    if (isSolved) {
+      newSolved = progress.solvedProblems.filter(p => p !== problemUrl);
+    } else {
+      newSolved = [...progress.solvedProblems, problemUrl];
+    }
+
+    const newProgress: DSAProgress = {
+      solvedProblems: newSolved,
+      lastSolved: isSolved ? progress.lastSolved : now,
+      streak: newStreak,
+      lastActive: now,
+    };
+    saveProgress(newProgress);
+  };
+
   useEffect(() => {
     if (user?.email) {
       fetch("/api/user/sync").then(r => r.json()).then(d => setIsPremium(d.isPremium)).catch(() => {});
@@ -26,7 +101,7 @@ export default function DsaRoadmap() {
   }, [user]);
 
   const totalProblems = NODES.reduce((a, n) => a + n.problems.length, 0);
-  const solvedCount = completed.size;
+  const solvedCount = progress.solvedProblems.length;
   const easy = NODES.flatMap(n => n.problems).filter(p => p.difficulty === "Easy").length;
   const med = NODES.flatMap(n => n.problems).filter(p => p.difficulty === "Medium").length;
   const hard = NODES.flatMap(n => n.problems).filter(p => p.difficulty === "Hard").length;
@@ -62,27 +137,37 @@ export default function DsaRoadmap() {
     }
   }, [selectedNode]);
 
-  const toggleProblem = (key: string) => {
-    setCompleted(prev => { const n = new Set(prev); n.has(key) ? n.delete(key) : n.add(key); return n; });
-  };
-
   const ROW_HEIGHT = 75;
   const PADDING_TOP = 20;
+
+  const solvedPercent = Math.round((solvedCount / totalProblems) * 100);
+  const easySolved = NODES.flatMap(n => n.problems).filter(p => p.difficulty === "Easy" && progress.solvedProblems.includes(p.url)).length;
+  const medSolved = NODES.flatMap(n => n.problems).filter(p => p.difficulty === "Medium" && progress.solvedProblems.includes(p.url)).length;
+  const hardSolved = NODES.flatMap(n => n.problems).filter(p => p.difficulty === "Hard" && progress.solvedProblems.includes(p.url)).length;
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 relative w-full max-w-[100vw] overflow-x-hidden">
       <PremiumPurchaseModal isOpen={isPremiumModalOpen} onClose={() => setIsPremiumModalOpen(false)} />
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-6 p-4 rounded-xl bg-white/5 border border-white/10">
-          <div className="flex gap-4 text-xs sm:text-sm">
-            <span className="text-green-400">Easy <span className="text-white/70">{easy}</span></span>
-            <span className="text-yellow-400">Med <span className="text-white/70">{med}</span></span>
-            <span className="text-red-400">Hard <span className="text-white/70">{hard}</span></span>
+        <div className="flex flex-wrap items-center justify-between mb-6 p-4 rounded-xl bg-white/5 border border-white/10 gap-4">
+          <div className="flex gap-4">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-yellow-500" />
+              <span className="text-sm text-white">{solvedCount}/{totalProblems}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Flame className="w-4 h-4 text-orange-500" />
+              <span className="text-sm text-white">{progress.streak || 0}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-green-500" />
+              <span className="text-sm text-white">{solvedPercent}%</span>
+            </div>
           </div>
-          <div className="text-right">
-            <span className="text-2xl font-bold text-white">{solvedCount}</span>
-            <span className="text-white/40">/{totalProblems}</span>
-            <span className="text-xs text-white/40 ml-1">Solved</span>
+          <div className="flex gap-3 text-xs">
+            <span className="text-green-400 bg-green-500/10 px-2 py-1 rounded">{easySolved}/{easy} Easy</span>
+            <span className="text-yellow-400 bg-yellow-500/10 px-2 py-1 rounded">{medSolved}/{med} Med</span>
+            <span className="text-red-400 bg-red-500/10 px-2 py-1 rounded">{hardSolved}/{hard} Hard</span>
           </div>
         </div>
 
@@ -100,7 +185,7 @@ export default function DsaRoadmap() {
             </svg>
             {NODES.map(node => {
               const isSelected = selectedNode?.id === node.id;
-              const nodeSolved = node.problems.filter(p => completed.has(`${node.id}-${p.name}`)).length;
+              const nodeSolved = node.problems.filter(p => progress.solvedProblems.includes(p.url)).length;
               const allDone = nodeSolved === node.problems.length && node.problems.length > 0;
               const isFreeNode = node.id === "arrays" || node.id === "two-pointers";
               const isLocked = !isFreeNode && !isPremium;
@@ -136,27 +221,35 @@ export default function DsaRoadmap() {
           <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between">
             <div>
               <h3 className="text-lg font-bold text-white">{selectedNode.label}</h3>
-              <p className="text-xs text-white/40">{selectedNode.problems.filter(p => completed.has(`${selectedNode.id}-${p.name}`)).length} / {selectedNode.problems.length} solved</p>
+              <p className="text-xs text-white/40">{selectedNode.problems.filter(p => progress.solvedProblems.includes(p.url)).length} / {selectedNode.problems.length} solved</p>
             </div>
             <button onClick={() => setSelectedNode(null)} className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20"><X className="w-4 h-4 text-white/60" /></button>
           </div>
           <div className="px-4 sm:px-5 py-3 border-b border-white/10">
             <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
               <div className="h-full bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full transition-all duration-500"
-                style={{ width: `${(selectedNode.problems.filter(p => completed.has(`${selectedNode.id}-${p.name}`)).length / selectedNode.problems.length) * 100}%` }} />
+                style={{ width: `${(selectedNode.problems.filter(p => progress.solvedProblems.includes(p.url)).length / selectedNode.problems.length) * 100}%` }} />
             </div>
           </div>
           <div className="flex-1 overflow-y-auto">
             <table className="w-full">
-              <thead><tr className="text-xs text-white/40 border-b border-white/10"><th className="text-left py-2 px-4 w-10">✓</th><th className="text-left py-2">Problem</th><th className="text-right py-2 px-4">Difficulty</th></tr></thead>
+              <thead><tr className="text-xs text-white/40 border-b border-white/10"><th className="text-left py-2 px-4 w-10">Status</th><th className="text-left py-2">Problem</th><th className="text-right py-2 px-4">Difficulty</th></tr></thead>
               <tbody>
                 {selectedNode.problems.map((problem) => {
-                  const key = `${selectedNode.id}-${problem.name}`;
-                  const isDone = completed.has(key);
+                  const isDone = progress.solvedProblems.includes(problem.url);
                   return (
                     <tr key={problem.name} className={`border-b border-white/5 hover:bg-white/5 transition-colors ${isDone ? "bg-green-500/5" : ""}`}>
-                      <td className="px-4 py-3"><button onClick={() => toggleProblem(key)} className="hover:scale-110 transition-transform">{isDone ? <CheckCircle2 className="w-4 h-4 text-green-400" /> : <div className="w-4 h-4 rounded border border-white/20" />}</button></td>
-                      <td className="py-3 pr-2"><a href={problem.url} target="_blank" rel="noopener noreferrer" className={`text-sm hover:text-purple-400 transition-colors inline-flex items-center gap-1.5 ${isDone ? "text-white/50 line-through" : "text-white"}`}>{problem.name}<ExternalLink className="w-3 h-3 text-white/30" /></a></td>
+                      <td className="px-4 py-3">
+                        <button onClick={() => markSolved(problem.url)} className="hover:scale-110 transition-transform">
+                          {isDone ? <CheckCircle2 className="w-4 h-4 text-green-400" /> : <Circle className="w-4 h-4 text-zinc-600" />}
+                        </button>
+                      </td>
+                      <td className="py-3 pr-2">
+                        <a href={problem.url} target="_blank" rel="noopener noreferrer" className={`text-sm hover:text-purple-400 transition-colors inline-flex items-center gap-1.5 ${isDone ? "text-white/50 line-through" : "text-white"}`}>
+                          {problem.name}
+                          <ExternalLink className="w-3 h-3 text-white/30" />
+                        </a>
+                      </td>
                       <td className={`text-right px-4 py-3 text-xs font-medium ${DIFF_COLORS[problem.difficulty]}`}>{problem.difficulty}</td>
                     </tr>
                   );

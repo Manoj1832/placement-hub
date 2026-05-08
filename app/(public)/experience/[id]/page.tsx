@@ -26,7 +26,10 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
   });
   const upvote = useMutation(api.experiences.upvote);
   const toggleSave = useMutation(api.experiences.save);
-  const saved = useQuery(api.experiences.isSaved, { experienceId });
+const saved = useQuery(api.experiences.isSaved, { 
+    experienceId, 
+    userEmail: userId || ""
+  });
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [isPremiumUser, setIsPremiumUser] = useState(false);
   const { showToast } = useToast();
@@ -503,7 +506,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
                     router.push("/sign-in");
                     return;
                   }
-                  toggleSave({ experienceId: experience._id });
+                  toggleSave({ experienceId: experience._id, userEmail: userId });
                 }} 
                 className="border-zinc-600 text-white hover:bg-zinc-800 px-5 py-2.5"
               >

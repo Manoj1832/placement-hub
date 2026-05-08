@@ -434,9 +434,19 @@ export const upvote = mutation({
 });
 
 export const save = mutation({
-  args: { experienceId: v.id("experiences") },
+  args: { 
+    experienceId: v.id("experiences"),
+    userEmail: v.string()
+  },
   handler: async (ctx, args) => {
-    const { user } = await requireAuth(ctx);
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q: any) => q.eq("email", args.userEmail.toLowerCase().trim()))
+      .first();
+    
+    if (!user) {
+      throw new Error("User not found");
+    }
 
     const existing = await ctx.db
       .query("savedExperiences")
@@ -461,9 +471,16 @@ export const save = mutation({
 });
 
 export const isSaved = query({
-  args: { experienceId: v.id("experiences") },
+  args: { 
+    experienceId: v.id("experiences"),
+    userEmail: v.string()
+  },
   handler: async (ctx, args) => {
-    const user = await getOptionalUser(ctx);
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q: any) => q.eq("email", args.userEmail.toLowerCase().trim()))
+      .first();
+    
     if (!user) return false;
 
     const saved = await ctx.db
@@ -478,9 +495,15 @@ export const isSaved = query({
 });
 
 export const getSaved = query({
-  args: {},
-  handler: async (ctx) => {
-    const user = await getOptionalUser(ctx);
+  args: { userEmail: v.string() },
+  handler: async (ctx, args) => {
+    if (!args.userEmail) return [];
+    
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q: any) => q.eq("email", args.userEmail.toLowerCase().trim()))
+      .first();
+    
     if (!user) return [];
 
     const saved = await ctx.db

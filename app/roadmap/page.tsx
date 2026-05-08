@@ -2,14 +2,15 @@
 
 import Header from "@/components/header";
 import Link from "next/link";
-import { ArrowLeft, Code2, Briefcase, Building2 } from "lucide-react";
+import { ArrowLeft, Code2, Briefcase, Building2, Target } from "lucide-react";
 import { useState } from "react";
 import RoleSkillTree from "@/components/roadmap/role-skill-tree";
 import CompanyGuide from "@/components/roadmap/company-guide";
 import DsaRoadmap from "@/components/roadmap/dsa-roadmap";
+import DsaTracker from "@/components/roadmap/dsa-tracker";
 
 export default function RoadmapPage() {
-  const [activeTab, setActiveTab] = useState<"dsa" | "roles" | "companies">("dsa");
+  const [activeTab, setActiveTab] = useState<"dsa" | "track" | "roles" | "companies">("dsa");
 
   return (
     <div className="min-h-screen bg-[#0a0a1a] text-white overflow-x-hidden">
@@ -47,6 +48,15 @@ export default function RoadmapPage() {
                 DSA Tree
               </button>
               <button
+                onClick={() => setActiveTab("track")}
+                className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                  activeTab === "track" ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg" : "text-white/60 hover:text-white bg-white/5 sm:bg-transparent"
+                }`}
+              >
+                <Target className="w-4 h-4 inline mr-2" />
+                Tracker
+              </button>
+              <button
                 onClick={() => setActiveTab("roles")}
                 className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                   activeTab === "roles" ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg" : "text-white/60 hover:text-white bg-white/5 sm:bg-transparent"
@@ -68,6 +78,8 @@ export default function RoadmapPage() {
           </div>
 
           {activeTab === "dsa" && <DsaRoadmap />}
+
+          {activeTab === "track" && <DsaTracker />}
 
           {activeTab === "roles" && <RoleSkillTree />}
           {activeTab === "companies" && <CompanyGuide />}

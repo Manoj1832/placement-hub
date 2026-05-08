@@ -41,10 +41,12 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
   const userId = user?.email;
   const [localUpvotes, setLocalUpvotes] = useState(experience.upvotes || 0);
   const [hasUpvoted, setHasUpvoted] = useState(false);
+  const [localSaved, setLocalSaved] = useState(false);
   const { showToast } = useToast();
 
   const saved = useQuery(api.experiences.isSaved, { 
-    experienceId: experience._id
+    experienceId: experience._id,
+    userEmail: userId || ""
   });
   const upvote = useMutation(api.experiences.upvote);
   const toggleSave = useMutation(api.experiences.save);
@@ -71,7 +73,8 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
       showToast("warning", "Sign In Required", "Please sign in to save experiences!");
       return;
     }
-    toggleSave({ experienceId: experience._id });
+    setLocalSaved(!localSaved);
+    toggleSave({ experienceId: experience._id, userEmail: userId });
   };
 
   const difficultyColors: Record<string, string> = {
@@ -190,7 +193,7 @@ export default function ExperienceCard({ experience }: ExperienceCardProps) {
                 <span className={`text-xs font-medium ${hasUpvoted ? "text-purple-400" : "text-zinc-400"}`}>{localUpvotes}</span>
               </button>
               <button type="button" onClick={handleSave} className="flex items-center justify-center h-8 w-8 rounded-lg hover:bg-zinc-800 transition-colors">
-                <Bookmark className={`w-4 h-4 ${saved ? "fill-current text-purple-400" : "text-zinc-500"}`} />
+                <Bookmark className={`w-4 h-4 ${localSaved !== undefined ? (localSaved ? "fill-current text-purple-400" : "text-zinc-500") : (saved ? "fill-current text-purple-400" : "text-zinc-500")}`} />
               </button>
             </div>
           </div>

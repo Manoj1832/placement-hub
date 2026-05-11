@@ -133,8 +133,8 @@ export const paginatedList = query({
       .withIndex("by_status", (q: any) => q.eq("status", "approved"))
       .collect();
 
-    // Sort by upvotes
-    results = results.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
+    // Sort by company name A-Z
+    results = results.sort((a, b) => (a.companyName || "").localeCompare(b.companyName || ""));
 
     // Apply filters
     const filtered = results.filter((e) => {

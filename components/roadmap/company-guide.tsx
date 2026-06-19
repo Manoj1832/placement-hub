@@ -285,8 +285,6 @@ export default function CompanyGuide() {
           <div className={`h-full bg-gradient-to-r ${plan.color} rounded-full transition-all`} style={{ width: `${progressPercent}%` }} />
         </div>
       </div>
-        <div className="h-2.5 bg-white/10 rounded-full overflow-hidden"><div className={`h-full bg-gradient-to-r ${plan.color} rounded-full transition-all duration-700`} style={{ width: `${progress}%` }} /></div>
-      </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-1 min-w-0 overflow-x-auto pb-4">

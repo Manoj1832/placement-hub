@@ -86,7 +86,50 @@ export const list = query({
       return true;
     });
 
-    // Manual pagination
+    return filtered;
+  },
+});
+
+/**
+ * Paginated list of approved experiences.
+ * Returns experiences in chunks for faster initial load and infinite scroll.
+ */
+export const paginatedList = query({
+  args: {
+    cursor: v.optional(v.string()),
+    numItems: v.optional(v.number()),
+    company: v.optional(v.string()),
+    type: v.optional(v.string()),
+    branch: v.optional(v.string()),
+    difficulty: v.optional(v.string()),
+    search: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    let results = await ctx.db
+      .query("experiences")
+      .withIndex("by_status", (q: any) => q.eq("status", "approved"))
+      .collect();
+
+    results = results.sort((a, b) => (a.companyName || "").localeCompare(b.companyName || ""));
+
+    const filtered = results.filter((e) => {
+      if (args.company && !e.companyName?.toLowerCase().includes(args.company.toLowerCase())) return false;
+      if (args.type && e.opportunityType !== args.type) return false;
+      if (args.branch && e.branch !== args.branch) return false;
+      if (args.difficulty && e.difficulty !== args.difficulty) return false;
+
+      if (args.search) {
+        const searchLower = args.search.toLowerCase();
+        const searchFields = [
+          e.companyName?.toLowerCase() || "",
+          e.roleTitle?.toLowerCase() || "",
+          e.tags?.join(" ").toLowerCase() || "",
+        ].join(" ");
+        if (!searchFields.includes(searchLower)) return false;
+      }
+      return true;
+    });
+
     const cursorPos = Number(args.cursor ?? "0");
     const pageSize = args.numItems ?? 8;
     const page = filtered.slice(cursorPos, cursorPos + pageSize);

@@ -10,6 +10,7 @@ import Header from "@/components/header";
 
 export default function HomePage() {
   const recentExperiences = useQuery(api.experiences.getRecent, { limit: 3 });
+  const stats = useQuery(api.experiences.getStats);
 
   return (
     <div className="min-h-screen bg-[#2E1065] text-white overflow-hidden selection:bg-[#22C55E] selection:text-black font-sans">
@@ -47,7 +48,7 @@ export default function HomePage() {
                 <Link href="/resume-tips" className="flex-1 md:flex-none">
                   <button className="w-full text-[11px] sm:text-xs md:text-sm font-semibold bg-white/10 backdrop-blur-md text-white border border-white/20 px-2 py-2 sm:px-3 md:px-4 md:py-2 rounded-xl hover:bg-white/20 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap">
                     <FileText className="w-3 h-3 md:w-4 md:h-4 text-[#22C55E] shrink-0" />
-                    custResume
+                    Resume & Vault
                   </button>
                 </Link>
                 <Link href="/roadmap" className="flex-1 md:flex-none">
@@ -93,9 +94,9 @@ export default function HomePage() {
           <div className="max-w-screen-xl mx-auto px-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 items-center justify-items-center max-w-4xl mx-auto">
               {[
-                { label: "students", value: "450+", icon: Users },
-                { label: "experiences", value: "70+", icon: Briefcase },
-                { label: "rating", value: "4.8", icon: Star }
+                { label: "companies", value: stats ? `${stats.totalCompanies}+` : "—", icon: Users },
+                { label: "experiences", value: stats ? `${stats.totalExperiences}+` : "—", icon: Briefcase },
+                { label: "free to read", value: stats ? `${stats.freeExperiences}` : "—", icon: Star }
               ].map((stat, i) => (
                 <div key={i} className="flex flex-col items-center justify-center cursor-default animate-text-blink" style={{ animationDelay: `${i * 0.8 + 0.4}s` }}>
                   <div className="flex items-center gap-3 mb-2 text-[#22C55E]">
@@ -126,9 +127,32 @@ export default function HomePage() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
-              {recentExperiences?.map((exp: any) => (
-                <ExperienceCard key={exp._id} experience={exp} />
-              ))}
+              {recentExperiences === undefined ? (
+                // Loading skeleton
+                Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="bg-white/5 rounded-2xl border border-white/10 p-6 animate-pulse">
+                    <div className="h-4 bg-white/10 rounded w-2/3 mb-3" />
+                    <div className="h-3 bg-white/10 rounded w-1/2 mb-6" />
+                    <div className="h-3 bg-white/10 rounded w-full mb-2" />
+                    <div className="h-3 bg-white/10 rounded w-4/5" />
+                  </div>
+                ))
+              ) : recentExperiences.length === 0 ? (
+                // Empty state
+                <div className="col-span-full text-center py-16">
+                  <Briefcase className="w-12 h-12 text-white/20 mx-auto mb-4" />
+                  <p className="text-white/60 text-lg mb-2">No experiences shared yet</p>
+                  <p className="text-white/40 text-sm mb-6">Be the first to share your placement journey!</p>
+                  <Link href="/submit" className="inline-flex items-center gap-2 px-6 py-3 bg-[#22C55E] text-black rounded-xl font-semibold hover:bg-[#4ADE80] transition-all">
+                    Share Your Experience
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              ) : (
+                recentExperiences.map((exp: any) => (
+                  <ExperienceCard key={exp._id} experience={exp} />
+                ))
+              )}
             </div>
           </div>
         </section>

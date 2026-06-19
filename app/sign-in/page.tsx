@@ -54,7 +54,7 @@ function SignInContent() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#2D1A5C] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
@@ -159,7 +159,7 @@ function SignInContent() {
 export default function SignInPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center">
+      <div className="min-h-screen bg-[#2D1A5C] flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-[#00FF7F] animate-spin" />
       </div>
     }>

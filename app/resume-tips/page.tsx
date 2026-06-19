@@ -141,7 +141,7 @@ export default function ResumeTipsPage() {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8 sm:mb-12">
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-3">custResume & Vault</h1>
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-3">Resume & Vault</h1>
             <p className="text-sm sm:text-lg text-white/60 max-w-2xl mx-auto leading-relaxed px-2">
               Download proven templates or view actual resumes that cracked top companies.
             </p>
@@ -188,9 +188,9 @@ export default function ResumeTipsPage() {
                       <span className="flex items-center gap-1"><Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-500" /> {template.rating}</span>
                     </div>
 
-                    <Button className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/10 text-xs sm:text-sm">
+                    <Button className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/10 text-xs sm:text-sm cursor-not-allowed opacity-50" title="Coming soon">
                       <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2" />
-                      Download PDF
+                      Coming Soon
                     </Button>
                   </CardContent>
                 </Card>

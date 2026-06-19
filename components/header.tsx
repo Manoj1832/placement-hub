@@ -23,7 +23,7 @@ const NAV_CARDS = [
     textColor: "#fff",
     links: [
       { label: "DSA Roadmap", href: "/roadmap", ariaLabel: "DSA Roadmap" },
-      { label: "custResume & Vault", href: "/resume-tips", ariaLabel: "Resume tips" },
+      { label: "Resume & Vault", href: "/resume-tips", ariaLabel: "Resume tips" },
     ],
   },
   {

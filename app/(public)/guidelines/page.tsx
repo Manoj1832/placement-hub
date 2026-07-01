@@ -3,7 +3,7 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Link from "next/link";
-import { useAuth } from "@/lib/auth-context";
+import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,8 +11,8 @@ import { ArrowLeft, BookOpen, Shield, Users, Lock, Eye, HandHeart, Ban } from "l
 
 export default function GuidelinesPage() {
   const router = useRouter();
-  const { user } = useAuth();
-  const userId = user?.email;
+  const { user } = useUser();
+  const userId = user?.primaryEmailAddress?.emailAddress;
 
   const guidelines = [
     {

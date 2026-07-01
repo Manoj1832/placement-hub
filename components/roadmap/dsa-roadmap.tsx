@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { ExternalLink, X, CheckCircle2, Lock, Circle, Trophy, Flame, TrendingUp } from "lucide-react";
 import gsap from "gsap";
-import { useAuth } from "@/lib/auth-context";
+import { useUser } from "@clerk/nextjs";
 import { PremiumPurchaseModal } from "@/components/premium-purchase-modal";
 import { NODES, EDGES, DIFF_COLORS, TopicNode, Problem } from "./dsa-data";
 
@@ -29,7 +29,7 @@ export default function DsaRoadmap() {
   const nodeRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [lines, setLines] = useState<{ x1: number; y1: number; x2: number; y2: number }[]>([]);
   
-  const { user } = useAuth();
+  const { user } = useUser();
   const [isPremium, setIsPremium] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
 
@@ -95,7 +95,7 @@ export default function DsaRoadmap() {
   };
 
   useEffect(() => {
-    if (user?.email) {
+    if (user?.primaryEmailAddress?.emailAddress) {
       fetch("/api/user/sync").then(r => r.json()).then(d => setIsPremium(d.isPremium)).catch(() => {});
     }
   }, [user]);

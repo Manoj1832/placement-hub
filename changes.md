@@ -294,3 +294,15 @@ const CardNav: React.FC<CardNavProps> = ({
 };
 
 export default CardNav;
+
+## July 2026 Redesign
+- Reverted theme from light mode to premium Dark Mode with Orange Accents as requested by the user.
+- Updated Header (`components/header.tsx`) to match the user's reference screenshot:
+  - Background set to dark black/slate (`#09090B`).
+  - Added an orange dot status next to the logo.
+  - Added dynamic streak widget with a orange flame and custom text columns.
+  - Added level widget with a trophy icon and progress bar filled with orange theme indicator.
+  - Styled "Submit Experience" button as a solid orange button with black text.
+  - Rendered a premium warning alert banner underneath the header with orange color styling and a close button.
+- Updated HomePage (`app/page.tsx`), Browse Page (`app/(public)/browse/page.tsx`), and Dashboard Page (`app/(auth)/dashboard/page.tsx`) to implement the premium dark-orange theme.
+- Updated Experience Details (`app/(public)/experience/[id]/page.tsx`) and Experience Cards (`components/experience-card.tsx`) to match dark-orange branding.

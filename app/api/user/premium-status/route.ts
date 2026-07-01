@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AUTH_COOKIE_NAME, verifyJWT } from "@/lib/auth";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { cachedQuery, cacheKeys } from "@/lib/redis";
@@ -12,29 +12,33 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
  */
 export async function GET(req: NextRequest) {
   try {
-    const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
-    if (!token) return NextResponse.json({ isPremium: false, premiumUntil: null });
-    const payload = await verifyJWT(token);
-    if (!payload?.email) {
+    const { userId: clerkUserId } = await auth();
+    if (!clerkUserId) {
+      return NextResponse.json({ isPremium: false, premiumUntil: null });
+    }
+
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+    if (!email) {
       return NextResponse.json({ isPremium: false, premiumUntil: null });
     }
 
     const result = await cachedQuery(
-      cacheKeys.premiumStatus(payload.email),
+      cacheKeys.premiumStatus(email),
       async () => {
-        const user = await convex.query(api.users.getByEmail, {
-          email: payload.email,
+        const convexUser = await convex.query(api.users.getByEmail, {
+          email: email,
         });
 
-        if (!user) {
+        if (!convexUser) {
           return { isPremium: false, premiumUntil: null };
         }
 
-        const isPremium = user.isPremium && (!user.premiumUntil || user.premiumUntil > Date.now());
+        const isPremium = convexUser.isPremium && (!convexUser.premiumUntil || convexUser.premiumUntil > Date.now());
 
         return {
           isPremium,
-          premiumUntil: user.premiumUntil || null,
+          premiumUntil: convexUser.premiumUntil || null,
         };
       },
       60 // 1 minute TTL

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/lib/auth-context";
+import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GitBranch as Github, ArrowLeft } from "lucide-react";
@@ -16,8 +16,8 @@ import { useToast } from "@/components/toast-modal";
 export default function GitHubAuditPage() {
   const [githubUrl, setGithubUrl] = useState("");
   const router = useRouter();
-  const { user } = useAuth();
-  const userId = user?.email;
+  const { user } = useUser();
+  const userId = user?.primaryEmailAddress?.emailAddress;
   const createBooking = useMutation(api.bookings.create);
   const { showToast } = useToast();
 

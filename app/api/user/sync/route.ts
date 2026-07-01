@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AUTH_COOKIE_NAME, verifyJWT } from "@/lib/auth";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { cachedQuery, cacheKeys } from "@/lib/redis";
@@ -11,16 +11,24 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
  */
 export async function POST(req: NextRequest) {
   try {
-    const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
-    if (!token) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    const payload = await verifyJWT(token);
-    if (!payload?.email) {
+    const { userId: clerkUserId } = await auth();
+    if (!clerkUserId) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const userId = await convex.mutation(api.users.getOrCreateByEmail, {
-      email: payload.email,
-      name: payload.name || "PSG Student",
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+    if (!email) {
+      return NextResponse.json({ error: "No email address found" }, { status: 400 });
+    }
+
+    const name = user.fullName || `${user.firstName || ""} ${user.lastName || ""}`.trim() || "PSG Student";
+
+    // Use createOrUpdate with the actual Clerk user ID so Convex can verify user identity correctly
+    const userId = await convex.mutation(api.users.createOrUpdate, {
+      clerkId: clerkUserId,
+      email: email,
+      name: name,
     });
 
     return NextResponse.json({ userId });
@@ -36,18 +44,22 @@ export async function POST(req: NextRequest) {
  */
 export async function GET(req: NextRequest) {
   try {
-    const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
-    if (!token) return NextResponse.json({ isPremium: false });
-    const payload = await verifyJWT(token);
-    if (!payload?.email) {
+    const { userId: clerkUserId } = await auth();
+    if (!clerkUserId) {
+      return NextResponse.json({ isPremium: false });
+    }
+
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+    if (!email) {
       return NextResponse.json({ isPremium: false });
     }
 
     const isPremium = await cachedQuery(
-      cacheKeys.isPremium(payload.email),
+      cacheKeys.isPremium(email),
       async () => {
         return await convex.query(api.users.isPremiumByEmail, {
-          email: payload.email,
+          email: email,
         });
       },
       60 // 1 minute TTL

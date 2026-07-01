@@ -21,13 +21,21 @@ export const createOrUpdate = mutation({
     graduationYear: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const existing = await ctx.db
+    let existing = await ctx.db
       .query("users")
       .withIndex("by_clerk_id", (q: any) => q.eq("clerkId", args.clerkId))
       .first();
 
+    if (!existing) {
+      existing = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q: any) => q.eq("email", args.email.toLowerCase().trim()))
+        .first();
+    }
+
     if (existing) {
       await ctx.db.patch(existing._id, {
+        clerkId: args.clerkId,
         email: args.email,
         name: args.name,
         branch: args.branch,

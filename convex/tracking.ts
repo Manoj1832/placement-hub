@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { internal } from "./_generated/api";
 
 async function getUser(ctx: any) {
   const identity = await ctx.auth.getUserIdentity();
@@ -85,34 +86,21 @@ export const trackActivity = mutation({
       metadata: args.metadata,
       createdAt: Date.now(),
     });
-    
-    // Update student levels (XP)
-    const existingLevel = await ctx.db
-      .query("studentLevels")
-      .withIndex("by_user", (q: any) => q.eq("userId", user._id))
-      .first();
-    
-    if (existingLevel) {
-      const newXp = existingLevel.xp + points;
-      await ctx.db.patch(existingLevel._id, {
-        xp: newXp,
-        totalXpEarned: existingLevel.totalXpEarned + points,
-        level: getLevelFromXp(newXp),
-        updatedAt: Date.now(),
-      });
-    } else {
-      await ctx.db.insert("studentLevels", {
+
+    // Event-driven publish (Outbox Pattern)
+    const eventId = await ctx.db.insert("events", {
+      eventType: "user.activity_tracked",
+      payload: JSON.stringify({
         userId: user._id,
-        xp: points,
-        level: 1,
-        totalXpEarned: points,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-      });
-    }
-    
-    // Update streaks
-    await updateStreak(ctx, user._id);
+        activityType: args.activityType,
+        points: points,
+      }),
+      status: "pending",
+      createdAt: Date.now(),
+    });
+
+    // Dispatch immediately in background
+    await ctx.scheduler.runAfter(0, internal.events.dispatchAction, { eventId });
     
     return { success: true, pointsEarned: points };
   },

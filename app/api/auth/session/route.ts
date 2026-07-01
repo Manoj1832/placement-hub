@@ -1,24 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AUTH_COOKIE_NAME, verifyJWT } from "@/lib/auth";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 export async function GET(req: NextRequest) {
-  const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ user: null });
+    }
 
-  if (!token) {
+    const user = await currentUser();
+    if (!user) {
+      return NextResponse.json({ user: null });
+    }
+
+    return NextResponse.json({
+      user: {
+        id: userId,
+        name: user.fullName || `${user.firstName || ""} ${user.lastName || ""}`.trim() || "PSG Student",
+        email: user.emailAddresses[0]?.emailAddress || "",
+        role: "student",
+      },
+    });
+  } catch (err) {
     return NextResponse.json({ user: null });
   }
-
-  const payload = await verifyJWT(token);
-  if (!payload) {
-    return NextResponse.json({ user: null });
-  }
-
-  return NextResponse.json({
-    user: {
-      id: payload.sub,
-      name: payload.name,
-      email: payload.email,
-      role: payload.role,
-    },
-  });
 }

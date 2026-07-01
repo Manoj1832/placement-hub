@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { ExternalLink, X, CheckCircle2, Zap, Target, Lock, ChevronDown, BarChart3, BookOpen, GraduationCap, Lightbulb, ArrowRight, TrendingUp, Layers, Clock, FileText, Circle, Trophy, Flame } from "lucide-react";
 import gsap from "gsap";
-import { useAuth } from "@/lib/auth-context";
+import { useUser } from "@clerk/nextjs";
 import { PremiumPurchaseModal } from "@/components/premium-purchase-modal";
 import CompanyLogo from "@/components/company-logo";
 
@@ -117,7 +117,7 @@ export default function CompanyGuide() {
   const treeRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const panelRef = useRef<HTMLDivElement>(null);
-  const { user } = useAuth();
+  const { user } = useUser();
   const [isPremium, setIsPremium] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
 
@@ -164,14 +164,14 @@ export default function CompanyGuide() {
     } else if (daysSince > 1) {
       newStreak = 1;
     }
-
+ 
     let newCompleted: string[];
     if (isCompleted) {
       newCompleted = progress.completedNodes.filter(n => n !== nodeId);
     } else {
       newCompleted = [...progress.completedNodes, nodeId];
     }
-
+ 
     const newProgress: CompanyProgress = {
       completedNodes: newCompleted,
       lastSolved: isCompleted ? progress.lastSolved : now,
@@ -180,9 +180,9 @@ export default function CompanyGuide() {
     };
     saveProgress(newProgress);
   };
-
+ 
   useEffect(() => {
-    if (user?.email) {
+    if (user?.primaryEmailAddress?.emailAddress) {
       fetch("/api/user/sync").then(r => r.json()).then(d => setIsPremium(d.isPremium)).catch(() => {});
     }
   }, [user]);

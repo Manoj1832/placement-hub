@@ -2,7 +2,7 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useAuth } from "@/lib/auth-context";
+import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ExperienceCard from "@/components/experience-card";
@@ -11,11 +11,11 @@ import { ArrowLeft, Bookmark } from "lucide-react";
 
 export default function SavedPage() {
   const router = useRouter();
-  const { user: sessionUser, loading: sessionLoading } = useAuth();
-  const userId = sessionUser?.email || "";
+  const { isLoaded, user: sessionUser } = useUser();
+  const userId = sessionUser?.primaryEmailAddress?.emailAddress || "";
   const saved = useQuery(api.experiences.getSaved, { userEmail: userId });
 
-  if (sessionLoading) {
+  if (!isLoaded) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-white">Loading...</div>

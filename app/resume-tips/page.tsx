@@ -6,7 +6,7 @@ import { ArrowLeft, FileText, Lock, Crown, Download, Eye, Star } from "lucide-re
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/lib/auth-context";
+import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast-modal";
 
@@ -27,20 +27,20 @@ export default function ResumeTipsPage() {
   const [activeTab, setActiveTab] = useState<"templates" | "vault">("templates");
   const [isPremiumUser, setIsPremiumUser] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
-  const { user: sessionUser, loading: sessionLoading } = useAuth();
-  const userId = sessionUser?.email as string | undefined;
+  const { user: sessionUser, isLoaded } = useUser();
+  const userId = sessionUser?.primaryEmailAddress?.emailAddress;
   const router = useRouter();
   const { showToast } = useToast();
 
   // Check premium status
   useEffect(() => {
-    if (!sessionLoading && userId) {
+    if (isLoaded && userId) {
       fetch("/api/user/sync")
         .then((res) => res.json())
         .then((data) => setIsPremiumUser(data.isPremium))
         .catch(console.error);
     }
-  }, [sessionLoading, userId]);
+  }, [isLoaded, userId]);
 
   const handleUpgrade = async () => {
     if (!userId) {
@@ -73,7 +73,7 @@ export default function ResumeTipsPage() {
       }
 
       const rzp = new (window as any).Razorpay({
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        key: data.razorpayKeyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: data.amount,
         currency: "INR",
         name: "PSG Placement Hub",
@@ -107,7 +107,7 @@ export default function ResumeTipsPage() {
         },
         prefill: {
           email: userId,
-          name: sessionUser?.name || "",
+          name: sessionUser?.fullName || "",
         },
         theme: { color: "#eab308" },
         modal: {

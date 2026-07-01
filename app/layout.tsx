@@ -1,5 +1,5 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { AuthProvider } from "@/lib/auth-context";
 import ConvexClientProvider from "@/components/convex-provider";
 import { ToastProvider } from "@/components/toast-modal";
 import ClickSpark from "@/components/ui/click-spark";
@@ -25,21 +25,21 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body>
-        <AuthProvider>
+        <ClerkProvider>
           <ConvexClientProvider>
             <ToastProvider>
               <ClickSpark
-                sparkColor="#a855f7"
-                sparkSize={12}
-                sparkRadius={20}
-                sparkCount={10}
-                duration={500}
+                sparkColor="#d4d4d4"
+                sparkSize={8}
+                sparkRadius={16}
+                sparkCount={6}
+                duration={350}
               >
                 {children}
               </ClickSpark>
             </ToastProvider>
           </ConvexClientProvider>
-        </AuthProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

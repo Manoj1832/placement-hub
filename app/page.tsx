@@ -13,76 +13,71 @@ export default function HomePage() {
   const stats = useQuery(api.experiences.getStats);
 
   return (
-    <div className="min-h-screen bg-[#2E1065] text-white overflow-hidden selection:bg-[#22C55E] selection:text-black font-sans">
+    <div className="min-h-screen bg-[#09090B] text-zinc-300 overflow-hidden font-sans selection:bg-zinc-800 selection:text-white">
       <Header />
 
-      {/* Background blobs / Glassmorphism */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#4C1D95] opacity-50 blur-[100px]" />
-        <div className="absolute top-[20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#3B0764] opacity-50 blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-[#1E1B4B] opacity-80 blur-[80px]" />
-      </div>
-
-      <main className="relative z-10">
+      <main>
         {/* 1. Hero Section */}
-        <section className="max-w-screen-xl mx-auto px-4 py-12 md:py-20">
-          <div className="flex flex-col lg:flex-row items-center gap-6 md:gap-10 lg:gap-20">
-            <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/80 text-sm font-medium mb-6 backdrop-blur-md">
-                <Sparkles className="w-4 h-4 text-[#22C55E]" />
+        <section className="max-w-screen-xl mx-auto px-6 py-20 md:py-28 relative">
+          {/* Subtle ambient light dot in the background */}
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-orange-500/5 rounded-full blur-[100px] pointer-events-none" />
+
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+            <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-semibold mb-6">
+                <Sparkles className="w-3.5 h-3.5 text-[#F97316]" />
                 Unlock Your Placement Potential
               </div>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-                Crack Your Dream Company with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#22C55E] to-[#4ADE80]">Real Interview Insights</span>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-5 tracking-tight leading-[1.1]">
+                Crack Your Dream Company with Real Interview Insights
               </h1>
-              <p className="text-base md:text-lg lg:text-xl text-white/70 mb-8 max-w-lg font-light leading-relaxed">
-                Explore real interview experiences, role insights, and preparation strategies.
+              <p className="text-base md:text-lg text-zinc-400 mb-8 max-w-lg leading-relaxed">
+                Explore real interview experiences, role insights, and preparation roadmaps shared by your peers at PSG College.
               </p>
-              <div className="flex flex-row flex-nowrap items-center justify-center md:justify-start gap-2 md:gap-4 mt-4 w-full overflow-hidden">
-                <Link href="/browse" className="flex-1 md:flex-none">
-                  <button className="w-full text-[11px] sm:text-xs md:text-sm font-semibold bg-[#22C55E] text-black px-2 py-2 sm:px-3 md:px-4 md:py-2 rounded-xl hover:bg-[#4ADE80] transition-all duration-300 hover:scale-105 shadow-[0_0_15px_rgba(34,197,94,0.4)] flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap">
+              <div className="flex flex-row flex-wrap items-center justify-center lg:justify-start gap-3">
+                <Link href="/browse">
+                  <button className="text-sm font-bold bg-[#F97316] hover:bg-[#EA580C] text-black px-6 py-3 rounded-lg transition-colors flex items-center gap-2 cursor-pointer shadow-md shadow-orange-950/10">
                     Start Exploring
-                    <ArrowRight className="w-3 h-3 md:w-4 md:h-4 shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-black stroke-[3]" />
                   </button>
                 </Link>
-                <Link href="/resume-tips" className="flex-1 md:flex-none">
-                  <button className="w-full text-[11px] sm:text-xs md:text-sm font-semibold bg-white/10 backdrop-blur-md text-white border border-white/20 px-2 py-2 sm:px-3 md:px-4 md:py-2 rounded-xl hover:bg-white/20 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap">
-                    <FileText className="w-3 h-3 md:w-4 md:h-4 text-[#22C55E] shrink-0" />
+                <Link href="/resume-tips">
+                  <button className="text-sm font-semibold bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 hover:border-zinc-700 px-5 py-3 rounded-lg transition-colors flex items-center gap-2 cursor-pointer">
+                    <FileText className="w-4 h-4 text-zinc-500" />
                     Resume & Vault
                   </button>
                 </Link>
-                <Link href="/roadmap" className="flex-1 md:flex-none">
-                  <button className="w-full text-[11px] sm:text-xs md:text-sm font-semibold bg-white/10 backdrop-blur-md text-white border border-white/20 px-2 py-2 sm:px-3 md:px-4 md:py-2 rounded-xl hover:bg-white/20 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap">
-                    <Map className="w-3 h-3 md:w-4 md:h-4 text-[#22C55E] shrink-0" />
-                    Roadmap
+                <Link href="/roadmap">
+                  <button className="text-sm font-semibold bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 hover:border-zinc-700 px-5 py-3 rounded-lg transition-colors flex items-center gap-2 cursor-pointer">
+                    <Map className="w-4 h-4 text-zinc-500" />
+                    Roadmaps
                   </button>
                 </Link>
               </div>
             </div>
-            <div className="w-full md:w-1/2 relative h-[350px] md:h-[450px] flex items-center justify-center animate-in fade-in zoom-in duration-1000">
+            <div className="w-full lg:w-1/2 relative h-[350px] md:h-[400px] flex items-center justify-center">
               <FloatingCards />
             </div>
           </div>
         </section>
 
         {/* 2. Trust / Company Logos */}
-        <section className="py-12 md:py-20 border-y border-white/5 bg-black/20 backdrop-blur-sm">
-          <div className="max-w-screen-xl mx-auto px-4">
-            <p className="text-center text-sm font-medium text-white/50 mb-6 tracking-widest uppercase">Trusted by students placed at</p>
+        <section className="py-10 md:py-14 border-y border-zinc-900">
+          <div className="max-w-screen-xl mx-auto px-6">
+            <p className="text-center text-[10px] md:text-xs font-bold text-zinc-500 mb-8 tracking-widest uppercase">Trusted by students placed at</p>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center justify-items-center max-w-4xl mx-auto">
               {[
-                { src: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", alt: "Google", h: "h-6 md:h-8" },
-                { src: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", alt: "Amazon", h: "h-7 md:h-9" },
-                { src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg", alt: "Microsoft", h: "h-6 md:h-8" },
-                { src: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg", alt: "Meta", h: "h-4 md:h-5" },
-                { src: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg", alt: "IBM", h: "h-8 md:h-10" },
-              ].map((logo, i) => (
+                { src: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", alt: "Google" },
+                { src: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", alt: "Amazon" },
+                { src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg", alt: "Microsoft" },
+                { src: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg", alt: "Meta" },
+                { src: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg", alt: "IBM" },
+              ].map((logo) => (
                 <img
                   key={logo.alt}
                   src={logo.src}
                   alt={logo.alt}
-                  className={`w-full h-auto max-h-10 object-contain cursor-pointer animate-logo-blink`}
-                  style={{ animationDelay: `${i * 0.8}s` }}
+                  className="h-5 md:h-6 object-contain opacity-25 hover:opacity-75 transition-opacity duration-200 grayscale invert hover:grayscale-0 hover:invert-0 cursor-pointer"
                 />
               ))}
             </div>
@@ -90,94 +85,84 @@ export default function HomePage() {
         </section>
 
         {/* 3. Social Proof Stats */}
-        <section className="py-12 md:py-20 border-b border-white/5 bg-black/20 backdrop-blur-sm">
-          <div className="max-w-screen-xl mx-auto px-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 items-center justify-items-center max-w-4xl mx-auto">
+        <section className="py-12 md:py-16 border-b border-zinc-900">
+          <div className="max-w-screen-xl mx-auto px-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 items-center justify-items-center max-w-3xl mx-auto">
               {[
                 { label: "companies", value: stats ? `${stats.totalCompanies}+` : "—", icon: Users },
                 { label: "experiences", value: stats ? `${stats.totalExperiences}+` : "—", icon: Briefcase },
                 { label: "free to read", value: stats ? `${stats.freeExperiences}` : "—", icon: Star }
               ].map((stat, i) => (
-                <div key={i} className="flex flex-col items-center justify-center cursor-default animate-text-blink" style={{ animationDelay: `${i * 0.8 + 0.4}s` }}>
-                  <div className="flex items-center gap-3 mb-2 text-[#22C55E]">
-                    <stat.icon className="w-8 h-8" />
-                    <h3 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white">{stat.value}</h3>
+                <div key={i} className="flex flex-col items-center justify-center cursor-default">
+                  <div className="flex items-center gap-2 mb-1">
+                    <stat.icon className="w-5 h-5 text-zinc-650" />
+                    <h3 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white">{stat.value}</h3>
                   </div>
-                  <p className="text-white/60 font-medium tracking-widest uppercase text-sm">{stat.label}</p>
+                  <p className="text-zinc-500 font-semibold tracking-wider uppercase text-[10px]">{stat.label}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-
-
-        {/* 5. Featured Experiences */}
-        <section className="py-12 md:py-20">
-          <div className="max-w-screen-xl mx-auto px-4">
-            <div className="flex flex-col sm:flex-row items-center justify-between mb-12 gap-6 md:gap-10">
-              <div>
-                <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-2">Featured Experiences</h2>
-                <p className="text-white/60">Recently shared insights from your peers.</p>
-              </div>
-              <Link href="/browse" className="text-sm font-semibold bg-white/10 hover:bg-white/20 text-white px-5 py-2.5 rounded-lg border border-white/10 transition-all flex items-center gap-2 group w-full sm:w-auto text-center justify-center">
-                View All
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
+        {/* 4. Featured Experiences */}
+        <section className="py-16 md:py-24 max-w-screen-xl mx-auto px-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 gap-4">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-1 tracking-tight">Featured Experiences</h2>
+              <p className="text-zinc-500 text-sm">Recently shared placement insights from your peers.</p>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
-              {recentExperiences === undefined ? (
-                // Loading skeleton
-                Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="bg-white/5 rounded-2xl border border-white/10 p-6 animate-pulse">
-                    <div className="h-4 bg-white/10 rounded w-2/3 mb-3" />
-                    <div className="h-3 bg-white/10 rounded w-1/2 mb-6" />
-                    <div className="h-3 bg-white/10 rounded w-full mb-2" />
-                    <div className="h-3 bg-white/10 rounded w-4/5" />
-                  </div>
-                ))
-              ) : recentExperiences.length === 0 ? (
-                // Empty state
-                <div className="col-span-full text-center py-16">
-                  <Briefcase className="w-12 h-12 text-white/20 mx-auto mb-4" />
-                  <p className="text-white/60 text-lg mb-2">No experiences shared yet</p>
-                  <p className="text-white/40 text-sm mb-6">Be the first to share your placement journey!</p>
-                  <Link href="/submit" className="inline-flex items-center gap-2 px-6 py-3 bg-[#22C55E] text-black rounded-xl font-semibold hover:bg-[#4ADE80] transition-all">
-                    Share Your Experience
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
+            <Link href="/browse" className="text-xs font-semibold bg-zinc-900 hover:bg-zinc-800 text-zinc-300 px-4 py-2 rounded-lg border border-zinc-800 transition-colors flex items-center gap-2 group cursor-pointer">
+              View All
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {recentExperiences === undefined ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="bg-zinc-900/50 rounded-xl border border-zinc-800 p-6 animate-pulse">
+                  <div className="h-4 bg-zinc-800 rounded w-2/3 mb-3" />
+                  <div className="h-3 bg-zinc-800 rounded w-1/2 mb-6" />
+                  <div className="h-3 bg-zinc-800 rounded w-full mb-2" />
+                  <div className="h-3 bg-zinc-800 rounded w-4/5" />
                 </div>
-              ) : (
-                recentExperiences.map((exp: any) => (
-                  <ExperienceCard key={exp._id} experience={exp} />
-                ))
-              )}
-            </div>
+              ))
+            ) : recentExperiences.length === 0 ? (
+              <div className="col-span-full text-center py-16 border border-dashed border-zinc-800 rounded-xl">
+                <Briefcase className="w-10 h-10 text-zinc-650 mx-auto mb-4" />
+                <p className="text-zinc-400 text-base mb-1 font-medium">No experiences shared yet</p>
+                <p className="text-zinc-600 text-xs mb-6">Be the first to share your placement journey!</p>
+                <Link href="/submit" className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-black rounded-lg font-bold text-sm transition-colors">
+                  Share Your Experience
+                  <ArrowRight className="w-3.5 h-3.5 text-black stroke-[3]" />
+                </Link>
+              </div>
+            ) : (
+              recentExperiences.map((exp: any) => (
+                <ExperienceCard key={exp._id} experience={exp} />
+              ))
+            )}
           </div>
         </section>
 
-
-
-        {/* 7. Footer */}
-        <footer className="bg-black/60 pt-16 pb-8 border-t border-white/10">
-          <div className="max-w-screen-xl mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-white rounded-md relative flex items-center justify-center shadow-lg shadow-[#22C55E]/20">
-                  <div className="w-4 h-4 bg-[#22C55E] absolute -right-1 -top-1 rounded-sm" />
-                </div>
-                <span className="text-xl font-bold text-white tracking-tight">psg.hub</span>
+        {/* Footer */}
+        <footer className="bg-zinc-950/40 pt-12 pb-8 border-t border-zinc-900">
+          <div className="max-w-screen-xl mx-auto px-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
+              <div className="flex items-center gap-2">
+                <span className="w-2 rounded-full h-2 bg-[#F97316]" />
+                <span className="text-base font-bold text-white tracking-tight">psg.hub</span>
               </div>
-              <div className="flex gap-6 text-sm font-medium text-white/60">
-                <Link href="/guidelines" className="hover:text-[#22C55E] transition-colors">Guidelines</Link>
-                <Link href="/browse" className="hover:text-[#22C55E] transition-colors">Browse</Link>
-                <Link href="/privacy" className="hover:text-[#22C55E] transition-colors">Privacy</Link>
+              <div className="flex gap-6 text-xs font-semibold text-zinc-500">
+                <Link href="/guidelines" className="hover:text-white transition-colors">Guidelines</Link>
+                <Link href="/browse" className="hover:text-white transition-colors">Browse</Link>
+                <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
               </div>
             </div>
-            <div className="text-center md:text-left text-sm text-white/40 border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-center md:text-left text-xs text-zinc-500 border-t border-zinc-900 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
               <p>© 2026 PSG Placement Hub. Built for PSG College students.</p>
-              <p className="flex items-center gap-1">Made with <Heart className="w-4 h-4 text-red-500" /> for the community</p>
+              <p className="flex items-center gap-1">Made with <Heart className="w-3 h-3 text-zinc-600" /> for the community</p>
             </div>
           </div>
         </footer>

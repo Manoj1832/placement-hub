@@ -1,5 +1,82 @@
-import { internalMutation } from "./_generated/server";
+import { mutation, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
+
+export const seedExperiencesPublic = mutation({
+  args: {
+    experiences: v.any()
+  },
+  handler: async (ctx, args) => {
+    const allExperiences = args.experiences;
+
+    console.log(`Processing ${allExperiences.length} experiences`);
+
+    // Delete existing experiences to remove mock data
+    const existing = await ctx.db.query("experiences").collect();
+    for (const item of existing) {
+      await ctx.db.delete(item._id);
+    }
+
+    let count = 0;
+    for (const raw of allExperiences) {
+      const typeMap: Record<string, "internship" | "fulltime"> = {
+        Summer: "internship",
+        Winter: "internship",
+        "Full-time": "fulltime",
+        PPO: "fulltime",
+      };
+      const opportunityType = typeMap[raw.type] || "internship";
+
+      let year = 2025;
+      let month = 1;
+      if (raw.application_date) {
+        const parts = raw.application_date.split("/");
+        if (parts.length === 3) {
+          month = parseInt(parts[0], 10);
+          year = parseInt(parts[2], 10);
+          if (year < 100) year += 2000;
+        }
+      }
+
+      const companyName = raw.company || raw.company_name || raw.companyName || "Unknown";
+      const isPremium = raw.is_premium === true || raw.isPremium === true;
+      const isFreePreview = !isPremium;
+
+      const processed = {
+        companyName,
+        roleTitle: raw.role || raw.job_title || raw.roleTitle || "Unknown Role",
+        opportunityType,
+        branch: raw.branch || "CSE",
+        year,
+        month,
+        difficulty: (raw.difficulty?.toLowerCase() || "medium") as "easy" | "medium" | "hard",
+        location: raw.location || "",
+        workMode: raw.work_mode || raw.workMode || "Hybrid",
+        compensation: raw.compensation_inr || raw.compensation_INR || raw.ctc || raw.compensation || 0,
+        isPremium,
+        isFreePreview,
+        upvotes: raw.upvotes || 0,
+        status: "approved" as const,
+        roundsJson: JSON.stringify(raw.rounds || []),
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        isAnonymous: false,
+        isVerified: true,
+        questionsAsked: [],
+        tips: raw.key_tips?.join("\n") || "",
+        totalRounds: raw.total_rounds || 0,
+        overallRating: raw.overall_rating || "5/5",
+        finalResult: raw.final_result || raw.result || "Selected",
+        keyTips: raw.key_tips || [],
+        mistakesToAvoid: raw.mistakes_to_avoid || [],
+      };
+
+      await ctx.db.insert("experiences", processed);
+      count++;
+    }
+
+    return { inserted: count };
+  },
+});
 
 export const seedExperiences = internalMutation({
   args: {

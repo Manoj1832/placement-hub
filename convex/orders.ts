@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { internal } from "./_generated/api";
 
 async function requireAuth(ctx: any) {
   const identity = await ctx.auth.getUserIdentity();
@@ -15,6 +16,7 @@ async function requireAuth(ctx: any) {
 export const create = mutation({
   args: {
     productType: v.union(
+      v.literal("premium_3months"),
       v.literal("premium_yearly"),
       v.literal("starter_kit"),
       v.literal("company_pack")
@@ -62,26 +64,18 @@ export const markPaid = mutation({
     const order = await ctx.db.get(args.orderId);
     if (!order) throw new Error("Order not found");
 
-    if (order.productType === "premium_yearly") {
-      const userOrders = await ctx.db
-        .query("orders")
-        .withIndex("by_user", (q: any) => q.eq("userId", order.userId))
-        .collect();
+    // Event-driven publish (Outbox Pattern)
+    const eventId = await ctx.db.insert("events", {
+      eventType: "order.completed",
+      payload: JSON.stringify({
+        orderId: args.orderId,
+      }),
+      status: "pending",
+      createdAt: Date.now(),
+    });
 
-      const userId = order.userId;
-      const user = await ctx.db.get(userId);
-      if (!user) throw new Error("User not found");
-
-      const currentUntil = user.premiumUntil || 0;
-      const now = Date.now();
-      const startFrom = currentUntil > now ? currentUntil : now;
-      const oneYear = 365 * 24 * 60 * 60 * 1000;
-
-      await ctx.db.patch(userId, {
-        isPremium: true,
-        premiumUntil: startFrom + oneYear,
-      });
-    }
+    // Dispatch immediately in background
+    await ctx.scheduler.runAfter(0, internal.events.dispatchAction, { eventId });
   },
 });
 
@@ -132,7 +126,7 @@ export const grantPremiumByEmail = mutation({
     // Create the order record
     const orderId = await ctx.db.insert("orders", {
       userId: user._id,
-      productType: "premium_yearly",
+      productType: "premium_3months",
       amount: args.amount,
       currency: "INR",
       razorpayOrderId: args.razorpayOrderId,
@@ -141,17 +135,19 @@ export const grantPremiumByEmail = mutation({
       createdAt: Date.now(),
     });
 
-    // Grant 365 days of premium
-    const now = Date.now();
-    const currentUntil = user.premiumUntil || 0;
-    const startFrom = currentUntil > now ? currentUntil : now;
-    const oneYear = 365 * 24 * 60 * 60 * 1000;
-
-    await ctx.db.patch(user._id, {
-      isPremium: true,
-      premiumUntil: startFrom + oneYear,
+    // Event-driven publish (Outbox Pattern)
+    const eventId = await ctx.db.insert("events", {
+      eventType: "order.completed",
+      payload: JSON.stringify({
+        orderId: orderId,
+      }),
+      status: "pending",
+      createdAt: Date.now(),
     });
 
-    return { orderId, premiumUntil: startFrom + oneYear };
+    // Dispatch immediately in background
+    await ctx.scheduler.runAfter(0, internal.events.dispatchAction, { eventId });
+
+    return { orderId };
   },
 });

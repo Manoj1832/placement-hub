@@ -27,7 +27,12 @@ export async function POST(req: NextRequest) {
 
     // 2. Verify the webhook signature using HMAC SHA256
     const crypto = await import("crypto");
-    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET!;
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+
+    if (!webhookSecret) {
+      console.error("Webhook: RAZORPAY_WEBHOOK_SECRET is not configured");
+      return NextResponse.json({ error: "Configuration error" }, { status: 500 });
+    }
 
     const expectedSignature = crypto
       .createHmac("sha256", webhookSecret)

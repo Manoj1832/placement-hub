@@ -150,6 +150,7 @@ export default defineSchema({
     userId: v.id("users"),
     productType: v.union(
       v.literal("premium_monthly"),
+      v.literal("premium_3months"),
       v.literal("premium_yearly"),
       v.literal("starter_kit"),
       v.literal("company_pack")
@@ -329,4 +330,16 @@ userProgress: defineTable({
   })
     .index("by_user", ["userId"])
     .index("by_user_date", ["userId", "date"]),
+
+  // Outbox pattern event store / message broker queue
+  events: defineTable({
+    eventType: v.string(), // e.g. "user.activity_tracked", "experience.created", "order.completed"
+    payload: v.string(), // JSON string representing the event payload
+    status: v.union(v.literal("pending"), v.literal("processed"), v.literal("failed")),
+    error: v.optional(v.string()),
+    createdAt: v.number(),
+    processedAt: v.optional(v.number()),
+  })
+    .index("by_status", ["status"])
+    .index("by_created_at", ["createdAt"]),
 });

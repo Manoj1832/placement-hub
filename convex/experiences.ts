@@ -1,17 +1,18 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { internal } from "./_generated/api";
 
 async function requireAuth(ctx: any) {
   const identity = await ctx.auth.getUserIdentity();
   if (!identity) {
     throw new Error("Unauthenticated. Please log in.");
   }
-  
+
   let user = await ctx.db
     .query("users")
     .withIndex("by_clerk_id", (q: any) => q.eq("clerkId", identity.subject))
     .first();
-    
+
   if (!user && identity.email) {
     user = await ctx.db
       .query("users")
@@ -22,26 +23,26 @@ async function requireAuth(ctx: any) {
   if (!user) {
     throw new Error("User profile not found in database.");
   }
-  
+
   return { identity, user };
 }
 
 async function getOptionalUser(ctx: any) {
   const identity = await ctx.auth.getUserIdentity();
   if (!identity) return null;
-  
+
   let user = await ctx.db
     .query("users")
     .withIndex("by_clerk_id", (q: any) => q.eq("clerkId", identity.subject))
     .first();
-    
+
   if (!user && identity.email) {
     user = await ctx.db
       .query("users")
       .withIndex("by_email", (q: any) => q.eq("email", identity.email))
       .first();
   }
-  
+
   return user;
 }
 
@@ -62,7 +63,7 @@ export const list = query({
     let results = await ctx.db
       .query("experiences")
       .withIndex("by_status", (q: any) => q.eq("status", "approved"))
-.collect();
+      .collect();
 
     // Sort by company name A-Z
     results = results.sort((a, b) => (a.companyName || "").localeCompare(b.companyName || ""));
@@ -183,7 +184,7 @@ export const search = query({
     return results.filter((e) => {
       if (args.type && e.opportunityType !== args.type) return false;
       if (args.difficulty && e.difficulty !== args.difficulty) return false;
-      
+
       if (searchLower) {
         const searchFields = [
           e.companyName?.toLowerCase() || "",
@@ -192,10 +193,10 @@ export const search = query({
           e.tips?.toLowerCase() || "",
           e.questionsAsked?.join(" ").toLowerCase() || "",
         ].join(" ");
-        
+
         if (!searchFields.includes(searchLower)) return false;
       }
-      
+
       return true;
     }).sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
   },
@@ -210,7 +211,7 @@ export const getCompanies = query({
       .query("experiences")
       .withIndex("by_status", (q: any) => q.eq("status", "approved"))
       .collect();
-    
+
     const companies = [...new Set(results.map(e => e.companyName).filter(Boolean))];
     return companies.sort();
   },
@@ -222,8 +223,9 @@ export const getCompanies = query({
  * Returns limited data for premium experiences (unless user is premium).
  */
 export const getById = query({
-  args: { 
+  args: {
     id: v.id("experiences"),
+    userEmail: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const experience = await ctx.db.get(args.id);
@@ -234,12 +236,23 @@ export const getById = query({
       return { ...experience, accessLevel: "full" as const };
     }
 
-    // Check if user has premium securely
+    // Check if user has premium — try Convex auth first
     let isPremiumUser = false;
     const user = await getOptionalUser(ctx);
-    
+
     if (user && user.isPremium && (!user.premiumUntil || user.premiumUntil > Date.now())) {
       isPremiumUser = true;
+    }
+
+    // Fallback: if Convex auth failed but email was provided, check by email
+    if (!isPremiumUser && !user && args.userEmail) {
+      const emailUser = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q: any) => q.eq("email", args.userEmail!.toLowerCase().trim()))
+        .first();
+      if (emailUser && emailUser.isPremium && (!emailUser.premiumUntil || emailUser.premiumUntil > Date.now())) {
+        isPremiumUser = true;
+      }
     }
 
     if (isPremiumUser) {
@@ -337,6 +350,123 @@ export const getStats = query({
   },
 });
 
+/**
+ * Main browse query for the /browse page.
+ * Accepts all filter args sent by BrowseContent component.
+ */
+export const browse = query({
+  args: {
+    search: v.optional(v.string()),
+    company: v.optional(v.string()),
+    role: v.optional(v.string()),
+    opportunityType: v.optional(v.string()),
+    branch: v.optional(v.string()),
+    difficulty: v.optional(v.string()),
+    isVerified: v.optional(v.boolean()),
+    isPremium: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const results = await ctx.db
+      .query("experiences")
+      .withIndex("by_status", (q: any) => q.eq("status", "approved"))
+      .collect();
+
+    const filtered = results.filter((e) => {
+      if (args.company && !e.companyName?.toLowerCase().includes(args.company.toLowerCase())) return false;
+      if (args.role && !e.roleTitle?.toLowerCase().includes(args.role.toLowerCase())) return false;
+      if (args.opportunityType && e.opportunityType !== args.opportunityType) return false;
+      if (args.branch && e.branch !== args.branch) return false;
+      if (args.difficulty && e.difficulty !== args.difficulty) return false;
+      if (args.isVerified && !e.isVerified) return false;
+      if (args.isPremium !== undefined && e.isPremium !== args.isPremium) return false;
+      if (args.search) {
+        const s = args.search.toLowerCase();
+        const haystack = [
+          e.companyName ?? "",
+          e.roleTitle ?? "",
+          (e.tags ?? []).join(" "),
+          e.location ?? "",
+        ].join(" ").toLowerCase();
+        if (!haystack.includes(s)) return false;
+      }
+      return true;
+    });
+
+    return filtered
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .map((e) => ({
+        _id: e._id,
+        _creationTime: e._creationTime,
+        companyName: e.companyName,
+        roleTitle: e.roleTitle,
+        opportunityType: e.opportunityType,
+        branch: e.branch,
+        year: e.year,
+        month: e.month,
+        difficulty: e.difficulty,
+        isVerified: e.isVerified,
+        isPremium: e.isPremium,
+        isFreePreview: e.isFreePreview,
+        upvotes: e.upvotes,
+        location: e.location,
+        compensation: e.compensation,
+        workMode: e.workMode,
+        totalRounds: e.totalRounds,
+        tags: e.tags,
+        finalResult: e.finalResult,
+      }));
+  },
+});
+
+/**
+ * Stats for the browse page header (total count, company count).
+ */
+export const getBrowseStats = query({
+  args: {
+    search: v.optional(v.string()),
+    company: v.optional(v.string()),
+    role: v.optional(v.string()),
+    opportunityType: v.optional(v.string()),
+    branch: v.optional(v.string()),
+    difficulty: v.optional(v.string()),
+    isVerified: v.optional(v.boolean()),
+    isPremium: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const results = await ctx.db
+      .query("experiences")
+      .withIndex("by_status", (q: any) => q.eq("status", "approved"))
+      .collect();
+
+    const filtered = results.filter((e) => {
+      if (args.company && !e.companyName?.toLowerCase().includes(args.company.toLowerCase())) return false;
+      if (args.role && !e.roleTitle?.toLowerCase().includes(args.role.toLowerCase())) return false;
+      if (args.opportunityType && e.opportunityType !== args.opportunityType) return false;
+      if (args.branch && e.branch !== args.branch) return false;
+      if (args.difficulty && e.difficulty !== args.difficulty) return false;
+      if (args.isVerified && !e.isVerified) return false;
+      if (args.isPremium !== undefined && e.isPremium !== args.isPremium) return false;
+      if (args.search) {
+        const s = args.search.toLowerCase();
+        const haystack = [
+          e.companyName ?? "",
+          e.roleTitle ?? "",
+          (e.tags ?? []).join(" "),
+          e.location ?? "",
+        ].join(" ").toLowerCase();
+        if (!haystack.includes(s)) return false;
+      }
+      return true;
+    });
+
+    const companies = new Set(filtered.map((e) => e.companyName));
+    return {
+      totalResults: filtered.length,
+      totalCompanies: companies.size,
+    };
+  },
+});
+
 export const submit = mutation({
   args: {
     companyName: v.string(),
@@ -360,11 +490,22 @@ export const submit = mutation({
     ),
     isAnonymous: v.boolean(),
     sourceDocId: v.optional(v.id("documents")),
+    compensation: v.optional(v.number()),
+    location: v.optional(v.string()),
+    workMode: v.optional(v.string()),
+    duration: v.optional(v.string()),
+    totalRounds: v.optional(v.number()),
+    roundsJson: v.optional(v.string()),
+    keyTips: v.optional(v.array(v.string())),
+    mistakesToAvoid: v.optional(v.array(v.string())),
+    tags: v.optional(v.array(v.string())),
+    finalResult: v.optional(v.string()),
+    experienceNarrative: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { user } = await requireAuth(ctx);
     const now = Date.now();
-    return ctx.db.insert("experiences", {
+    const experienceId = await ctx.db.insert("experiences", {
       ...args,
       userId: user._id,
       isVerified: false,
@@ -375,6 +516,22 @@ export const submit = mutation({
       createdAt: now,
       updatedAt: now,
     });
+
+    // Event-driven publish (Outbox Pattern)
+    const eventId = await ctx.db.insert("events", {
+      eventType: "experience.created",
+      payload: JSON.stringify({
+        experienceId: experienceId,
+        userId: user._id,
+      }),
+      status: "pending",
+      createdAt: Date.now(),
+    });
+
+    // Dispatch immediately in background
+    await ctx.scheduler.runAfter(0, internal.events.dispatchAction, { eventId });
+
+    return experienceId;
   },
 });
 
@@ -408,7 +565,7 @@ export const upvote = mutation({
 });
 
 export const save = mutation({
-  args: { 
+  args: {
     experienceId: v.id("experiences"),
     userEmail: v.string()
   },
@@ -417,7 +574,7 @@ export const save = mutation({
       .query("users")
       .withIndex("by_email", (q: any) => q.eq("email", args.userEmail.toLowerCase().trim()))
       .first();
-    
+
     if (!user) {
       throw new Error("User not found");
     }
@@ -445,7 +602,7 @@ export const save = mutation({
 });
 
 export const isSaved = query({
-  args: { 
+  args: {
     experienceId: v.id("experiences"),
     userEmail: v.string()
   },
@@ -454,7 +611,7 @@ export const isSaved = query({
       .query("users")
       .withIndex("by_email", (q: any) => q.eq("email", args.userEmail.toLowerCase().trim()))
       .first();
-    
+
     if (!user) return false;
 
     const saved = await ctx.db
@@ -472,12 +629,12 @@ export const getSaved = query({
   args: { userEmail: v.string() },
   handler: async (ctx, args) => {
     if (!args.userEmail) return [];
-    
+
     const user = await ctx.db
       .query("users")
       .withIndex("by_email", (q: any) => q.eq("email", args.userEmail.toLowerCase().trim()))
       .first();
-    
+
     if (!user) return [];
 
     const saved = await ctx.db
@@ -569,3 +726,43 @@ export const fixFreemium = mutation({
     return `Fixed ${results.length} experiences. Top 5 are now free.`;
   }
 });
+
+export const seedOne = mutation({
+  args: {
+    companyName: v.string(),
+    roleTitle: v.string(),
+    opportunityType: v.union(v.literal("internship"), v.literal("fulltime")),
+    branch: v.string(),
+    year: v.number(),
+    month: v.number(),
+    difficulty: v.union(v.literal("easy"), v.literal("medium"), v.literal("hard")),
+    location: v.optional(v.string()),
+    workMode: v.optional(v.string()),
+    compensation: v.optional(v.number()),
+    duration: v.optional(v.string()),
+    isPremium: v.boolean(),
+    isFreePreview: v.boolean(),
+    upvotes: v.number(),
+    status: v.union(v.literal("pending"), v.literal("approved"), v.literal("rejected")),
+    roundsJson: v.optional(v.string()),
+    keyTips: v.optional(v.array(v.string())),
+    mistakesToAvoid: v.optional(v.array(v.string())),
+    tags: v.optional(v.array(v.string())),
+    preparationResources: v.optional(v.array(v.string())),
+    preparationTimeWeeks: v.optional(v.number()),
+    totalRounds: v.optional(v.number()),
+    overallRating: v.optional(v.string()),
+    finalResult: v.optional(v.string()),
+    experienceNarrative: v.optional(v.string()),
+    questionsAsked: v.array(v.string()),
+    tips: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    isAnonymous: v.boolean(),
+    isVerified: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    return ctx.db.insert("experiences", args);
+  },
+});
+

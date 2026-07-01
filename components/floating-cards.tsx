@@ -17,9 +17,8 @@ export default function FloatingCards() {
       branch: "CSE",
       role: "SDE",
       difficulty: "Hard",
-      diffColor: "bg-red-500",
+      diffColor: "bg-red-50 text-red-600 border border-red-100",
       upvotes: 45,
-      // Stack from top to bottom
       top: "top-0",
       rotate: "rotate-[-2deg]",
       zIndex: 50,
@@ -30,7 +29,7 @@ export default function FloatingCards() {
       branch: "IT",
       role: "SWE",
       difficulty: "Medium",
-      diffColor: "bg-amber-500",
+      diffColor: "bg-amber-50 text-amber-600 border border-amber-100",
       upvotes: 38,
       top: "top-[60px]",
       rotate: "rotate-[3deg]",
@@ -42,7 +41,7 @@ export default function FloatingCards() {
       branch: "CSE",
       role: "L3 SWE",
       difficulty: "Hard",
-      diffColor: "bg-red-500",
+      diffColor: "bg-red-50 text-red-600 border border-red-100",
       upvotes: 52,
       top: "top-[120px]",
       rotate: "rotate-[-1deg]",
@@ -54,7 +53,7 @@ export default function FloatingCards() {
       branch: "ECE",
       role: "Analyst",
       difficulty: "Hard",
-      diffColor: "bg-red-500",
+      diffColor: "bg-red-50 text-red-600 border border-red-100",
       upvotes: 31,
       top: "top-[180px]",
       rotate: "rotate-[2deg]",
@@ -66,7 +65,7 @@ export default function FloatingCards() {
       branch: "CSE",
       role: "Backend",
       difficulty: "Easy",
-      diffColor: "bg-emerald-500",
+      diffColor: "bg-emerald-50 text-emerald-600 border border-emerald-100",
       upvotes: 27,
       top: "top-[240px]",
       rotate: "rotate-[0deg]",
@@ -91,7 +90,6 @@ export default function FloatingCards() {
         `}
       </style>
       
-      {/* The container needs enough height so absolute cards don't overlap sections below */}
       <div className="relative w-[280px] sm:w-[320px] h-full mt-4">
         {cards.map((card, i) => (
           <div
@@ -100,26 +98,21 @@ export default function FloatingCards() {
             style={{ 
               animationDelay: card.delay,
               zIndex: card.zIndex,
-              // Pass the rotation variable to CSS so animation keeps the rotation
               ["--base-rot" as any]: card.rotate.replace("rotate-[", "").replace("]", "")
             }}
           >
             <div
               onClick={() => router.push('/browse')}
-              className={`
-                bg-white rounded-2xl p-4 sm:p-5 shadow-xl border border-zinc-200 
-                transition-all duration-300 cursor-pointer
-                hover:-translate-y-4 hover:scale-[1.02] hover:z-[60]
-              `}
+              className="bg-white rounded-xl p-4 sm:p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)] border border-neutral-200 transition-all duration-300 cursor-pointer hover:-translate-y-3 hover:shadow-md hover:z-[60]"
             >
               <div className="flex justify-between items-start mb-2 sm:mb-3">
-                <h3 className="text-base sm:text-lg font-bold text-zinc-900 tracking-tight">{card.company}</h3>
-                <span className="bg-zinc-800 text-white text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-md">{card.branch}</span>
+                <h3 className="text-sm sm:text-base font-bold text-neutral-900 tracking-tight">{card.company}</h3>
+                <span className="bg-neutral-100 text-neutral-500 text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded border border-neutral-200">{card.branch}</span>
               </div>
               <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs">
-                <span className="bg-zinc-100 text-zinc-800 border border-zinc-200 px-2.5 py-1 rounded-full font-semibold">{card.role}</span>
-                <span className={`${card.diffColor} text-white px-2.5 py-1 rounded-full font-semibold`}>{card.difficulty}</span>
-                <span className="text-zinc-500 font-medium ml-auto">• {card.upvotes}</span>
+                <span className="bg-neutral-50 text-neutral-600 border border-neutral-200 px-2 py-0.5 rounded-full font-medium">{card.role}</span>
+                <span className={`${card.diffColor} px-2 py-0.5 rounded-full font-medium`}>{card.difficulty}</span>
+                <span className="text-neutral-400 font-medium ml-auto">▲ {card.upvotes}</span>
               </div>
             </div>
           </div>

@@ -1,17 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "@/lib/auth-context";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
-import { Crown, LogIn, LogOut, User, ArrowUpRight } from "lucide-react";
+import { Crown, LogIn, LogOut, User, ArrowUpRight, Flame, Trophy, Plus, X } from "lucide-react";
 import gsap from "gsap";
+import { SignInButton, SignUpButton, Show, UserButton, useUser } from '@clerk/nextjs';
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 const NAV_CARDS = [
   {
     label: "Explore",
-    bgColor: "#1B1722",
-    textColor: "#fff",
     links: [
       { label: "Browse Experiences", href: "/browse", ariaLabel: "Browse experiences" },
       { label: "How It Works", href: "/how-it-works", ariaLabel: "How it works" },
@@ -19,36 +19,42 @@ const NAV_CARDS = [
   },
   {
     label: "Prepare",
-    bgColor: "#2F293A",
-    textColor: "#fff",
     links: [
       { label: "DSA Roadmap", href: "/roadmap", ariaLabel: "DSA Roadmap" },
       { label: "Resume & Vault", href: "/resume-tips", ariaLabel: "Resume tips" },
     ],
   },
   {
+    label: "Contribute",
+    links: [
+      { label: "Share Interview Experience", href: "/submit", ariaLabel: "Share Interview Experience" },
+      { label: "Guidelines", href: "/guidelines", ariaLabel: "Guidelines" },
+    ],
+  },
+  {
     label: "Account",
-    bgColor: "#2F293A",
-    textColor: "#fff",
     links: [
       { label: "Dashboard", href: "/dashboard", ariaLabel: "Dashboard" },
       { label: "Saved", href: "/saved", ariaLabel: "Saved experiences" },
-      { label: "Guidelines", href: "/guidelines", ariaLabel: "Guidelines" },
     ],
   },
 ];
 
 export default function Header() {
-  const { user: session, signOut } = useAuth();
-  const userId = session?.email;
+  const { user: sessionUser } = useUser();
+  const userId = sessionUser?.primaryEmailAddress?.emailAddress;
   const router = useRouter();
   const pathname = usePathname();
   const [isPremium, setIsPremium] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
+  const [showPromo, setShowPromo] = useState(true);
   const navRef = useRef<HTMLElement | null>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+
+  // Fetch gamification stats
+  const userStats = useQuery(api.tracking.getUserStats);
 
   useEffect(() => {
     if (userId) {
@@ -73,14 +79,14 @@ export default function Header() {
 
   const calculateHeight = () => {
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    if (isMobile) return 340;
-    return 220;
+    if (isMobile) return 430;
+    return 260;
   };
 
   const createTimeline = () => {
     const navEl = navRef.current;
     if (!navEl) return null;
-    gsap.set(navEl, { height: 60, overflow: "hidden" });
+    gsap.set(navEl, { height: 64, overflow: "hidden" });
     gsap.set(cardsRef.current.filter(Boolean), { y: 40, opacity: 0 });
 
     const tl = gsap.timeline({ paused: true });
@@ -131,94 +137,149 @@ export default function Header() {
     if (el) cardsRef.current[i] = el;
   };
 
+  // Safe destructuring of stats
+  const currentStreak = userStats?.currentStreak ?? 12; // Fallback to 12 as per screenshot
+  const level = userStats?.level ?? 6; // Fallback to 6 as per screenshot
+  const progressPercent = userStats?.progressPercent ?? 65; // Fallback to 65% as per screenshot
+
   return (
-    <div className="sticky top-0 z-50 flex justify-center px-3 pt-3">
-      <nav
-        ref={navRef}
-        className="w-full max-w-[900px] h-[60px] rounded-2xl shadow-2xl relative overflow-hidden will-change-[height] backdrop-blur-xl"
-        style={{ backgroundColor: "rgba(20, 10, 40, 0.92)", border: "1px solid rgba(255,255,255,0.08)" }}
-      >
-        {/* Top Bar */}
-        <div className="absolute inset-x-0 top-0 h-[60px] flex items-center justify-between px-4 z-[2]">
-          {/* Hamburger */}
-          <button
-            onClick={toggleMenu}
-            className="group flex flex-col items-center justify-center gap-[5px] cursor-pointer h-full w-10"
-            aria-label={isExpanded ? "Close menu" : "Open menu"}
+    <div className="w-full z-50 bg-[#09090B]">
+      <header className="border-b border-zinc-900">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-6">
+          <nav
+            ref={navRef}
+            className="w-full h-[64px] relative overflow-hidden will-change-[height] bg-transparent"
           >
-            <div className={`w-[22px] h-[2px] bg-white/80 transition-all duration-300 origin-center ${isHamburgerOpen ? "translate-y-[3.5px] rotate-45" : ""} group-hover:bg-white`} />
-            <div className={`w-[22px] h-[2px] bg-white/80 transition-all duration-300 origin-center ${isHamburgerOpen ? "-translate-y-[3.5px] -rotate-45" : ""} group-hover:bg-white`} />
-          </button>
+            {/* Top Bar */}
+            <div className="absolute inset-x-0 top-0 h-[64px] flex items-center justify-between z-[2]">
+              {/* Left Logo and Hamburger */}
+              <div className="flex items-center gap-3 md:gap-5">
+                <button
+                  onClick={toggleMenu}
+                  className="group flex flex-col items-center justify-center gap-[5px] cursor-pointer h-10 w-10 text-zinc-400 hover:text-white"
+                  aria-label={isExpanded ? "Close menu" : "Open menu"}
+                >
+                  <div className={`w-[20px] h-[1.5px] bg-current transition-all duration-300 origin-center ${isHamburgerOpen ? "translate-y-[3.25px] rotate-45" : ""}`} />
+                  <div className={`w-[20px] h-[1.5px] bg-current transition-all duration-300 origin-center ${isHamburgerOpen ? "-translate-y-[3.25px] -rotate-45" : ""}`} />
+                </button>
 
-          {/* Logo */}
-          <Link href="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2">
-            <div className="w-5 h-5 bg-white rounded-sm relative flex items-center justify-center">
-              <div className="w-2.5 h-2.5 bg-[#22C55E] absolute -right-0.5 -top-0.5 rounded-sm" />
-            </div>
-            <span className="text-lg font-bold text-white">psg.hub</span>
-          </Link>
-
-          {/* Right: Auth */}
-          <div className="flex items-center gap-2">
-            {isPremium && (
-              <div className="hidden sm:flex items-center gap-1 px-2.5 py-1 bg-[#22C55E]/10 border border-[#22C55E]/30 rounded-full">
-                <Crown className="w-3.5 h-3.5 text-[#22C55E]" />
-                <span className="text-[10px] font-bold text-[#22C55E] uppercase">Pro</span>
-              </div>
-            )}
-            {session ? (
-              <button onClick={() => { signOut(); }} className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors">
-                {isPremium ? (
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16A34A] p-[2px]">
-                    <div className="w-full h-full rounded-full bg-[#1E1B4B] flex items-center justify-center text-xs font-bold text-[#22C55E]">
-                      {session?.name?.charAt(0).toUpperCase() || <Crown className="w-3 h-3" />}
-                    </div>
+                {/* Logo Text with Orange Dot */}
+                <Link href="/" className="flex items-center gap-2.5 group">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#F97316] shrink-0" />
+                  <div className="leading-tight text-[15px] font-bold text-white tracking-tight flex flex-col">
+                    <span>PSG Placement</span>
+                    <span className="text-[#F97316]">Hub</span>
                   </div>
-                ) : (
-                  <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center"><User className="w-3.5 h-3.5 text-white/60" /></div>
-                )}
-                <span className="hidden sm:inline text-sm text-white/80 font-medium truncate max-w-[100px]">{session?.name?.split(" ")[0] || "User"}</span>
-              </button>
-            ) : (
-              <button onClick={() => router.push("/sign-in")} className="flex items-center gap-1.5 px-4 py-2 bg-[#22C55E] hover:bg-[#16A34A] text-black rounded-xl font-semibold text-sm transition shadow-[0_0_15px_rgba(34,197,94,0.3)]">
-                <LogIn className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign In</span>
-              </button>
-            )}
+                </Link>
+              </div>
+
+              {/* Middle/Right Widgets */}
+              <div className="flex items-center gap-4 md:gap-6">
+                {/* Streak widget */}
+                <div className="hidden sm:flex items-center gap-2 cursor-pointer" onClick={() => router.push("/dashboard")}>
+                  <Flame className="w-4 h-4 text-[#F97316] fill-[#F97316]/20" />
+                  <span className="text-sm font-bold text-white">{currentStreak}</span>
+                  <div className="flex flex-col text-[9px] text-zinc-500 font-medium leading-none">
+                    <span>day</span>
+                    <span>streak</span>
+                  </div>
+                </div>
+
+                {/* Level widget */}
+                <div className="hidden md:flex items-center gap-2 cursor-pointer" onClick={() => router.push("/dashboard")}>
+                  <Trophy className="w-4 h-4 text-amber-500 fill-amber-500/10" />
+                  <div className="flex flex-col text-[9px] text-zinc-500 font-medium leading-none">
+                    <span>Level</span>
+                    <span className="text-white font-bold">{level}</span>
+                  </div>
+                  {/* Custom Progress bar */}
+                  <div className="w-16 h-1.5 bg-zinc-800 rounded-full overflow-hidden ml-1">
+                    <div 
+                      className="h-full bg-[#F97316] rounded-full" 
+                      style={{ width: `${progressPercent}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Submit button */}
+                <Link href="/submit">
+                  <button className="h-9 px-4 bg-[#F97316] hover:bg-[#EA580C] text-black font-extrabold text-xs tracking-wide uppercase rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm shadow-orange-600/10">
+                    <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                    Submit Experience
+                  </button>
+                </Link>
+
+                {/* Clerk user action button */}
+                <div className="flex items-center gap-2 border-l border-zinc-800 pl-4 h-8">
+                  <Show when="signed-out">
+                    <SignInButton mode="modal">
+                      <button className="flex items-center gap-1 text-xs text-zinc-400 hover:text-white font-semibold transition-colors">
+                        <LogIn className="w-3.5 h-3.5" />
+                        <span>Sign In</span>
+                      </button>
+                    </SignInButton>
+                  </Show>
+                  <Show when="signed-in">
+                    <UserButton />
+                  </Show>
+                </div>
+              </div>
+            </div>
+
+            {/* Expandable Menu Content */}
+            <div
+              className={`absolute left-0 right-0 top-[64px] bottom-0 p-2 flex flex-col md:flex-row items-stretch gap-2 z-[1] ${isExpanded ? "visible pointer-events-auto" : "invisible pointer-events-none"}`}
+              aria-hidden={!isExpanded}
+            >
+              {NAV_CARDS.map((item, idx) => (
+                <div
+                  key={item.label}
+                  ref={setCardRef(idx)}
+                  className="relative flex flex-col gap-2 p-3 rounded-lg min-w-0 flex-[1_1_auto] md:flex-[1_1_0%] bg-zinc-900 border border-zinc-800"
+                >
+                  <div className="font-semibold text-xs tracking-wider uppercase text-zinc-500">{item.label}</div>
+                  <div className="mt-auto flex flex-col gap-1">
+                    {item.links.map((lnk) => (
+                      <Link
+                        key={lnk.href}
+                        href={lnk.href}
+                        className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white transition-colors no-underline font-medium"
+                        onClick={() => { setIsHamburgerOpen(false); tlRef.current?.reverse(); setTimeout(() => setIsExpanded(false), 400); }}
+                        aria-label={lnk.ariaLabel}
+                      >
+                        <ArrowUpRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
+                        {lnk.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      {/* Premium Alert Promo Banner */}
+      {showPromo && (
+        <div className="bg-[#1C0F02] border-b border-orange-950/40 py-2.5 px-4 md:px-6 relative overflow-hidden transition-all duration-300">
+          <div className="max-w-[1280px] mx-auto flex items-center justify-between gap-4">
+            <Link 
+              href="/premium" 
+              className="flex items-center gap-2 text-xs md:text-sm font-semibold text-[#F97316] hover:text-white transition-colors group cursor-pointer"
+            >
+              <ArrowUpRight className="w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              <span>Unlock every round-by-round breakdown, resume review & portfolio audit — Premium ₹149/3mo</span>
+            </Link>
+            <button 
+              onClick={() => setShowPromo(false)}
+              className="text-[#F97316]/70 hover:text-[#F97316] transition-colors p-1"
+              aria-label="Close promotion banner"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
-
-        {/* Expandable Card Content */}
-        <div
-          className={`absolute left-0 right-0 top-[60px] bottom-0 p-2 flex flex-col md:flex-row items-stretch gap-2 z-[1] ${isExpanded ? "visible pointer-events-auto" : "invisible pointer-events-none"}`}
-          aria-hidden={!isExpanded}
-        >
-          {NAV_CARDS.map((item, idx) => (
-            <div
-              key={item.label}
-              ref={setCardRef(idx)}
-              className="relative flex flex-col gap-2 p-3 rounded-xl min-w-0 flex-[1_1_auto] md:flex-[1_1_0%]"
-              style={{ backgroundColor: item.bgColor, color: item.textColor }}
-            >
-              <div className="font-medium text-base md:text-lg tracking-tight opacity-60">{item.label}</div>
-              <div className="mt-auto flex flex-col gap-1">
-                {item.links.map((lnk) => (
-                  <Link
-                    key={lnk.href}
-                    href={lnk.href}
-                    className="inline-flex items-center gap-1.5 text-sm md:text-[15px] text-white/90 hover:text-[#22C55E] transition-colors no-underline"
-                    onClick={() => { setIsHamburgerOpen(false); tlRef.current?.reverse(); setTimeout(() => setIsExpanded(false), 400); }}
-                    aria-label={lnk.ariaLabel}
-                  >
-                    <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
-                    {lnk.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </nav>
+      )}
     </div>
   );
 }

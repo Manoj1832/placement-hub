@@ -1,57 +1,98 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { AUTH_COOKIE_NAME, verifyJWT } from "@/lib/auth";
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { checkRateLimitRedis } from './lib/redis';
 
-// Routes that require authentication
-const PROTECTED_ROUTES = [
-  "/dashboard",
-  "/saved",
-  "/submit",
-  "/services/github-audit",
-  "/services/portfolio-audit",
-  "/services/resume-review",
-];
+const isProtectedRoute = createRouteMatcher([
+  '/dashboard(.*)',
+  '/saved(.*)',
+  '/submit(.*)',
+]);
 
-export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  // Check if route is protected
-  const isProtected = PROTECTED_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(route + "/")
-  );
-
-  if (!isProtected) {
-    return NextResponse.next();
+export default clerkMiddleware(async (auth, req: NextRequest) => {
+  // 1. Clerk Route Protection
+  if (isProtectedRoute(req)) {
+    await auth.protect();
   }
 
-  // Verify JWT from cookie
-  const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
+  const path = req.nextUrl.pathname;
 
-  if (!token) {
-    const signInUrl = new URL("/sign-in", request.url);
-    signInUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(signInUrl);
+  // 2. Redis-backed Rate Limiter for sensitive API endpoints (Anti-DDoS / Brute Force)
+  if (path.startsWith('/api/payment/') || path.startsWith('/api/user/sync') || path.startsWith('/api/webhook/')) {
+    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '127.0.0.1';
+    const maxAttempts = path.startsWith('/api/webhook/') ? 100 : 15;
+    const windowSec = 60;
+    const limitKey = `${ip}:${path}`;
+    const limitCheck = await checkRateLimitRedis(limitKey, maxAttempts, windowSec);
+
+    if (!limitCheck.ok) {
+      return new NextResponse(
+        JSON.stringify({
+          error: "Too many requests. Cyber threat mitigation active.",
+          retryAfter: limitCheck.retryAfter || 60
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': String(limitCheck.retryAfter || 60),
+            'X-Content-Type-Options': 'nosniff',
+          }
+        }
+      );
+    }
   }
 
-  const payload = await verifyJWT(token);
+  // 3. Security Headers Injection (MITM, XSS, Clickjacking protection)
+  const response = NextResponse.next();
 
-  if (!payload) {
-    // Invalid or expired token — clear cookie and redirect
-    const response = NextResponse.redirect(new URL("/sign-in", request.url));
-    response.cookies.set(AUTH_COOKIE_NAME, "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 0,
-      expires: new Date(0),
-    });
-    return response;
+  const isDev = process.env.NODE_ENV === 'development';
+
+  // Strict Transport Security (HSTS) - forces HTTPS for MITM protection. ONLY in production!
+  if (!isDev) {
+    response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   }
 
-  return NextResponse.next();
-}
+  // Content Security Policy (CSP) - Mitigates XSS, CAPTCHA (Cloudflare Turnstile), and data injection
+  const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.clerk.accounts.dev https://clerk.placement-hub.com https://checkout.razorpay.com https://challenges.cloudflare.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    img-src 'self' data: blob: https:;
+    font-src 'self' https://fonts.gstatic.com;
+    connect-src 'self' https://*.clerk.accounts.dev https://clerk.placement-hub.com https://checkout.razorpay.com https://*.convex.cloud wss://*.convex.cloud https://api.razorpay.com https://challenges.cloudflare.com;
+    frame-src 'self' https://checkout.razorpay.com https://api.razorpay.com https://*.clerk.accounts.dev https://challenges.cloudflare.com;
+    worker-src 'self' blob:;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'self';
+    ${isDev ? '' : 'upgrade-insecure-requests;'}
+  `.replace(/\s{2,}/g, ' ').trim();
+  response.headers.set('Content-Security-Policy', cspHeader);
+
+  // Anti-Clickjacking — SAMEORIGIN allows Razorpay payment iframes
+  response.headers.set('X-Frame-Options', 'SAMEORIGIN');
+
+  // Anti-MIME Sniffing
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+
+  // Referrer Policy
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+
+  // Permissions Policy (prevent hardware access / sniffing)
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()');
+
+  // DNS Prefetching Control
+  response.headers.set('X-DNS-Prefetch-Control', 'on');
+
+  return response;
+});
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/saved/:path*", "/submit/:path*", "/services/:path*"],
+  matcher: [
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
+    '/__clerk/:path*',
+  ],
 };

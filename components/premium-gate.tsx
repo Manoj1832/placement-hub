@@ -2,9 +2,9 @@
 
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
-import { Lock } from "lucide-react";
+import { Lock, Crown, Check } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useAuth } from "@/lib/auth-context";
+import { useUser } from "@clerk/nextjs";
 import { useToast } from "@/components/toast-modal";
 
 interface PremiumGateProps {
@@ -12,8 +12,8 @@ interface PremiumGateProps {
 }
 
 export default function PremiumGate({ children }: PremiumGateProps) {
-  const { user } = useAuth();
-  const userId = user?.email;
+  const { user } = useUser();
+  const userId = user?.primaryEmailAddress?.emailAddress;
   const [loading, setLoading] = useState(false);
   const [isPremium, setIsPremium] = useState<boolean | null>(null);
   const { showToast } = useToast();
@@ -36,12 +36,17 @@ export default function PremiumGate({ children }: PremiumGateProps) {
       return;
     }
     
+    if (isPremium) {
+      showToast("info", "Already Premium", "You are already a Premium member!");
+      return;
+    }
+    
     try {
       setLoading(true);
       const res = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: 9900 })
+        body: JSON.stringify({ productId: "premium_3months" })
       });
       const data = await res.json();
       
@@ -59,11 +64,11 @@ export default function PremiumGate({ children }: PremiumGateProps) {
       }
 
       const rzp = new (window as any).Razorpay({
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        key: data.razorpayKeyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: data.amount,
         currency: "INR",
         name: "PSG Placement Hub",
-        description: "Premium Access - ₹99/yr",
+        description: "Premium Access - 3 Months",
         order_id: data.orderId,
         handler: async function (response: any) {
           try {
@@ -74,13 +79,14 @@ export default function PremiumGate({ children }: PremiumGateProps) {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
+                productId: "premium_3months",
               }),
             });
             const verifyData = await verifyRes.json();
 
             if (verifyRes.ok && verifyData.success) {
               setIsPremium(true);
-              showToast("success", "Payment Successful!", "Premium access granted for 1 year. 🎉");
+              showToast("success", "Payment Successful!", "Premium access granted for 3 months. 🎉");
               window.location.reload();
             } else {
               showToast("error", "Verification Failed", "Payment received but verification failed. Contact support.");
@@ -93,9 +99,9 @@ export default function PremiumGate({ children }: PremiumGateProps) {
         },
         prefill: {
           email: userId,
-          name: user?.name || "",
+          name: user?.fullName || "",
         },
-        theme: { color: "#2D1A5C" },
+        theme: { color: "#9333ea" },
         modal: {
           ondismiss: () => setLoading(false),
         },
@@ -118,29 +124,49 @@ export default function PremiumGate({ children }: PremiumGateProps) {
   }
 
   return (
-    <Card className="border-2 border-[#00FF7F]/20 bg-[#241350] text-white overflow-hidden relative">
+    <Card className="border-2 border-purple-500/20 bg-[#16132b] text-white overflow-hidden relative">
       {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[#392070] opacity-50 blur-[80px] -z-10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-purple-900/20 opacity-50 blur-[80px] -z-10" />
       
       <CardHeader className="text-center relative z-10 pb-2">
-        <div className="w-16 h-16 rounded-full bg-[#00FF7F]/10 flex items-center justify-center mx-auto mb-4 border border-[#00FF7F]/20">
-          <Lock className="w-8 h-8 text-[#00FF7F]" />
+        <div className="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center mx-auto mb-4 border border-purple-500/20 shadow-[0_0_30px_rgba(147,51,234,0.25)]">
+          <Lock className="w-8 h-8 text-purple-400 animate-pulse" />
         </div>
-        <CardTitle className="text-2xl font-bold text-white tracking-tight">Premium Content</CardTitle>
+        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-amber-300 bg-clip-text text-transparent tracking-tight">
+          Unlock Premium Content
+        </CardTitle>
         <CardDescription className="text-white/60 text-base mt-2">
-          Unlock the full experience and discover exclusive insights
+          Gain full access to exclusive resources and verified insights
         </CardDescription>
       </CardHeader>
-      <CardContent className="text-center space-y-6 relative z-10 pt-4">
-        <p className="text-sm text-white/70">
-          Get unlimited access to detailed interview rounds, technical questions, hidden behavioral strategies, and exclusive company resources.
+      
+      <CardContent className="text-center space-y-6 relative z-10 pt-4 max-w-md mx-auto">
+        <p className="text-sm text-white/70 leading-relaxed">
+          Upgrade to Premium for unlimited access to detailed interview rounds, technical questions, hidden behavioral strategies, and exclusive company resources.
         </p>
+
+        <div className="bg-zinc-900/60 p-4 rounded-xl border border-zinc-800/80 space-y-2.5 text-left text-sm text-zinc-300">
+          <div className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-green-400 font-bold" />
+            <span>All 450+ interview experiences</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-green-400 font-bold" />
+            <span>Specialized role roadmap skill trees</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-green-400 font-bold" />
+            <span>8+ Tier-1 premium company guides</span>
+          </div>
+        </div>
+
         <Button 
           onClick={handleUpgrade} 
           disabled={loading}
-          className="w-full max-w-xs mx-auto bg-[#00FF7F] text-black hover:bg-[#00cc66] font-semibold text-sm sm:text-base py-3 sm:py-4 rounded-xl shadow-[0_0_20px_rgba(0,255,127,0.3)] transition"
+          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-6 rounded-xl shadow-[0_0_20px_rgba(147,51,234,0.4)] transition transform hover:scale-[1.01]"
         >
-          {loading ? "Initializing..." : "Unlock Premium - ₹99/yr"}
+          <Crown className="w-4 h-4 mr-2 text-white" />
+          {loading ? "Initializing..." : "Unlock Premium — ₹149 / month"}
         </Button>
       </CardContent>
     </Card>

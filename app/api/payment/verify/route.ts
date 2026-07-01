@@ -1,25 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AUTH_COOKIE_NAME, verifyJWT } from "@/lib/auth";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { invalidateCache, cacheKeys } from "@/lib/redis";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
-// Must match the catalog in create-order/route.ts
 const PRODUCT_AMOUNTS: Record<string, number> = {
-  premium_yearly: 9900,
+  premium_3months: 14900,
   resume_vault: 19900,
 };
 
 export async function POST(req: NextRequest) {
   try {
-    const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
-    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const payload = await verifyJWT(token);
-    if (!payload?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+    if (!email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, productId } = await req.json();
 
@@ -29,9 +28,16 @@ export async function POST(req: NextRequest) {
 
     // 1. Verify the Razorpay signature (cryptographic — cannot be spoofed)
     const crypto = await import("crypto");
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (!keySecret) {
+      console.error("Payment Verification: RAZORPAY_KEY_SECRET is not configured");
+      return NextResponse.json({ error: "Configuration error" }, { status: 500 });
+    }
+
     const body = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
+      .createHmac("sha256", keySecret)
       .update(body)
       .digest("hex");
 
@@ -47,7 +53,7 @@ export async function POST(req: NextRequest) {
     });
 
     const order = await razorpay.orders.fetch(razorpay_order_id);
-    const resolvedProductId = productId || order.notes?.productId || "premium_yearly";
+    const resolvedProductId = productId || order.notes?.productId || "premium_3months";
     const expectedAmount = PRODUCT_AMOUNTS[resolvedProductId];
 
     if (!expectedAmount || order.amount !== expectedAmount) {
@@ -61,7 +67,7 @@ export async function POST(req: NextRequest) {
 
     // 3. Grant premium to the user via Convex
     await convex.mutation(api.orders.grantPremiumByEmail, {
-      email: payload.email,
+      email: email,
       razorpayOrderId: razorpay_order_id,
       razorpayPaymentId: razorpay_payment_id,
       amount: expectedAmount,
@@ -69,9 +75,9 @@ export async function POST(req: NextRequest) {
 
     // 4. Invalidate cached premium status so user sees update immediately
     await invalidateCache(
-      cacheKeys.premiumStatus(payload.email),
-      cacheKeys.isPremium(payload.email),
-      cacheKeys.userProfile(payload.email)
+      cacheKeys.premiumStatus(email),
+      cacheKeys.isPremium(email),
+      cacheKeys.userProfile(email)
     );
 
     return NextResponse.json({ success: true, message: "Premium access granted!" });

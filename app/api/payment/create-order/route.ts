@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AUTH_COOKIE_NAME, verifyJWT } from "@/lib/auth";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { checkRateLimitRedis } from "@/lib/redis";
 
 // ─── Server-Side Product Catalog ──────────────────────────────────
 // All pricing lives here. The frontend only sends a product key.
 // This prevents any client-side tampering with the amount.
 const PRODUCTS: Record<string, { amountPaise: number; description: string; type: string }> = {
-  premium_yearly: {
-    amountPaise: 9900, // ₹99
-    description: "Premium Access — ₹99/yr",
-    type: "premium_yearly",
+  premium_3months: {
+    amountPaise: 14900, // ₹149
+    description: "Premium Access — 1 Month",
+    type: "premium_3months",
   },
   resume_vault: {
     amountPaise: 19900, // ₹199
@@ -20,13 +20,15 @@ const PRODUCTS: Record<string, { amountPaise: number; description: string; type:
 
 export async function POST(req: NextRequest) {
   try {
-    const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
-    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const payload = await verifyJWT(token);
-    if (!payload?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+    if (!email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     // Rate limit: 5 payment attempts per 10 minutes per user
-    const rateLimit = await checkRateLimitRedis(`payment:${payload.email}`, 5, 600);
+    const rateLimit = await checkRateLimitRedis(`payment:${email}`, 5, 600);
     if (!rateLimit.ok) {
       return NextResponse.json(
         { error: `Too many payment attempts. Try again in ${rateLimit.retryAfter}s` },
@@ -54,7 +56,7 @@ export async function POST(req: NextRequest) {
       currency: "INR",
       receipt: `order_${Date.now()}`,
       notes: {
-        email: payload.email,
+        email: email,
         productId: productId,
         productType: product.type,
       },
@@ -65,6 +67,7 @@ export async function POST(req: NextRequest) {
       amount: order.amount,
       description: product.description,
       productId: productId,
+      razorpayKeyId: process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_SkbKWOUl89i06l",
     });
   } catch (err: any) {
     console.error("Razorpay order creation failed:", err);

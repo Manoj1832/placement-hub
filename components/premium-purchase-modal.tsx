@@ -175,7 +175,7 @@ export function PremiumPurchaseModal({ isOpen, onClose, onSuccess }: PremiumPurc
             </div>
 
             {isPremium ? (
-              <div className="w-full py-4 rounded-xl bg-emerald-950/30 border border-emerald-900/40 text-emerald-450 font-bold text-sm text-center flex items-center justify-center gap-2">
+              <div className="w-full py-4 rounded-xl bg-emerald-950/30 border border-emerald-900/40 text-emerald-400 font-bold text-sm text-center flex items-center justify-center gap-2">
                 <Check className="w-4 h-4 text-emerald-400" /> You already have Premium access!
               </div>
             ) : (

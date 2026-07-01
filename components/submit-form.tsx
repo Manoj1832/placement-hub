@@ -621,11 +621,11 @@ export default function SubmitForm({ onSuccess }: SubmitFormProps) {
                             Platform: <span className="text-zinc-400 font-medium">{round.platform || "N/A"}</span> • Difficulty: <span className="text-zinc-400 font-medium">{round.experience_rating}</span> • Outcome: <span className="text-emerald-500 font-semibold">{round.result}</span>
                           </p>
                           {round.tips && (
-                            <p className="text-sm text-zinc-450 mt-3 pl-8 italic">"{round.tips}"</p>
+                            <p className="text-sm text-zinc-400 mt-3 pl-8 italic">"{round.tips}"</p>
                           )}
                           
                           {/* Questions count */}
-                          <div className="flex gap-4 mt-3 pl-8 text-xs text-zinc-550 font-semibold">
+                          <div className="flex gap-4 mt-3 pl-8 text-xs text-zinc-500 font-semibold">
                             <span>💻 {round.technical_questions.length} Tech Question{round.technical_questions.length !== 1 && 's'}</span>
                             <span>💬 {round.behavioral_questions.length} Behavioral Question{round.behavioral_questions.length !== 1 && 's'}</span>
                           </div>

@@ -196,9 +196,9 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
   }
 
   const difficultyColors: Record<string, string> = {
-    easy: "bg-emerald-950/40 text-emerald-450 border-emerald-900/50",
-    medium: "bg-amber-950/40 text-amber-450 border-amber-900/50",
-    hard: "bg-rose-950/40 text-rose-450 border-rose-900/50",
+    easy: "bg-emerald-950/40 text-emerald-400 border-emerald-900/50",
+    medium: "bg-amber-950/40 text-amber-400 border-amber-900/50",
+    hard: "bg-rose-950/40 text-rose-400 border-rose-900/50",
   };
 
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -405,7 +405,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
                                   <span className="mx-2">•</span>
                                   <span className="text-zinc-400">{round.platform || "N/A"}</span>
                                   <span className="mx-2">•</span>
-                                  <span className={`${round.result === "Selected" ? "text-emerald-400" : "text-rose-450"}`}>{round.result}</span>
+                                  <span className={`${round.result === "Selected" ? "text-emerald-400" : "text-rose-400"}`}>{round.result}</span>
                                 </p>
                               </div>
                               <Badge variant="outline" className="text-zinc-400 border-zinc-800">{round.experience_rating || "N/A"}</Badge>
@@ -534,7 +534,7 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
                     <div className="bg-emerald-950/15 border border-emerald-900/40 rounded-xl p-5">
                       <h3 className="font-bold text-emerald-400 text-lg mb-3 flex items-center gap-2">
                         <span className="w-8 h-8 rounded-lg bg-emerald-950/40 flex items-center justify-center">
-                          <CheckCircle className="w-4 h-4 text-emerald-450" />
+                          <CheckCircle className="w-4 h-4 text-emerald-400" />
                         </span>
                         Tips
                       </h3>
@@ -548,14 +548,14 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
                 <div className="bg-rose-950/15 border border-rose-900/40 rounded-xl p-5">
                   <h3 className="font-bold text-rose-400 text-lg mb-3 flex items-center gap-2">
                     <span className="w-8 h-8 rounded-lg bg-rose-950/40 flex items-center justify-center">
-                      <AlertTriangle className="w-4 h-4 text-rose-450" />
+                      <AlertTriangle className="w-4 h-4 text-rose-400" />
                     </span>
                     Mistakes to Avoid
                   </h3>
                   <ul className="space-y-2">
                     {experience.mistakesToAvoid.map((mistake: string, i: number) => (
                       <li key={i} className="flex items-start gap-2 text-zinc-300">
-                        <XCircle className="w-4 h-4 text-rose-450 mt-0.5 flex-shrink-0" />
+                        <XCircle className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
                         <span>{mistake}</span>
                       </li>
                     ))}

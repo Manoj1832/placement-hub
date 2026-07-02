@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GitBranch as Github, ArrowLeft } from "lucide-react";
@@ -16,10 +15,21 @@ import { useToast } from "@/components/toast-modal";
 export default function GitHubAuditPage() {
   const [githubUrl, setGithubUrl] = useState("");
   const router = useRouter();
-  const { user } = useUser();
-  const userId = user?.primaryEmailAddress?.emailAddress;
+  const [user, setUser] = useState<{ email: string; name: string } | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const userId = user?.email;
   const createBooking = useMutation(api.bookings.create);
   const { showToast } = useToast();
+
+  useEffect(() => {
+    fetch("/api/user/sync")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) setUser(data.user);
+        setIsLoaded(true);
+      })
+      .catch(() => setIsLoaded(true));
+  }, []);
 
   const handleSubmit = async () => {
     if (!githubUrl) return;
@@ -73,7 +83,11 @@ export default function GitHubAuditPage() {
               />
             </div>
 
-            {!userId ? (
+            {!isLoaded ? (
+              <Button disabled className="w-full bg-blue-600">
+                Loading...
+              </Button>
+            ) : !userId ? (
               <Button 
                 onClick={() => router.push("/sign-in")} 
                 className="w-full bg-blue-600 hover:bg-blue-700"

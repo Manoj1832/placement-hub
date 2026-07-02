@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { getServerUser } from "@/lib/auth";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { cachedQuery, cacheKeys } from "@/lib/redis";
@@ -12,16 +12,12 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
  */
 export async function GET(req: NextRequest) {
   try {
-    const { userId: clerkUserId } = await auth();
-    if (!clerkUserId) {
+    const userPayload = await getServerUser();
+    if (!userPayload) {
       return NextResponse.json({ isPremium: false, premiumUntil: null });
     }
 
-    const user = await currentUser();
-    const email = user?.emailAddresses[0]?.emailAddress;
-    if (!email) {
-      return NextResponse.json({ isPremium: false, premiumUntil: null });
-    }
+    const email = userPayload.email;
 
     const result = await cachedQuery(
       cacheKeys.premiumStatus(email),

@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Lock, Crown, Check } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
+
 import { useToast } from "@/components/toast-modal";
 
 interface PremiumGateProps {
@@ -12,29 +12,16 @@ interface PremiumGateProps {
 }
 
 export default function PremiumGate({ children }: PremiumGateProps) {
-  const { user } = useUser();
-  const userId = user?.primaryEmailAddress?.emailAddress;
   const [loading, setLoading] = useState(false);
-  const [isPremium, setIsPremium] = useState<boolean | null>(null);
+  const [isPremium, setIsPremium] = useState<boolean | null>(false);
   const { showToast } = useToast();
 
-  // Check premium status via API
-  useEffect(() => {
-    if (userId) {
-      fetch("/api/user/sync")
-        .then((res) => res.json())
-        .then((data) => setIsPremium(data.isPremium))
-        .catch(() => setIsPremium(false));
-    } else {
-      setIsPremium(false);
-    }
-  }, [userId]);
+  // Premium check will be re-enabled with OAuth2
 
   const handleUpgrade = async () => {
-    if (!userId) {
-      showToast("warning", "Sign In Required", "Please sign in first to upgrade to Premium!");
-      return;
-    }
+    // No auth system yet — show sign-in message
+    showToast("warning", "Sign In Required", "Please sign in first to upgrade to Premium!");
+    return;
     
     if (isPremium) {
       showToast("info", "Already Premium", "You are already a Premium member!");
@@ -98,8 +85,8 @@ export default function PremiumGate({ children }: PremiumGateProps) {
           }
         },
         prefill: {
-          email: userId,
-          name: user?.fullName || "",
+          email: "",
+          name: "",
         },
         theme: { color: "#9333ea" },
         modal: {

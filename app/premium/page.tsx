@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Header from "@/components/header";
 import Link from "next/link";
 import { Crown, Check, ArrowLeft, Lock, Zap, BookOpen, Target, Shield } from "lucide-react";
-import { useUser } from "@clerk/nextjs";
+
 import { useToast } from "@/components/toast-modal";
 import { useRouter } from "next/navigation";
 
@@ -18,30 +18,17 @@ const FEATURES = [
 ];
 
 export default function PremiumPage() {
-  const { user, isLoaded } = useUser();
   const router = useRouter();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
 
-  useEffect(() => {
-    if (isLoaded && user) {
-      fetch("/api/user/sync")
-        .then((r) => r.json())
-        .then((d) => setIsPremium(d.isPremium))
-        .catch(() => {});
-    }
-  }, [isLoaded, user]);
+  // Premium check will be re-enabled with OAuth2
 
   const handleUpgrade = async () => {
-    if (!user) {
-      router.push("/sign-in?redirect_url=" + encodeURIComponent("/premium"));
-      return;
-    }
-    if (isPremium) {
-      showToast("info", "Already Premium", "You are already a Premium member!");
-      return;
-    }
+    // No auth yet — redirect to sign-in
+    showToast("warning", "Sign In Required", "Authentication coming soon. Stay tuned!");
+    return;
     try {
       setLoading(true);
       const res = await fetch("/api/payment/create-order", {
@@ -95,8 +82,8 @@ export default function PremiumPage() {
           }
         },
         prefill: {
-          email: user.primaryEmailAddress?.emailAddress || "",
-          name: user.fullName || "",
+          email: "",
+          name: "",
         },
         theme: { color: "#F97316" },
         modal: { ondismiss: () => setLoading(false) },

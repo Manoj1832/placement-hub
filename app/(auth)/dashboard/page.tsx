@@ -1,7 +1,6 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Flame, Trophy, Target, TrendingUp, Star, Zap, Award, 
   Clock, Sparkles, ChevronRight, BookOpen, Code2, Briefcase
@@ -10,7 +9,18 @@ import Link from "next/link";
 import Header from "@/components/header";
 
 export default function ProgressDashboardPage() {
-  const { isLoaded, user } = useUser();
+  const [user, setUser] = useState<{ email: string; name: string; role: string } | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/user/sync")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) setUser(data.user);
+        setIsLoaded(true);
+      })
+      .catch(() => setIsLoaded(true));
+  }, []);
 
   if (!isLoaded) {
     return (
@@ -55,13 +65,13 @@ export default function ProgressDashboardPage() {
               </div>
               <div>
                 <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-wide">Level</p>
-                <p className="text-xl font-bold text-white">6</p>
+                <p className="text-xl font-bold text-white">—</p>
               </div>
             </div>
             <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-              <div className="h-full bg-[#F97316] rounded-full transition-all" style={{ width: '65%' }} />
+              <div className="h-full bg-[#F97316] rounded-full transition-all" style={{ width: '0%' }} />
             </div>
-            <p className="text-[10px] text-zinc-500 mt-1">325 / 500 XP</p>
+            <p className="text-[10px] text-zinc-500 mt-1">Start exploring to earn XP</p>
           </div>
 
           <div className="bg-[#0F0F11]/60 border border-zinc-900 rounded-xl p-5">
@@ -71,10 +81,10 @@ export default function ProgressDashboardPage() {
               </div>
               <div>
                 <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-wide">Streak</p>
-                <p className="text-xl font-bold text-white">12</p>
+                <p className="text-xl font-bold text-white">—</p>
               </div>
             </div>
-            <p className="text-[10px] text-zinc-500">Best: 12 days</p>
+            <p className="text-[10px] text-zinc-500">Stay consistent to build streaks</p>
           </div>
 
           <div className="bg-[#0F0F11]/60 border border-zinc-900 rounded-xl p-5">
@@ -84,7 +94,7 @@ export default function ProgressDashboardPage() {
               </div>
               <div>
                 <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-wide">Total XP</p>
-                <p className="text-xl font-bold text-white">2,825</p>
+                <p className="text-xl font-bold text-white">—</p>
               </div>
             </div>
             <p className="text-[10px] text-zinc-500">Lifetime points</p>
@@ -97,7 +107,7 @@ export default function ProgressDashboardPage() {
               </div>
               <div>
                 <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-wide">Badges</p>
-                <p className="text-xl font-bold text-white">4</p>
+                <p className="text-xl font-bold text-white">—</p>
               </div>
             </div>
             <p className="text-[10px] text-zinc-500">Achievements earned</p>

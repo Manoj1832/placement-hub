@@ -1,8 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ExperienceCard from "@/components/experience-card";
@@ -11,8 +11,20 @@ import { ArrowLeft, Bookmark } from "lucide-react";
 
 export default function SavedPage() {
   const router = useRouter();
-  const { isLoaded, user: sessionUser } = useUser();
-  const userId = sessionUser?.primaryEmailAddress?.emailAddress || "";
+  const [user, setUser] = useState<{ email: string; name: string } | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const userId = user?.email || "";
+
+  useEffect(() => {
+    fetch("/api/user/sync")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) setUser(data.user);
+        setIsLoaded(true);
+      })
+      .catch(() => setIsLoaded(true));
+  }, []);
+
   const saved = useQuery(api.experiences.getSaved, { userEmail: userId });
 
   if (!isLoaded) {
@@ -31,7 +43,7 @@ export default function SavedPage() {
           <p className="text-zinc-400 mb-4">Please sign in to view saved experiences</p>
           <button 
             onClick={() => router.push("/sign-in")} 
-            className="px-4 py-2 bg-[#00FF7F] text-black rounded-lg font-semibold"
+            className="px-4 py-2 bg-[#F97316] text-black rounded-lg font-semibold"
           >
             Sign In
           </button>
@@ -62,7 +74,7 @@ export default function SavedPage() {
           <div className="text-center py-12 bg-zinc-900 rounded-xl border border-zinc-800">
             <Bookmark className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
             <p className="text-zinc-400">No saved experiences yet.</p>
-            <Link href="/browse" className="text-[#00FF7F] hover:underline mt-2 inline-block">
+            <Link href="/browse" className="text-[#F97316] hover:underline mt-2 inline-block">
               Browse experiences
             </Link>
           </div>

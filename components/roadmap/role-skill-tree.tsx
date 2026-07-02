@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { ExternalLink, X, CheckCircle2, BookOpen, Lock, ChevronDown, Code, Database, Cpu, Settings, Palette, Monitor, Sparkles, Trophy, Flame, TrendingUp, Circle } from "lucide-react";
 import gsap from "gsap";
-import { useUser } from "@clerk/nextjs";
 import { PremiumPurchaseModal } from "@/components/premium-purchase-modal";
 
 const ROLE_STORAGE_KEY = "psg_role_progress";
@@ -83,7 +82,6 @@ export default function RoleSkillTree() {
   const treeRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const panelRef = useRef<HTMLDivElement>(null);
-  const { user } = useUser();
   const [isPremium, setIsPremium] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
 
@@ -148,10 +146,11 @@ export default function RoleSkillTree() {
   };
 
   useEffect(() => {
-    if (user?.primaryEmailAddress?.emailAddress) {
-      fetch("/api/user/sync").then(r => r.json()).then(d => setIsPremium(d.isPremium)).catch(() => {});
-    }
-  }, [user]);
+    fetch("/api/user/sync")
+      .then((r) => r.json())
+      .then((d) => setIsPremium(d.isPremium))
+      .catch(() => {});
+  }, []);
 
   const tree = ROLE_TREES[selectedRole];
   const nodes = tree?.nodes || [];

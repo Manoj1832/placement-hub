@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { ThumbsUp, Bookmark, CheckCircle, MapPin, Briefcase, Clock, Users, Lock, Crown } from "lucide-react";
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
+
 import { useToast } from "@/components/toast-modal";
 import CompanyLogo from "./company-logo";
 
@@ -36,8 +36,8 @@ interface ExperienceCardProps {
 }
 
 export default function ExperienceCard({ experience }: ExperienceCardProps) {
-  const { user } = useUser();
-  const userId = user?.primaryEmailAddress?.emailAddress;
+  // Auth will be added with OAuth2 — userId is null for now
+  const userId: string | null = null;
   const [localUpvotes, setLocalUpvotes] = useState(experience.upvotes || 0);
   const [hasUpvoted, setHasUpvoted] = useState(false);
   const [localSaved, setLocalSaved] = useState(false);

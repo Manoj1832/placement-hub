@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { getServerUser } from "@/lib/auth";
 import { checkRateLimitRedis } from "@/lib/redis";
 
 // ─── Server-Side Product Catalog ──────────────────────────────────
@@ -20,12 +20,10 @@ const PRODUCTS: Record<string, { amountPaise: number; description: string; type:
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const userPayload = await getServerUser();
+    if (!userPayload) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     
-    const user = await currentUser();
-    const email = user?.emailAddresses[0]?.emailAddress;
-    if (!email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const email = userPayload.email;
 
     // Rate limit: 5 payment attempts per 10 minutes per user
     const rateLimit = await checkRateLimitRedis(`payment:${email}`, 5, 600);

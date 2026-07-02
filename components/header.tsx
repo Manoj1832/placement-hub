@@ -3,11 +3,8 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
-import { Crown, LogIn, LogOut, User, ArrowUpRight, Flame, Trophy, Plus, X } from "lucide-react";
+import { Crown, LogIn, LogOut, ArrowUpRight, Plus, X, User } from "lucide-react";
 import gsap from "gsap";
-import { SignInButton, SignUpButton, Show, UserButton, useUser } from '@clerk/nextjs';
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 
 const NAV_CARDS = [
   {
@@ -41,31 +38,43 @@ const NAV_CARDS = [
 ];
 
 export default function Header() {
-  const { user: sessionUser } = useUser();
-  const userId = sessionUser?.primaryEmailAddress?.emailAddress;
   const router = useRouter();
   const pathname = usePathname();
   const [isPremium, setIsPremium] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [showPromo, setShowPromo] = useState(true);
+  const [sessionUser, setSessionUser] = useState<{ name: string; email: string } | null>(null);
+  const [loggingOut, setLoggingOut] = useState(false);
   const navRef = useRef<HTMLElement | null>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
 
-  // Fetch gamification stats
-  const userStats = useQuery(api.tracking.getUserStats);
-
+  // Fetch user session on mount
   useEffect(() => {
-    if (userId) {
-      fetch("/api/user/sync")
-        .then((res) => res.json())
-        .then((data) => setIsPremium(data.isPremium))
-        .catch(() => setIsPremium(false));
-    } else {
+    fetch("/api/user/sync")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.user) setSessionUser(data.user);
+        setIsPremium(!!data.isPremium);
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      setSessionUser(null);
       setIsPremium(false);
+      router.push("/");
+      router.refresh();
+    } catch {
+      // ignore
+    } finally {
+      setLoggingOut(false);
     }
-  }, [userId]);
+  };
 
   // Close menu on route change
   useEffect(() => {
@@ -137,11 +146,6 @@ export default function Header() {
     if (el) cardsRef.current[i] = el;
   };
 
-  // Safe destructuring of stats
-  const currentStreak = userStats?.currentStreak ?? 12; // Fallback to 12 as per screenshot
-  const level = userStats?.level ?? 6; // Fallback to 6 as per screenshot
-  const progressPercent = userStats?.progressPercent ?? 65; // Fallback to 65% as per screenshot
-
   return (
     <div className="w-full z-50 bg-[#09090B]">
       <header className="border-b border-zinc-900">
@@ -173,34 +177,8 @@ export default function Header() {
                 </Link>
               </div>
 
-              {/* Middle/Right Widgets */}
+              {/* Right Widgets */}
               <div className="flex items-center gap-4 md:gap-6">
-                {/* Streak widget */}
-                <div className="hidden sm:flex items-center gap-2 cursor-pointer" onClick={() => router.push("/dashboard")}>
-                  <Flame className="w-4 h-4 text-[#F97316] fill-[#F97316]/20" />
-                  <span className="text-sm font-bold text-white">{currentStreak}</span>
-                  <div className="flex flex-col text-[9px] text-zinc-500 font-medium leading-none">
-                    <span>day</span>
-                    <span>streak</span>
-                  </div>
-                </div>
-
-                {/* Level widget */}
-                <div className="hidden md:flex items-center gap-2 cursor-pointer" onClick={() => router.push("/dashboard")}>
-                  <Trophy className="w-4 h-4 text-amber-500 fill-amber-500/10" />
-                  <div className="flex flex-col text-[9px] text-zinc-500 font-medium leading-none">
-                    <span>Level</span>
-                    <span className="text-white font-bold">{level}</span>
-                  </div>
-                  {/* Custom Progress bar */}
-                  <div className="w-16 h-1.5 bg-zinc-800 rounded-full overflow-hidden ml-1">
-                    <div 
-                      className="h-full bg-[#F97316] rounded-full" 
-                      style={{ width: `${progressPercent}%` }}
-                    />
-                  </div>
-                </div>
-
                 {/* Submit button */}
                 <Link href="/submit">
                   <button className="h-9 px-4 bg-[#F97316] hover:bg-[#EA580C] text-black font-extrabold text-xs tracking-wide uppercase rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm shadow-orange-600/10">
@@ -209,19 +187,36 @@ export default function Header() {
                   </button>
                 </Link>
 
-                {/* Clerk user action button */}
+                {/* Auth Area — session-aware */}
                 <div className="flex items-center gap-2 border-l border-zinc-800 pl-4 h-8">
-                  <Show when="signed-out">
-                    <SignInButton mode="modal">
-                      <button className="flex items-center gap-1 text-xs text-zinc-400 hover:text-white font-semibold transition-colors">
-                        <LogIn className="w-3.5 h-3.5" />
-                        <span>Sign In</span>
+                  {sessionUser ? (
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center">
+                          <User className="w-3 h-3 text-white" />
+                        </div>
+                        <span className="text-xs text-zinc-300 font-medium hidden md:inline max-w-[100px] truncate">
+                          {sessionUser.name}
+                        </span>
+                      </div>
+                      <button
+                        onClick={handleLogout}
+                        disabled={loggingOut}
+                        className="flex items-center gap-1 text-xs text-zinc-500 hover:text-red-400 font-semibold transition-colors cursor-pointer disabled:opacity-50"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        <span className="hidden md:inline">Sign Out</span>
                       </button>
-                    </SignInButton>
-                  </Show>
-                  <Show when="signed-in">
-                    <UserButton />
-                  </Show>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => router.push("/sign-in")}
+                      className="flex items-center gap-1 text-xs text-zinc-400 hover:text-white font-semibold transition-colors cursor-pointer"
+                    >
+                      <LogIn className="w-3.5 h-3.5" />
+                      <span>Sign In</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -259,8 +254,8 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Premium Alert Promo Banner */}
-      {showPromo && (
+      {/* Premium Alert Promo Banner — hidden for premium users */}
+      {showPromo && !isPremium && (
         <div className="bg-[#1C0F02] border-b border-orange-950/40 py-2.5 px-4 md:px-6 relative overflow-hidden transition-all duration-300">
           <div className="max-w-[1280px] mx-auto flex items-center justify-between gap-4">
             <Link 

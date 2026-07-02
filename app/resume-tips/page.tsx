@@ -6,7 +6,6 @@ import { ArrowLeft, FileText, Lock, Crown, Download, Eye, Star } from "lucide-re
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/toast-modal";
 
@@ -27,20 +26,27 @@ export default function ResumeTipsPage() {
   const [activeTab, setActiveTab] = useState<"templates" | "vault">("templates");
   const [isPremiumUser, setIsPremiumUser] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
-  const { user: sessionUser, isLoaded } = useUser();
-  const userId = sessionUser?.primaryEmailAddress?.emailAddress;
+  const [user, setUser] = useState<{ email: string; name: string; role: string } | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const userId = user?.email;
   const router = useRouter();
   const { showToast } = useToast();
 
   // Check premium status
   useEffect(() => {
-    if (isLoaded && userId) {
-      fetch("/api/user/sync")
-        .then((res) => res.json())
-        .then((data) => setIsPremiumUser(data.isPremium))
-        .catch(console.error);
-    }
-  }, [isLoaded, userId]);
+    fetch("/api/user/sync")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) {
+          setUser(data.user);
+        }
+        setIsPremiumUser(data.isPremium);
+        setIsLoaded(true);
+      })
+      .catch(() => {
+        setIsLoaded(true);
+      });
+  }, []);
 
   const handleUpgrade = async () => {
     if (!userId) {
@@ -106,8 +112,8 @@ export default function ResumeTipsPage() {
           }
         },
         prefill: {
-          email: userId,
-          name: sessionUser?.fullName || "",
+          email: userId || "",
+          name: user?.name || "",
         },
         theme: { color: "#eab308" },
         modal: {

@@ -306,3 +306,23 @@ export default CardNav;
   - Rendered a premium warning alert banner underneath the header with orange color styling and a close button.
 - Updated HomePage (`app/page.tsx`), Browse Page (`app/(public)/browse/page.tsx`), and Dashboard Page (`app/(auth)/dashboard/page.tsx`) to implement the premium dark-orange theme.
 - Updated Experience Details (`app/(public)/experience/[id]/page.tsx`) and Experience Cards (`components/experience-card.tsx`) to match dark-orange branding.
+
+## July 2026 Custom Authentication Migration & OAuth2 Integration
+- **Decommissioned Clerk Authentication**:
+  - Removed all `@clerk/nextjs` hooks, imports, and provider wrappers.
+  - Removed `@clerk/nextjs` from `package.json` dependencies.
+- **Implemented Secure Self-Hosted JWT Auth**:
+  - Added token signing and verification using `jose` library with `httpOnly` secure cookies.
+  - Configured custom session validator (`getServerUser`) with Redis-backed session store tracking.
+  - Added password hashing via `bcryptjs` and input validation with `zod`.
+- **Enforced Single-Device Session Locking**:
+  - Generated unique UUID-based Session IDs (`sid`) on login/registration.
+  - Tracked active sessions in Redis; subsequent logins on other devices invalidate previous sessions dynamically.
+- **Implemented Custom Forms & Session Reactivity**:
+  - Designed beautiful native Sign In and Sign Up pages with password strength checking.
+  - Created client-side React Auth Context (`lib/auth-context.tsx`) fetching from `/api/user/sync`.
+  - Updated the global `Header` component to toggle between auth states reactively.
+- **Added Manual Google & GitHub OAuth2 Support**:
+  - Created server-side OAuth2 initiate routes (`/api/auth/oauth/google`, `/api/auth/oauth/github`) with PKCE and state-based CSRF protection stored in Redis.
+  - Built callback handler (`/api/auth/oauth/callback`) to exchange authorization codes, fetch user profiles from providers, synchronize records in Convex database, and issue local session tokens.
+

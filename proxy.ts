@@ -1,24 +1,12 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { checkRateLimitRedis } from './lib/redis';
 
-const isProtectedRoute = createRouteMatcher([
-  '/dashboard(.*)',
-  '/saved(.*)',
-  '/submit(.*)',
-]);
-
-export default clerkMiddleware(async (auth, req: NextRequest) => {
-  // 1. Clerk Route Protection
-  if (isProtectedRoute(req)) {
-    await auth.protect();
-  }
-
+export default async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
-  // 2. Redis-backed Rate Limiter for sensitive API endpoints (Anti-DDoS / Brute Force)
-  if (path.startsWith('/api/payment/') || path.startsWith('/api/user/sync') || path.startsWith('/api/webhook/')) {
+  // 1. Redis-backed Rate Limiter for sensitive API endpoints (Anti-DDoS / Brute Force)
+  if (path.startsWith('/api/payment/') || path.startsWith('/api/user/') || path.startsWith('/api/webhook/')) {
     const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '127.0.0.1';
     const maxAttempts = path.startsWith('/api/webhook/') ? 100 : 15;
     const windowSec = 60;
@@ -43,7 +31,7 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
     }
   }
 
-  // 3. Security Headers Injection (MITM, XSS, Clickjacking protection)
+  // 2. Security Headers Injection (MITM, XSS, Clickjacking protection)
   const response = NextResponse.next();
 
   const isDev = process.env.NODE_ENV === 'development';
@@ -53,15 +41,15 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
     response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   }
 
-  // Content Security Policy (CSP) - Mitigates XSS, CAPTCHA (Cloudflare Turnstile), and data injection
+  // Content Security Policy (CSP)
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.clerk.accounts.dev https://clerk.placement-hub.com https://checkout.razorpay.com https://challenges.cloudflare.com;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://checkout.razorpay.com https://challenges.cloudflare.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     img-src 'self' data: blob: https:;
     font-src 'self' https://fonts.gstatic.com;
-    connect-src 'self' https://*.clerk.accounts.dev https://clerk.placement-hub.com https://checkout.razorpay.com https://*.convex.cloud wss://*.convex.cloud https://api.razorpay.com https://challenges.cloudflare.com;
-    frame-src 'self' https://checkout.razorpay.com https://api.razorpay.com https://*.clerk.accounts.dev https://challenges.cloudflare.com;
+    connect-src 'self' https://checkout.razorpay.com https://*.convex.cloud wss://*.convex.cloud https://api.razorpay.com https://challenges.cloudflare.com;
+    frame-src 'self' https://checkout.razorpay.com https://api.razorpay.com https://challenges.cloudflare.com;
     worker-src 'self' blob:;
     object-src 'none';
     base-uri 'self';
@@ -71,7 +59,7 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
   `.replace(/\s{2,}/g, ' ').trim();
   response.headers.set('Content-Security-Policy', cspHeader);
 
-  // Anti-Clickjacking — SAMEORIGIN allows Razorpay payment iframes
+  // Anti-Clickjacking
   response.headers.set('X-Frame-Options', 'SAMEORIGIN');
 
   // Anti-MIME Sniffing
@@ -87,12 +75,11 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
   response.headers.set('X-DNS-Prefetch-Control', 'on');
 
   return response;
-});
+}
 
 export const config = {
   matcher: [
     '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
     '/(api|trpc)(.*)',
-    '/__clerk/:path*',
   ],
 };

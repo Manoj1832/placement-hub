@@ -1,9 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,8 +11,18 @@ import { ArrowLeft, BookOpen, Shield, Users, Lock, Eye, HandHeart, Ban } from "l
 
 export default function GuidelinesPage() {
   const router = useRouter();
-  const { user } = useUser();
-  const userId = user?.primaryEmailAddress?.emailAddress;
+  const [user, setUser] = useState<{ email: string } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/user/sync")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) setUser(data.user);
+      })
+      .catch(() => {});
+  }, []);
+
+  const userId = user?.email;
 
   const guidelines = [
     {

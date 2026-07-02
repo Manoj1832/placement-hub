@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { getServerUser } from "@/lib/auth";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { cachedQuery, cacheKeys } from "@/lib/redis";
@@ -7,53 +7,49 @@ import { cachedQuery, cacheKeys } from "@/lib/redis";
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 /**
- * Called after sign-in to ensure user exists in Convex DB.
+ * Ensures user details are synced and returns the authenticated user data.
  */
 export async function POST(req: NextRequest) {
   try {
-    const { userId: clerkUserId } = await auth();
-    if (!clerkUserId) {
+    const userPayload = await getServerUser();
+    if (!userPayload) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const user = await currentUser();
-    const email = user?.emailAddresses[0]?.emailAddress;
-    if (!email) {
-      return NextResponse.json({ error: "No email address found" }, { status: 400 });
+    // Retrieve full user record from Convex DB
+    const user = await convex.query(api.users.getByEmail, { email: userPayload.email });
+    if (!user) {
+      return NextResponse.json({ error: "User profile not found" }, { status: 404 });
     }
 
-    const name = user.fullName || `${user.firstName || ""} ${user.lastName || ""}`.trim() || "PSG Student";
-
-    // Use createOrUpdate with the actual Clerk user ID so Convex can verify user identity correctly
-    const userId = await convex.mutation(api.users.createOrUpdate, {
-      clerkId: clerkUserId,
-      email: email,
-      name: name,
+    return NextResponse.json({
+      userId: user._id,
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        isPremium: user.isPremium,
+      },
     });
-
-    return NextResponse.json({ userId });
   } catch (err: any) {
     console.error("User sync failed:", err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ error: err.message || "An unexpected error occurred." }, { status: 500 });
   }
 }
 
 /**
- * Check premium status for the current session user.
+ * Check premium status and get profile for the current session user.
  * Cached in Redis for 60s.
  */
 export async function GET(req: NextRequest) {
   try {
-    const { userId: clerkUserId } = await auth();
-    if (!clerkUserId) {
-      return NextResponse.json({ isPremium: false });
+    const userPayload = await getServerUser();
+    if (!userPayload) {
+      return NextResponse.json({ isPremium: false, user: null });
     }
 
-    const user = await currentUser();
-    const email = user?.emailAddresses[0]?.emailAddress;
-    if (!email) {
-      return NextResponse.json({ isPremium: false });
-    }
+    const email = userPayload.email;
 
     const isPremium = await cachedQuery(
       cacheKeys.isPremium(email),
@@ -65,9 +61,20 @@ export async function GET(req: NextRequest) {
       60 // 1 minute TTL
     );
 
-    return NextResponse.json({ isPremium });
+    // Fetch live user info (e.g. role, name)
+    const userRecord = await convex.query(api.users.getByEmail, { email });
+
+    return NextResponse.json({
+      isPremium,
+      user: userRecord ? {
+        id: userRecord._id,
+        email: userRecord.email,
+        name: userRecord.name,
+        role: userRecord.role,
+      } : null,
+    });
   } catch (err: any) {
     console.error("Premium check failed:", err);
-    return NextResponse.json({ isPremium: false });
+    return NextResponse.json({ isPremium: false, user: null });
   }
 }

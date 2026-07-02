@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { use, useState, useEffect } from "react";
 import { ThumbsUp, Bookmark, CheckCircle, CheckCircle2, MapPin, Briefcase, Clock, Lock, Crown, ExternalLink, Code2, Users, ArrowLeft, Lightbulb, AlertTriangle, XCircle, Circle, Check } from "lucide-react";
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header";
 import { useToast } from "@/components/toast-modal";
@@ -18,9 +17,10 @@ import CompanyLogo from "@/components/company-logo";
 export default function ExperienceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const experienceId = id as Id<"experiences">;
-  const { isLoaded, user: sessionUser } = useUser();
+  const [user, setUser] = useState<{ email: string; name: string; role: string } | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
   const router = useRouter();
-  const userId = sessionUser?.primaryEmailAddress?.emailAddress as string | undefined;
+  const userId = user?.email;
   const experience = useQuery(api.experiences.getById, { 
     id: experienceId,
     userEmail: userId || undefined,
@@ -36,19 +36,21 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
   const [isFreeLimitExceeded, setIsFreeLimitExceeded] = useState(false);
   const { showToast } = useToast();
 
-  // Sync user to Convex and check premium status when session is available
+  // Load user profile and check premium status
   useEffect(() => {
-    if (isLoaded && userId) {
-      // Ensure user exists in Convex
-      fetch("/api/user/sync", { method: "POST" }).catch(console.error);
-
-      // Check premium status
-      fetch("/api/user/sync")
-        .then((res) => res.json())
-        .then((data) => setIsPremiumUser(data.isPremium))
-        .catch(console.error);
-    }
-  }, [isLoaded, userId]);
+    fetch("/api/user/sync")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) {
+          setUser(data.user);
+        }
+        setIsPremiumUser(data.isPremium);
+        setIsLoaded(true);
+      })
+      .catch(() => {
+        setIsLoaded(true);
+      });
+  }, []);
 
   // Track unique viewed experiences to enforce free limit
   useEffect(() => {
@@ -149,8 +151,8 @@ export default function ExperienceDetailPage({ params }: { params: Promise<{ id:
           }
         },
         prefill: {
-          email: userId,
-          name: sessionUser?.fullName || "",
+          email: userId || "",
+          name: user?.name || "",
         },
         theme: { color: "#F97316" },
         modal: {

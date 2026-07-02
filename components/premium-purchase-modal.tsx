@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button";
 import { Crown, Lock, Check } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
+
 import { useToast } from "@/components/toast-modal";
 import { useRouter } from "next/navigation";
 
@@ -17,26 +17,18 @@ interface PremiumPurchaseModalProps {
 export function PremiumPurchaseModal({ isOpen, onClose, onSuccess }: PremiumPurchaseModalProps) {
   const [loading, setLoading] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
-  const { user } = useUser();
   const router = useRouter();
   const { showToast } = useToast();
 
-  useEffect(() => {
-    const email = user?.primaryEmailAddress?.emailAddress;
-    if (isOpen && email) {
-      fetch("/api/user/sync")
-        .then((res) => res.json())
-        .then((data) => setIsPremium(data.isPremium))
-        .catch(() => {});
-    }
-  }, [isOpen, user]);
+  // Premium check will be re-enabled with OAuth2
+  // For now, premium status is not checked without auth
 
   const handleUpgrade = async () => {
-    const email = user?.primaryEmailAddress?.emailAddress;
-    if (!email) {
-      router.push("/sign-in");
-      return;
-    }
+    // Auth required — redirect to sign-in (will be OAuth2 in future)
+    router.push("/sign-in");
+    showToast("warning", "Sign In Required", "Please sign in first to upgrade to Premium.");
+    onClose();
+    return;
 
     if (isPremium) {
       showToast("info", "Already Premium", "You are already a Premium member!");
@@ -104,8 +96,8 @@ export function PremiumPurchaseModal({ isOpen, onClose, onSuccess }: PremiumPurc
           }
         },
         prefill: {
-          email: email,
-          name: user.fullName || "",
+          email: "",
+          name: "",
         },
         theme: { color: "#F97316" }, 
         modal: {

@@ -123,6 +123,7 @@ export interface JWTPayload {
   email: string;
   name: string;
   role: string;
+  sid?: string; // session id for single device verification
   iat?: number;
   exp?: number;
 }
@@ -133,6 +134,7 @@ export async function createJWT(payload: Omit<JWTPayload, "iat" | "exp">): Promi
     email: payload.email,
     name: payload.name,
     role: payload.role,
+    sid: payload.sid,
   })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -150,6 +152,7 @@ export async function verifyJWT(token: string): Promise<JWTPayload | null> {
       email: payload.email as string,
       name: payload.name as string,
       role: (payload.role as string) || "student",
+      sid: payload.sid as string,
     };
   } catch {
     return null;
@@ -173,3 +176,32 @@ export function getCookieConfig(isProd: boolean) {
 // ── Generic error helper ─────────────────────────────────────
 
 export const GENERIC_ERROR = "Invalid credentials. Please try again.";
+
+// ── Server-side Auth Session and Device Verification ─────────
+import { cookies } from "next/headers";
+import { redis } from "./redis";
+
+export async function getServerUser() {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+    if (!token) return null;
+
+    const payload = await verifyJWT(token);
+    if (!payload) return null;
+
+    // Single-device session verification using Redis
+    if (redis && payload.sid) {
+      const activeSid = await redis.get<string>(`user:session:${payload.email}`);
+      if (activeSid && activeSid !== payload.sid) {
+        // Session was invalidated because of a new login on another device
+        return null;
+      }
+    }
+
+    return payload;
+  } catch (e) {
+    console.error("Error in getServerUser:", e);
+    return null;
+  }
+}

@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { ExternalLink, X, CheckCircle2, Zap, Target, Lock, ChevronDown, BarChart3, BookOpen, GraduationCap, Lightbulb, ArrowRight, TrendingUp, Layers, Clock, FileText, Circle, Trophy, Flame } from "lucide-react";
 import gsap from "gsap";
-import { useUser } from "@clerk/nextjs";
 import { PremiumPurchaseModal } from "@/components/premium-purchase-modal";
 import CompanyLogo from "@/components/company-logo";
 
@@ -117,7 +116,6 @@ export default function CompanyGuide() {
   const treeRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const panelRef = useRef<HTMLDivElement>(null);
-  const { user } = useUser();
   const [isPremium, setIsPremium] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
 
@@ -182,10 +180,11 @@ export default function CompanyGuide() {
   };
  
   useEffect(() => {
-    if (user?.primaryEmailAddress?.emailAddress) {
-      fetch("/api/user/sync").then(r => r.json()).then(d => setIsPremium(d.isPremium)).catch(() => {});
-    }
-  }, [user]);
+    fetch("/api/user/sync")
+      .then((r) => r.json())
+      .then((d) => setIsPremium(d.isPremium))
+      .catch(() => {});
+  }, []);
 
   const plan = COMPANIES[selectedCompany];
   const nodes = plan?.nodes || [];

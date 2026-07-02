@@ -1,9 +1,13 @@
 import { Redis } from "@upstash/redis";
 
-export const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
+const isRedisConfigured = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+
+export const redis = isRedisConfigured
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    })
+  : null;
 
 // ─── Cache Helpers ──────────────────────────────────────────
 
@@ -19,6 +23,9 @@ export async function cachedQuery<T>(
   fetcher: () => Promise<T>,
   ttl: number = DEFAULT_TTL
 ): Promise<T> {
+  if (!redis) {
+    return await fetcher();
+  }
   try {
     const cached = await redis.get<T>(key);
     if (cached !== null && cached !== undefined) {
@@ -43,6 +50,7 @@ export async function cachedQuery<T>(
  * Invalidate one or more cache keys.
  */
 export async function invalidateCache(...keys: string[]) {
+  if (!redis) return;
   try {
     if (keys.length > 0) {
       await redis.del(...keys);
@@ -66,6 +74,9 @@ export async function checkRateLimitRedis(
   maxAttempts: number = RATE_LIMIT_MAX,
   windowSec: number = RATE_LIMIT_WINDOW
 ): Promise<{ ok: boolean; retryAfter?: number }> {
+  if (!redis) {
+    return { ok: true };
+  }
   const redisKey = `ratelimit:${key}`;
 
   try {
@@ -101,6 +112,10 @@ export async function storeToken(
   token: string,
   ttlSec: number = 600 // 10 minutes default
 ): Promise<void> {
+  if (!redis) {
+    console.warn("storeToken: Redis not configured. Token not stored.");
+    return;
+  }
   const key = `${prefix}:${identifier}`;
   await redis.set(key, token, { ex: ttlSec });
 }
@@ -114,6 +129,10 @@ export async function verifyAndConsumeToken(
   identifier: string,
   token: string
 ): Promise<boolean> {
+  if (!redis) {
+    console.warn("verifyAndConsumeToken: Redis not configured.");
+    return false;
+  }
   const key = `${prefix}:${identifier}`;
   const stored = await redis.get<string>(key);
 

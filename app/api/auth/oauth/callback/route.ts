@@ -47,10 +47,11 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  let provider: OAuthProvider | undefined = undefined;
+
   try {
     // ── Step 1: Validate state (CSRF protection) ──
     let oauthState: { provider: OAuthProvider; codeVerifier?: string } | null = null;
-    let provider: OAuthProvider;
 
     if (redis) {
       const stateKey = `oauth:state:${state}`;
